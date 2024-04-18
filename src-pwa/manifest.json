@@ -1,4 +1,10 @@
 {
+  "id": "app-dmech",
+  "name": "APP DMECH",
+  "short_name": "app-dmech",
+  "description": "Sistema de Gestão da Direcção Municipal do Chipindo",
+  "display": "standalone",
+  "start_url": "/",
   "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#027be3",
@@ -28,5 +34,8 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "dir": "auto",
+  "lang": "pt",
+  "categories": ["education", "government", "utilities"]
 }
