@@ -60,7 +60,7 @@
             <br />
             <br />
             <span class="top-subtitle">
-              Vai apresentar-se ao {{ addInfo.hospital }}</span
+              Vai apresentar-se ao <b>{{ addInfo.hospital }}</b></span
             >
           </div>
 
@@ -74,48 +74,55 @@
    Kz
    <q-separator size="2px" color="black" inset class="line-mais-tope"/>
    Elementos referentes ao beneficiário:
-   <p><q-separator/></p>
-            </pre>
-          </div>
-
-          <div class="col-12 text-center">
-            <br />
-            <br />
-            DIRECÇÃO MUNICIPAL DA EDUCAÇÃO NO {{ addInfo.municipio }},
-            {{ data }}.
-          </div>
-
-          <div class="col-12 text-center" style="line-height: 1.5">
-            <br />
-            <br />
-            <br />
+   <q-separator color="black" class="line-mais-tope" style="width:287px; margin-left: 14px !important;"/>
+   <q-separator color="black" class="line-mais-tope2" style="width:287px; margin-left: 14px !important;"/>
+   Filiação:
+   Tiago Celestino
+   e
+   Verónica Laurinda Celestino
+   Naturalidade: Caála
+   Município: Caála
+   Província: Huambo
+   Idade: 32 anos                          Estado Civil: Casada                     Género: Feminino
+   <div class="col-12" style="line-height: 1.5; margin-top:-60px !important">
             <b
-              ><span v-if="model == 'Director Municipal'">
-                <b>O Director Municipal</b>
-              </span></b
-            ><b
-              ><span v-if="model == 'Director Interino'">
-                <b>Na ausencia do Director Municipal</b>
+              ><span v-if="model2 == 'Secretário'">
+                                                               <b>O Secretário</b>
               </span></b
             >
-            <br />
-            <br />
-            <span v-if="model == 'Director Municipal'" class="q-pa-md">
-              {{ addInfo.directoMunicipal }}
-            </span>
-            <br />
+            <p v-if="model2 == 'Secretário'" class="line-top-nama-asign">
+                                                         {{ addInfo.nome_secretario }}
+            </p>
             <b
-              ><span v-if="model == 'Director Interino'">
-                {{ addInfo.directoMunicipal_interino }} </span
-              ><br
-            /></b>
+              ><span v-if="model2 == 'Secretário interino'">
+                                                            <b>Na ausencia do Secretário</b>
+              </span></b
+            >
+            <b
+              ><span v-if="model2 == 'Secretário interino'">
+                                                                 {{ addInfo.nome_secretario_interino }} </span
+              ></b>
             <p>
               <b
-                ><span v-if="model == 'Director Interino'" class="text-small">
-                  ({{ addInfo.directoMunicipal_interino_funcao }})
+                ><span v-if="model2 == 'Secretário interino'" class="text-small">
+                                                                ({{ addInfo.nome_funcao_secretario_interino }})
                 </span></b
               >
             </p>
+             <p class="col-12 text-center line-top-data-asign"><b>{{ addInfo.municipio }},{{ data }}.</b></p>
+            <q-separator size="2px" color="black" inset class="line-mais-tope" style="margin-top: -45px"/>
+
+
+          </div>
+<p style="margin-top: -115px !important">    Prescrição Médica</p>
+<q-separator size="1px" color="black" inset style="margin-top:-8px !important"/>
+<q-separator size="1px" color="black" inset style="margin-top:2px !important"/>
+<q-separator size="1px" color="black" inset style="margin-top:2px !important"/>
+<q-separator size="1px" color="black" inset style="margin-top:2px !important"/>
+         <p style="margin-top:-36px !important">    _________ {{ dateNowYear }}                                                                             O Médico
+                                                                                        _____________________________
+          </p>
+            </pre>
           </div>
         </div>
       </div>
@@ -252,6 +259,7 @@ export default {
       return JSON.parse(route.params.addInfo);
     });
     const model2 = computed(() => {
+      console.log(route.params.model2);
       return route.params.model2;
     });
     const model = computed(() => {
@@ -438,6 +446,15 @@ p {
 }
 .line-mais-tope {
   margin-top: -25px;
+}
+.line-mais-tope2 {
+  margin-top: -47px;
+}
+.line-top-nama-asign {
+  margin-top: -60px !important;
+}
+.line-top-data-asign {
+  margin-top: -230px !important;
 }
 .text-small {
   font-size: small;

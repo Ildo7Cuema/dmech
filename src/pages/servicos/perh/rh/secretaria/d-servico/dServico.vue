@@ -986,7 +986,7 @@ export default {
             params: {
               dados: JSON.stringify(dados.value),
               addInfo: JSON.stringify(addInfo.value),
-              model2: model2.value,
+              model2: modelOption2.value,
               model: model.value,
             },
           });
