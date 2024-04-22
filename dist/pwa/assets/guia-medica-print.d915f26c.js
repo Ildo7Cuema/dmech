@@ -1,0 +1,48 @@
+import{_ as le,r as s,bm as ce,j as x,o as re,G as l,U as c,K as _,V as e,M as t,L as a,J as u,X as m,aT as de,aU as _e}from"./index.dd130778.js";import{h as ue}from"./html2pdf.77dc710f.js";import"./userApi.88ef93f5.js";import{u as me}from"./use-quasar.9c87f47a.js";import{h as p}from"./moment.40bc58bf.js";import"./num2words.ad55505e.js";import{f as pe}from"./formatCurrency.6090a7ed.js";import"./_commonjsHelpers.2cf1d77b.js";const be={setup(){const b=s(null),v=ce(),Y=s(""),o=me(),g=s(""),f=s(""),y=s(""),P=s(""),O=s(""),F=s(""),w=s(""),I=s(""),z=s(null),U=new Date().toJSON().slice(0,4),S=s(""),h=s(),T=s(""),V=s(""),D=/(\b\w+a\b|\b\w+ão\b|\b\w+ões\b)$/,L=/^[E]/i,R=/^[H]/i,E=/^[BCKHNMUZ]/i,A=/(\b\w+a\b)/i,j=/(\b\w+o\b)/i,K=/(\b\w+e\b|\b\w+l)/i,k=/(\b\w+o\b|\b\w+os\b|\b\w+ei\b)$/,N=/(\b\w+e\b|\b\w+es\b)$/,Q=/(\b\w+E\b|\b\w+S\b|\b\w+e\b|\b\w+s\b)$/,B=()=>{try{o.loading.show();const M=window.document.getElementById("elemento-para-pdf");ue().from(M).set({margin:.89,filename:"Guia-medica.pdf",html2canvas:{scale:2},jsPDF:{unit:"in",format:"letter",orientation:"portrait"}}).toPdf().get("pdf").then(d=>{const Z=d.internal.getNumberOfPages();for(let C=1;C<=Z;C++){d.setPage(C);const J=d.internal.pageSize.width,G=.55,oe=.55,ae=(J-G)/2,te=.3,H=8,ne=.51,ie=J-H-.1,se=d.internal.pageSize.height-.6;d.addImage("../../../../../../public/icons/ensigna.jpg","PNG",ae,te,G,oe),d.setFontSize(10),d.setTextColor(150),d.addImage("../../../../../../public/icons/RodapeIMG.png","PNG",ie,se,H,ne)}const $=new Blob([d.output("blob")],{type:"application/pdf"}),ee=URL.createObjectURL($);b.value=ee})}catch(M){console.log(M.message)}finally{o.loading.hide()}},n=x(()=>JSON.parse(v.params.dados)),r=x(()=>JSON.parse(v.params.addInfo)),W=x(()=>(console.log(v.params.model2),v.params.model2)),X=x(()=>v.params.model),q=x(()=>converterParaExtenso(n.value[0].salario_base));return re(()=>{if(B(),p.updateLocale("pt-br",{months:["Janeiro","Fevereiro","Mar\xE7o","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"]}),z.value=p().format("D [de] MMMM [de] YYYY"),P.value=p(n.value[0].data_nascimento).format("D [de] MMMM [de] YYYY"),Y.value=p().format("YYYY")-p(n.value[0].data_nascimento).format("YYYY"),T.value=p(r.value.calendary).format("D [de] MMMM [de] YYYY"),O.value=p(n.value[0].data_emissao).format("D [de] MMMM [de] YYYY"),F.value=p(n.value[0].data_inicio_funcao).format("D [de] MMMM [de] YYYY"),D.test(n.value[0].comuna)?(g.value="da",console.log(n.value[0].comuna)):k.test(n.value[0].comuna)?g.value="do":N.test(n.value[0].comuna)&&(g.value="de"),R.test(r.value.provincia)&&A.test(r.value.provincia)?h.value="da":E.test(r.value.provincia)&&A.test(r.value.provincia)?h.value="de":E.test(r.value.provincia)&&j.test(r.value.provincia)?h.value="do":(E.test(r.value.provincia)&&K.test(r.value.provincia),h.value="de"),L.test(r.value.escola_id)?S.value="na":S.value="no",D.test(n.value[0].municipio)?f.value="da":k.test(n.value[0].municipio)?f.value="do":N.test(n.value[0].municipio)&&(f.value="de"),D.test(n.value[0].provincia)?y.value="da":k.test(n.value[0].provincia)?y.value="do":N.test(n.value[0].provincia)&&(y.value="de"),Q.test(n.value[0].instituto_formacao)?I.value="no":I.value="na",n.value[0].habilitacao=="licenciada"||n.value[0].habilitacao=="licenciado")w.value="a licenciatura";else{const M=/(\b\w+o\b)$/,d=/(\b\w+e\b)$/;M.test(n.value[0].habilitacao)&&(w.value="o "+n.value[0].habilitacao),d.test(n.value[0].habilitacao)&&(w.value="a "+n.value[0].habilitacao)}}),{salarioPorExtenso:V,pdfSrc:b,gerarPDF:B,dataNascimento:P,dataEmissao:O,dataInicioFuncao:F,artigoComuna:g,artigoMunicipio:f,artigoProvincia:y,artigoComHabiltacao:w,artigoInstituicao:I,addInfo:r,dados:n,data:z,model2:W,model:X,dateNowYear:U,artigoQantecedEscola:S,artigoQueAntecedeDonomeDaProvincia:h,formatCurrency:pe,moedaPorExtenso:q,dataDeFeria:T,idade:Y}}},i=b=>(de("data-v-2d25f44a"),b=b(),_e(),b),ve=["src"],he={style:{display:"none"}},ge={id:"elemento-para-pdf",class:"StyleFontDocument alignTextJustify"},fe={class:"row",style:{"line-height":"1.5"}},Me={class:"col-4 text-center"},xe={class:"col-12 text-center",style:{"line-height":"1.5"}},ye={key:0},we=i(()=>e("b",null,"O Director Municipal",-1)),Ye=[we],Ie={key:0},Se=i(()=>e("b",null,"Na ausencia do Director Municipal",-1)),De=[Se],Ee=i(()=>e("br",null,null,-1)),ke=i(()=>e("br",null,null,-1)),Ne={key:0,class:"q-pa-md"},Ce=i(()=>e("br",null,null,-1)),Pe={key:0},Oe=i(()=>e("br",null,null,-1)),Fe={key:0,class:"text-small"},ze=i(()=>e("div",{class:"col-4 text-center"},"Rep\xFAblica de Angola",-1)),Te=i(()=>e("div",{class:"col-4 text-center"},null,-1)),Ae={class:"row"},Be={class:"col-12 text-center"},Je={class:"row"},Ge={class:"col-12 text-center"},He=i(()=>e("br",null,null,-1)),Ue=i(()=>e("br",null,null,-1)),Ve=i(()=>e("br",null,null,-1)),Le=i(()=>e("br",null,null,-1)),Re={class:"top-subtitle"},je={class:"col-12",style:{"line-height":"1.5"}},Ke=i(()=>e("br",null,null,-1)),Qe={class:"StyleFontDocument"},We={class:"col-12",style:{"line-height":"1.5","margin-top":"-60px !important"}},Xe={key:0},qe=i(()=>e("b",null,"O Secret\xE1rio",-1)),Ze={key:0,class:"line-top-nama-asign"},$e={key:0},eo=i(()=>e("b",null,"Na ausencia do Secret\xE1rio",-1)),oo={key:0},ao={key:0,class:"text-small"},to={class:"col-12 text-center line-top-data-asign"},no=i(()=>e("p",{style:{"margin-top":"-115px !important"}},"    Prescri\xE7\xE3o M\xE9dica",-1)),io={style:{"margin-top":"-36px !important"}};function so(b,v,Y,o,g,f){return l(),c("div",null,[o.pdfSrc?(l(),c("iframe",{key:0,src:o.pdfSrc,style:{width:"100%",height:"800px"}},null,8,ve)):_("",!0),e("div",he,[e("div",ge,[e("div",fe,[e("div",Me,[e("div",xe,[e("b",null,[o.model=="Director Municipal"?(l(),c("span",ye,Ye)):_("",!0)]),e("b",null,[o.model=="Director Interino"?(l(),c("span",Ie,De)):_("",!0)]),Ee,ke,o.model=="Director Municipal"?(l(),c("span",Ne,t(o.addInfo.directoMunicipal),1)):_("",!0),Ce,e("b",null,[o.model=="Director Interino"?(l(),c("span",Pe,t(o.addInfo.directoMunicipal_interino),1)):_("",!0),Oe]),e("p",null,[e("b",null,[o.model=="Director Interino"?(l(),c("span",Fe," ("+t(o.addInfo.directoMunicipal_interino_funcao)+") ",1)):_("",!0)])])])]),ze,Te]),e("div",Ae,[e("div",Be,[e("b",null,"Direc\xE7\xE3o Municipal da Educa\xE7\xE3o "+t(o.artigoMunicipio)+" "+t(o.addInfo.municipio),1)])]),e("div",Je,[e("div",Ge,[He,Ue,e("b",null,"GUIA M\xC9DICA N\xBA_______/"+t(o.dateNowYear),1),Ve,Le,e("span",Re,[a(" Vai apresentar-se ao "),e("b",null,t(o.addInfo.hospital),1)])]),e("div",je,[Ke,e("pre",Qe,[a("   Nome do benefici\xE1rio: "),e("b",null,t(o.dados[0].nome),1),a(`
+   Situa\xE7\xE3o: `),e("b",null,t(o.dados[0].cituacao_funcionario),1),a(`
+   Categoria:`),e("b",null,t(o.dados[0].categorias.categoria),1),a(`
+   Provimentos mensais do agregado familiar
+   Kz
+   `),u(m,{size:"2px",color:"black",inset:"",class:"line-mais-tope",style:{"margin-bottom":"-20px !important"}}),a(`
+   Elementos referentes ao benefici\xE1rio:
+   `),u(m,{color:"black",class:"line-mais-tope",style:{width:"287px","margin-left":"14px !important"}}),a(`
+   `),u(m,{color:"black",class:"line-mais-tope2",style:{width:"287px","margin-left":"14px !important","margin-bottom":"-10px !important"}}),a(`
+   Filia\xE7\xE3o:
+   `),e("b",null,t(o.dados[0].nome_pai),1),a(`
+   e
+   `),e("b",null,t(o.dados[0].nome_mae),1),a(`
+   Naturalidade: `),e("b",null,t(o.dados[0].municipio),1),a(`
+   Munic\xEDpio: `),e("b",null,t(o.dados[0].municipio),1),a(`
+   Prov\xEDncia: `),e("b",null,t(o.dados[0].provincia),1),a(`
+   Idade: `),e("b",null,t(o.idade),1),a(" anos                    Estado Civil: "),e("b",null,t(o.dados[0].estado_civil),1),a("                 G\xE9nero: "),e("b",null,t(o.dados[0].genero),1),a(`
+   `),e("div",We,[a(`
+            `),e("b",null,[o.model2=="Secret\xE1rio"?(l(),c("span",Xe,[a(`
+                                                            s`),qe,a(`
+              `)])):_("",!0)]),a(`
+            `),o.model2=="Secret\xE1rio"?(l(),c("p",Ze,`
+                                                     `+t(o.addInfo.nome_secretario)+`
+            `,1)):_("",!0),a(`
+            `),e("b",null,[o.model2=="Secret\xE1rio interino"?(l(),c("span",$e,[a(`
+                                                      `),eo,a(`
+              `)])):_("",!0)]),a(`
+            `),e("b",null,[o.model2=="Secret\xE1rio interino"?(l(),c("span",oo,`
+                                                            `+t(o.addInfo.nome_secretario_interino)+" ",1)):_("",!0)]),a(`
+            `),e("p",null,[a(`
+              `),e("b",null,[o.model2=="Secret\xE1rio interino"?(l(),c("span",ao,`
+                                                            (`+t(o.addInfo.nome_funcao_secretario_interino)+`)
+                `,1)):_("",!0)]),a(`
+            `)]),a(`
+             `),e("p",to,[e("b",null,t(o.addInfo.municipio)+", "+t(o.data)+".",1)]),a(`
+            `),u(m,{size:"2px",color:"black",inset:"",class:"line-mais-tope",style:{"margin-top":"-45px"}}),a(`
+
+
+          `)]),a(`
+`),no,a(`
+`),u(m,{size:"1px",color:"black",inset:"",style:{"margin-top":"-8px !important"}}),a(`
+`),u(m,{size:"1px",color:"black",inset:"",style:{"margin-top":"2px !important"}}),a(`
+`),u(m,{size:"1px",color:"black",inset:"",style:{"margin-top":"2px !important"}}),a(`
+`),u(m,{size:"1px",color:"black",inset:"",style:{"margin-top":"2px !important"}}),a(`
+         `),e("p",io,"    _________ "+t(o.dateNowYear)+`                                                                           O M\xE9dico
+                                                                                        _____________________________
+          `,1),a(`
+            `)])])])])])])}var vo=le(be,[["render",so],["__scopeId","data-v-2d25f44a"]]);export{vo as default};
