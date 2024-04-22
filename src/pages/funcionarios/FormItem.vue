@@ -106,6 +106,16 @@
               ]"
               v-bind="{ ...inputConfig }"
             />
+
+            <q-select
+              v-model="form.estado_civil"
+              :options="estado_civil"
+              option-label="name"
+              label="Estado Civil"
+              :rules="[(val) => !!val || 'Porfavor informe o estado civil']"
+              v-bind="{ ...inputConfig }"
+            />
+
             <q-select
               v-model="form.nivelAcademico"
               :options="nivelAcademico"
@@ -132,11 +142,17 @@
               v-model="form.num_agente"
               label="Nº de agente"
               class="col-12"
+              :rules="[(val) => !!val || 'Porfavor informe o nº de agente']"
+              v-bind="{ ...inputConfig }"
+            />
+
+            <q-select
+              v-model="form.cituacao_funcionario"
+              :options="cituacao_fucnionario"
+              option-label="name"
+              label="Selecione a cituação do funcionário"
               :rules="[
-                (val) => !!val || 'Porfavor informe o nº de agente',
-                (val) =>
-                  (val && val.length == 7) ||
-                  'O nº de agente tem de ter no mínimo 7 caracteres',
+                (val) => !!val || 'Porfavor informe a cituação do funcionário',
               ]"
               v-bind="{ ...inputConfig }"
             />
@@ -351,6 +367,11 @@ export default {
       "Mestre",
       "Phd",
     ]);
+    const cituacao_fucnionario = ref([
+      "Em efectivo serviço",
+      "Em estado provisório",
+    ]);
+    const estado_civil = ref(["Casado (a)", "Solteiro (a)"]);
     const categorias = ref([]);
     const escolas = ref([]);
     const image = ref([]);
@@ -382,6 +403,8 @@ export default {
       nivelAcademico: "",
       salario_base_extenso: "",
       salario_liquido_extenso: "",
+      cituacao_funcionario: "",
+      estado_civil: "",
     });
 
     const isUpdate = computed(() => {
@@ -479,6 +502,8 @@ export default {
       nivelAcademico,
       formatCurrency,
       moneyFormatForDirective,
+      cituacao_fucnionario,
+      estado_civil,
     };
   },
 };

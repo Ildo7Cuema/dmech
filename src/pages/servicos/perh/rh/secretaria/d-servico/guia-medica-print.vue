@@ -67,49 +67,49 @@
           <div class="col-12" style="line-height: 1.5">
             <br />
             <pre class="StyleFontDocument">
-   Nome do beneficiário: <b>Ildo Marques cuema</b>
-   Situação:
-   Categoria:
+   Nome do beneficiário: <b>{{ dados[0].nome }}</b>
+   Situação: <b>{{ dados[0].cituacao_funcionario }}</b>
+   Categoria:<b>{{dados[0].categorias.categoria}}</b>
    Provimentos mensais do agregado familiar
    Kz
-   <q-separator size="2px" color="black" inset class="line-mais-tope"/>
+   <q-separator size="2px" color="black" inset class="line-mais-tope" style="margin-bottom: -20px !important;"/>
    Elementos referentes ao beneficiário:
    <q-separator color="black" class="line-mais-tope" style="width:287px; margin-left: 14px !important;"/>
-   <q-separator color="black" class="line-mais-tope2" style="width:287px; margin-left: 14px !important;"/>
+   <q-separator color="black" class="line-mais-tope2" style="width:287px; margin-left: 14px !important; margin-bottom:-10px !important"/>
    Filiação:
-   Tiago Celestino
+   <b>{{dados[0].nome_pai}}</b>
    e
-   Verónica Laurinda Celestino
-   Naturalidade: Caála
-   Município: Caála
-   Província: Huambo
-   Idade: 32 anos                          Estado Civil: Casada                     Género: Feminino
+   <b>{{dados[0].nome_mae}}</b>
+   Naturalidade: <b>{{dados[0].municipio}}</b>
+   Município: <b>{{dados[0].municipio}}</b>
+   Província: <b>{{dados[0].provincia}}</b>
+   Idade: <b>{{idade}}</b> anos                    Estado Civil: <b>{{dados[0].estado_civil}}</b>                 Género: <b>{{dados[0].genero}}</b>
    <div class="col-12" style="line-height: 1.5; margin-top:-60px !important">
             <b
               ><span v-if="model2 == 'Secretário'">
-                                                               <b>O Secretário</b>
+                                                            s<b>O Secretário</b>
               </span></b
             >
             <p v-if="model2 == 'Secretário'" class="line-top-nama-asign">
-                                                         {{ addInfo.nome_secretario }}
+                                                     {{ addInfo.nome_secretario }}
             </p>
             <b
               ><span v-if="model2 == 'Secretário interino'">
-                                                            <b>Na ausencia do Secretário</b>
+                                                      <b>Na ausencia do Secretário</b>
               </span></b
             >
             <b
               ><span v-if="model2 == 'Secretário interino'">
-                                                                 {{ addInfo.nome_secretario_interino }} </span
+                                                            {{ addInfo.nome_secretario_interino }} </span
               ></b>
             <p>
               <b
                 ><span v-if="model2 == 'Secretário interino'" class="text-small">
-                                                                ({{ addInfo.nome_funcao_secretario_interino }})
+                                                            ({{ addInfo.nome_funcao_secretario_interino }})
                 </span></b
               >
             </p>
-             <p class="col-12 text-center line-top-data-asign"><b>{{ addInfo.municipio }},{{ data }}.</b></p>
+             <p class="col-12 text-center line-top-data-asign"><b>{{ addInfo.municipio }}, {{ data }}.</b></p>
             <q-separator size="2px" color="black" inset class="line-mais-tope" style="margin-top: -45px"/>
 
 
@@ -119,7 +119,7 @@
 <q-separator size="1px" color="black" inset style="margin-top:2px !important"/>
 <q-separator size="1px" color="black" inset style="margin-top:2px !important"/>
 <q-separator size="1px" color="black" inset style="margin-top:2px !important"/>
-         <p style="margin-top:-36px !important">    _________ {{ dateNowYear }}                                                                             O Médico
+         <p style="margin-top:-36px !important">    _________ {{ dateNowYear }}                                                                           O Médico
                                                                                         _____________________________
           </p>
             </pre>
@@ -144,6 +144,7 @@ export default {
   setup() {
     const pdfSrc = ref(null);
     const route = useRoute();
+    const idade = ref("");
 
     const $q = useQuasar();
     //const dados = ref([]);
@@ -191,7 +192,7 @@ export default {
           .from(element)
           .set({
             margin: 0.89,
-            filename: "Testificação.pdf",
+            filename: "Guia-medica.pdf",
             html2canvas: { scale: 2 },
             jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
           })
@@ -297,6 +298,10 @@ export default {
       dataNascimento.value = moment(dados.value[0].data_nascimento).format(
         "D [de] MMMM [de] YYYY"
       );
+
+      idade.value =
+        moment().format("YYYY") -
+        moment(dados.value[0].data_nascimento).format("YYYY");
 
       dataDeFeria.value = moment(addInfo.value.calendary).format(
         "D [de] MMMM [de] YYYY"
@@ -427,6 +432,7 @@ export default {
       formatCurrency,
       moedaPorExtenso,
       dataDeFeria,
+      idade,
     };
   },
 };
