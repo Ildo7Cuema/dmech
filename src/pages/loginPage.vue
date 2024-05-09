@@ -12,7 +12,7 @@
           <div class="col-md-4 col-sm-6 col-xs-10 q-gutter-y-sm">
             <p class="text-center text-h5">DME-CH</p>
             <q-input
-              outlined
+              v-bind="{ ...inputConfig }"
               v-model="form.email"
               label="E-mail"
               class="col-12"
@@ -28,7 +28,7 @@
             </q-input>
 
             <q-input
-              outlined
+              v-bind="{ ...inputConfig }"
               v-model="form.password"
               label="Senha"
               type="password"
@@ -83,6 +83,7 @@ import useNotification from "src/composible/useNotify";
 import { ref } from "vue";
 import { Loading, useQuasar } from "quasar";
 import { useRouter } from "vue-router";
+import { inputConfig } from "src/utils/inputVisual";
 export default {
   name: "form-login",
   setup() {
@@ -111,6 +112,7 @@ export default {
     return {
       form,
       userLogin,
+      inputConfig,
     };
   },
 };

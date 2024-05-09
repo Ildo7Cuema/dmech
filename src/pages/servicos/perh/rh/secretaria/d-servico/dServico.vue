@@ -122,7 +122,11 @@
                         </q-item-section>
                       </q-item>
 
-                      <q-item clickable v-close-popup @click="onItemClick">
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="OpenModal5(props.row.id)"
+                      >
                         <q-item-section avatar>
                           <q-avatar
                             icon="mdi-file-pdf"
@@ -141,7 +145,11 @@
 
                       <q-separator size="md" color="black" />
 
-                      <q-item clickable v-close-popup @click="onItemClick">
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="OpenModal6(props.row.id)"
+                      >
                         <q-item-section avatar>
                           <q-avatar
                             icon="mdi-file-pdf"
@@ -610,6 +618,7 @@
             </q-form>
           </q-card>
         </q-dialog>
+
         <!-- Modal 4 preenchimento da guia medica -->
         <q-dialog v-model="modal4">
           <q-card style="width: 700px; max-width: 80vw">
@@ -805,6 +814,293 @@
             </q-form>
           </q-card>
         </q-dialog>
+
+        <!-- Modal 5 preenchimento de ordem de servico -->
+        <q-dialog v-model="modal5">
+          <q-card style="width: 700px; max-width: 80vw">
+            <q-form @submit.prevent="printDoc5">
+              <q-card-section>
+                <div class="text-h6" v-if="$q.platform.is.desktop">
+                  <q-icon name="mdi-cloud-print" /> Documento:
+                  <b>ORDEM DE SERVIÇO</b>
+                </div>
+                <div
+                  class="text-small col-12 text-center"
+                  v-if="$q.platform.is.mobile"
+                >
+                  <q-icon name="mdi-cloud-print" /> Documento:
+                  <p><b>ORDEM DE SERVIÇO</b></p>
+                </div>
+              </q-card-section>
+
+              <q-card-section class="q-pt-none">
+                <div class="row col-12 text-center">
+                  <q-input
+                    class="q-mt-md col-12"
+                    label="Provincia a que pertence a direcção"
+                    dense
+                    v-bind="{ ...inputConfig }"
+                    v-model="addInfo.provincia"
+                    :rules="[
+                      (val) =>
+                        (val && !!val) ||
+                        'Porfavor informe o nome da província',
+                    ]"
+                  />
+                  <q-input
+                    class="q-mt-sm col-12"
+                    label="Município a que pertence a Direcçao"
+                    dense
+                    v-bind="{ ...inputConfig }"
+                    v-model="addInfo.municipio"
+                    :rules="[
+                      (val) => (val && !!val) || 'Porfavor informe o Município',
+                    ]"
+                  />
+                  <!-- custom size -->
+
+                  <div class="col-12 q-mt-md">
+                    <q-select
+                      outlined
+                      dense
+                      v-model="addInfo.modelCC"
+                      :options="optionsCC"
+                      label="C/C"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor selecione a origem da Entidade',
+                      ]"
+                    />
+                  </div>
+
+                  <div class="col-12 q-mt-sm">
+                    <q-input
+                      outlined
+                      dense
+                      v-model="addInfo.nome_seccao"
+                      label="Informe o nome da Secção"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+                      v-if="addInfo.modelCC == 'Director Municipal'"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) || 'Porfavor informe o nome da Secção',
+                      ]"
+                    />
+                    <q-input
+                      outlined
+                      dense
+                      v-model="addInfo.funcao_chefe_de_seccao"
+                      label="Função"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+                      v-if="addInfo.modelCC == 'Director Municipal'"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor informe a função do chefe de secção',
+                      ]"
+                    />
+                    <q-input
+                      outlined
+                      dense
+                      v-model="addInfo.motivo_da_ausencia"
+                      label="Motivo da ausência"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+                      :class="{ 'text-danger': addInfo.motivo_da_ausencia }"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor informe o motivo da ausência',
+                      ]"
+                      :hint="`Ausentando-me da Instituição ${addInfo.motivo_da_ausencia}`"
+                    />
+                    <div class="col-12 text-center">
+                      <h6><b>Dados do Interino</b></h6>
+                    </div>
+                    <div class="col-12 q-mt-md">
+                      <q-select
+                        outlined
+                        dense
+                        v-model="addInfo.genero"
+                        :options="optionsGenero"
+                        label="Gênero"
+                        class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+                        v-bind="{ ...inputConfig }"
+                        :rules="[
+                          (val) =>
+                            (val && !!val) || 'Porfavor selecione o gênero',
+                        ]"
+                      />
+                    </div>
+
+                    <div class="col-12">
+                      <q-input
+                        outlined
+                        dense
+                        v-model="addInfo.nome_interino"
+                        label="Nome do Interino"
+                        class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+                        v-bind="{ ...inputConfig }"
+                        :rules="[
+                          (val) =>
+                            (val && !!val) ||
+                            'Porfavor informe o motivo da ausência',
+                        ]"
+                      />
+                      <q-input
+                        outlined
+                        dense
+                        v-model="addInfo.nome_interino_funcao"
+                        label="Função do Interino"
+                        class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+                        v-bind="{ ...inputConfig }"
+                        :rules="[
+                          (val) =>
+                            (val && !!val) ||
+                            'Porfavor informe a função do interino',
+                        ]"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </q-card-section>
+
+              <q-card-actions align="right" class="bg-white text-teal">
+                <q-btn flat icon="mdi-close" label="Cancelar" v-close-popup />
+                <q-btn
+                  type="submit"
+                  flat
+                  icon="mdi-cloud-print"
+                  label="Gerar Ordem de serviço"
+                />
+              </q-card-actions>
+            </q-form>
+          </q-card>
+        </q-dialog>
+
+        <!-- Modal 6 preenchimento de declaração BAI -->
+        <q-dialog v-model="modal6">
+          <q-card style="width: 700px; max-width: 80vw">
+            <q-form @submit.prevent="printDoc6">
+              <q-card-section>
+                <div class="text-h6" v-if="$q.platform.is.desktop">
+                  <q-icon name="mdi-cloud-print" /> Documento:
+                  <b>DECLARAÇÃO DO BANCO BAI</b>
+                </div>
+                <div
+                  class="text-small col-12 text-center"
+                  v-if="$q.platform.is.mobile"
+                >
+                  <q-icon name="mdi-cloud-print" /> Documento:
+                  <p><b>DECLARAÇÃO DO BANCO BAI</b></p>
+                </div>
+              </q-card-section>
+
+              <q-card-section class="q-pt-none">
+                <div class="row col-12 text-justify">
+                  <q-input
+                    class="q-mt-md col-12"
+                    label="Provincia a que pertence a direcção"
+                    dense
+                    v-bind="{ ...inputConfig }"
+                    v-model="addInfo.provincia"
+                    :rules="[
+                      (val) =>
+                        (val && !!val) ||
+                        'Porfavor informe o nome da província',
+                    ]"
+                  />
+                  <q-input
+                    class="q-mt-sm col-12"
+                    label="Município a que pertence a Direcçao"
+                    dense
+                    v-bind="{ ...inputConfig }"
+                    v-model="addInfo.municipio"
+                    :rules="[
+                      (val) => (val && !!val) || 'Porfavor informe o Município',
+                    ]"
+                  />
+
+                  <!-- custom size -->
+                  <b class="col-12 text-center">Asinaturas</b>
+                  <div class="q-gutter-sm col-12">
+                    <q-select
+                      outlined
+                      dense
+                      v-model="model"
+                      :options="options"
+                      label="Quem assinará a Declaração ?"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor selecione quem assinará o documento',
+                      ]"
+                    />
+                    <q-input
+                      outlined
+                      dense
+                      v-model="addInfo.directoMunicipal"
+                      label="Informe o nome do Director Municipal"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-mt-sm"
+                      v-if="model == 'Director Municipal'"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor informe o nome do Director Municipal',
+                      ]"
+                    />
+                    <q-input
+                      outlined
+                      dense
+                      v-model="addInfo.directoMunicipal_interino"
+                      label="Informe o nome do Director Municipal Interino"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-mt-sm"
+                      v-if="model == 'Director Interino'"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor informe o nome do Director em Interino',
+                      ]"
+                    />
+                    <q-input
+                      outlined
+                      dense
+                      v-model="addInfo.directoMunicipal_interino_funcao"
+                      label="Informe a função do Director Municipal Interino"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-mt-sm"
+                      v-if="model == 'Director Interino'"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor informe a função do DIrector Interino',
+                      ]"
+                    />
+                  </div>
+                </div>
+              </q-card-section>
+
+              <q-card-actions align="right" class="bg-white text-teal">
+                <q-btn flat icon="mdi-close" label="Cancelar" v-close-popup />
+                <q-btn
+                  type="submit"
+                  flat
+                  icon="mdi-cloud-print"
+                  label="Gerar declaração"
+                />
+              </q-card-actions>
+            </q-form>
+          </q-card>
+        </q-dialog>
       </q-page>
     </q-page-container>
   </q-layout>
@@ -833,15 +1129,21 @@ export default {
     const escolas = ref([]);
     const modal = ref(false);
     const model = ref(null);
+    const modelCC = ref(null);
     const modelOption2 = ref(null);
     const model2 = ref(null);
     const modal2 = ref(false);
     const modal3 = ref(false);
     const modal4 = ref(false);
+    const modal5 = ref(false);
+    const modal6 = ref(false);
+    const genero = ref(null);
     const dados = ref({});
     const modelIntegrante = ref(null);
     const options = ref(["Director Municipal", "Director Interino"]);
     const options2 = ref(["Secretário", "Secretário interino"]);
+    const optionsGenero = ref(["Masculino", "Feminino"]);
+    const optionsCC = ref(["Administrador Municipal", "Director Municipal"]);
     const infoFuncionario = ref({});
     const addInfo = ref({
       efeito_da_declaracao: "",
@@ -860,6 +1162,13 @@ export default {
       nome_secretario: "",
       nome_secretario_interino: "",
       nome_funcao_secretario_interino: "",
+      funcao_chefe_de_seccao: "",
+      nome_seccao: "",
+      motivo_da_ausencia: "",
+      nome_interino: "",
+      nome_interino_funcao: "",
+      genero: "",
+      modelCC: "",
     });
     const docPdf = ref(true);
     const rows = ref([]);
@@ -912,6 +1221,32 @@ export default {
     const OpenModal4 = async (id) => {
       modal2.value = false;
       modal4.value = true;
+      try {
+        dados.value = await getFuncionarioWithCategoriasAndEscolas(tabela, id);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+
+    const OpenModal5 = async (id) => {
+      modal.value = false;
+      modal2.value = false;
+      modal3.value = false;
+      modal4.value = false;
+      modal5.value = true;
+      try {
+        dados.value = await getFuncionarioWithCategoriasAndEscolas(tabela, id);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    const OpenModal6 = async (id) => {
+      modal.value = false;
+      modal2.value = false;
+      modal3.value = false;
+      modal4.value = false;
+      modal5.value = false;
+      modal6.value = true;
       try {
         dados.value = await getFuncionarioWithCategoriasAndEscolas(tabela, id);
       } catch (error) {
@@ -978,6 +1313,7 @@ export default {
         console.error("addInfo.value está undefined");
       }
     };
+
     const printDoc4 = async () => {
       if (addInfo.value) {
         if (typeof addInfo.value === "object") {
@@ -987,6 +1323,45 @@ export default {
               dados: JSON.stringify(dados.value),
               addInfo: JSON.stringify(addInfo.value),
               model2: modelOption2.value,
+              model: model.value,
+            },
+          });
+        } else {
+          console.error("addInfo.value é um array vazio ou não é um array");
+        }
+      } else {
+        console.error("addInfo.value está undefined");
+      }
+    };
+
+    const printDoc5 = async () => {
+      if (addInfo.value) {
+        if (typeof addInfo.value === "object") {
+          router.push({
+            name: "docPrintOrdemDeServico",
+            params: {
+              dados: JSON.stringify(dados.value),
+              addInfo: JSON.stringify(addInfo.value),
+              model2: modelCC.value,
+              model: model.value,
+            },
+          });
+        } else {
+          console.error("addInfo.value é um array vazio ou não é um array");
+        }
+      } else {
+        console.error("addInfo.value está undefined");
+      }
+    };
+    const printDoc6 = async () => {
+      if (addInfo.value) {
+        if (typeof addInfo.value === "object") {
+          router.push({
+            name: "docPrintDecBai",
+            params: {
+              dados: JSON.stringify(dados.value),
+              addInfo: JSON.stringify(addInfo.value),
+              model2: modelCC.value,
               model: model.value,
             },
           });
@@ -1011,10 +1386,14 @@ export default {
       printDoc2,
       printDoc3,
       printDoc4,
+      printDoc5,
+      printDoc6,
       modal,
       modal2,
       modal3,
       modal4,
+      modal5,
+      modal6,
       listarEscolas,
       docPdf,
       escolas,
@@ -1024,6 +1403,7 @@ export default {
       options,
       options2,
       model,
+      modelCC,
       model2,
       modelIntegrante,
       data,
@@ -1032,10 +1412,20 @@ export default {
       OpenModal2,
       OpenModal3,
       OpenModal4,
+      OpenModal5,
+      OpenModal6,
       dados,
       escola_id,
       modelOption2,
+      optionsCC,
+      optionsGenero,
+      genero,
     };
   },
 };
 </script>
+<style scoped>
+.text-danger {
+  color: red;
+}
+</style>

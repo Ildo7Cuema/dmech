@@ -10,7 +10,7 @@
               E-mail de seguida inviarémos um link de redefinição da sua senha
             </p>
             <q-input
-              outlined
+              v-bind="{ ...inputConfig }"
               v-model="form.email"
               label="E-mail"
               class="col-12"
@@ -60,6 +60,7 @@
 <script>
 import userAuth from "../composible/userAuthUser";
 import usenotification from "src/composible/useNotify";
+import { inputConfig } from "src/utils/inputVisual";
 
 import { ref } from "vue";
 import { useQuasar } from "quasar";
@@ -90,6 +91,7 @@ export default {
       form,
       sendEmailResetPassword,
       resetPassword,
+      inputConfig,
     };
   },
 };

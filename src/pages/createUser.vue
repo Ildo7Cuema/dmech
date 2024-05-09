@@ -6,7 +6,7 @@
           <p class="col-12 text-h5 text-center q-mt-lg">Criar uma conta</p>
           <div class="col-md-4 col-sm-6 col-xs-10 q-gutter-y-sm">
             <q-input
-              outlined
+              v-bind="{ ...inputConfig }"
               v-model="form.name"
               label="Nome da Instituição"
               class="col-12"
@@ -20,7 +20,7 @@
               </template>
             </q-input>
             <q-input
-              outlined
+              v-bind="{ ...inputConfig }"
               v-model="form.email"
               label="E-mail"
               class="col-12"
@@ -36,7 +36,7 @@
             </q-input>
 
             <q-input
-              outlined
+              v-bind="{ ...inputConfig }"
               v-model="form.phone"
               label="Telemovel"
               class="col-12"
@@ -52,7 +52,7 @@
             </q-input>
 
             <q-input
-              outlined
+              v-bind="{ ...inputConfig }"
               v-model="form.password"
               label="Senha"
               type="password"
@@ -108,6 +108,7 @@ import useNotification from "src/composible/useNotify";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { useQuasar, Loading, Notify } from "quasar";
+import { inputConfig } from "src/utils/inputVisual";
 export default {
   name: "form-login",
   setup() {
@@ -140,6 +141,7 @@ export default {
     return {
       form,
       createUser,
+      inputConfig,
     };
   },
 };

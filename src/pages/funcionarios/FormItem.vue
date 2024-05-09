@@ -66,6 +66,26 @@
               ]"
               v-bind="{ ...inputConfig }"
             />
+            <q-input
+              v-model="form.num_telemovel"
+              label="Nº do telemóvel"
+              class="col-12"
+              :rules="[
+                (val) => !!val || 'Porfavor informe o nº do telemóvel',
+                (val) =>
+                  (val && val.length == 9) ||
+                  'O nº do telemóvel tem de ter no mínimo 9 dígitos',
+              ]"
+              v-bind="{ ...inputConfig }"
+            />
+
+            <q-input
+              class="col-12"
+              v-bind="{ ...inputConfig }"
+              v-model="form.email"
+              label="E-mail"
+            />
+            <!--:rules="[(val) => !!val || 'Informe o e-mail']" -->
 
             <q-input
               v-model="form.data_emissao"
@@ -202,6 +222,24 @@
               v-bind="{ ...inputConfig }"
             />
 
+            <q-select
+              v-model="form.status_nomeacao"
+              :options="estado_nomeacao"
+              option-label="name"
+              label="É nomeado para um cargo ?"
+              :rules="[(val) => !!val || 'Porfavor o status de nomeacao']"
+              v-bind="{ ...inputConfig }"
+            />
+
+            <q-input
+              v-if="form.status_nomeacao == 'Sim'"
+              v-model="form.nome_cargo"
+              label="Informe o cargo"
+              class="col-12"
+              :rules="[(val) => !!val || 'Informe o cargo deste funcionário']"
+              v-bind="{ ...inputConfig }"
+            ></q-input>
+
             <q-input
               type="numeric"
               v-model="form.salario_base"
@@ -248,6 +286,47 @@
               ]"
               v-model="form.salario_liquido_extenso"
               label="Escreva o salário líquido por extenso"
+            />
+
+            <q-input
+              class="col-12"
+              v-bind="{ ...inputConfig }"
+              :rules="[
+                (val) =>
+                  !!val ||
+                  'Informe o nome do balcão onde é domiciliado o salário',
+              ]"
+              v-model="form.balcao_domicilio"
+              label="Balcão onde é domiciliado o salário"
+            />
+            <q-input
+              class="col-12"
+              v-bind="{ ...inputConfig }"
+              :rules="[(val) => !!val || 'Informe o nº da conta bancária']"
+              v-model="form.num_conta_bancaria"
+              label="Nº da conta bancária"
+            />
+            <q-input
+              class="col-12"
+              v-bind="{ ...inputConfig }"
+              :rules="[
+                (val) =>
+                  !!val ||
+                  'Informe o nome da província onde se encotra este balcão',
+              ]"
+              v-model="form.balcao_domicilio_provincia"
+              label="Província onde se encotra este balcão"
+            />
+            <q-input
+              class="col-12"
+              v-bind="{ ...inputConfig }"
+              :rules="[
+                (val) =>
+                  !!val ||
+                  'Informe o nome da província onde se encotra este balcão',
+              ]"
+              v-model="form.balcao_domicilio_municipio"
+              label="Município onde se encotra este balcão"
             />
 
             <q-select
@@ -371,6 +450,7 @@ export default {
       "Em efectivo serviço",
       "Em estado provisório",
     ]);
+    const estado_nomeacao = ref(["Sim", "Não"]);
     const estado_civil = ref(["Casado (a)", "Solteiro (a)"]);
     const categorias = ref([]);
     const escolas = ref([]);
@@ -382,15 +462,19 @@ export default {
       nome_mae: "",
       num_agente: "",
       num_bilhete: "",
+      num_telemovel: "",
       data_emissao: "",
       data_caducidade: "",
       data_nascimento: "",
+      num_conta_bancaria: "",
+      email: "",
       genero: "",
       data_inicio_funcao: "",
       provincia: "",
       municipio: "",
       comuna: "",
       localidade: "",
+      status_nomeacao: "",
       categoria_id: "",
       escola_id: "",
       habilitacao: "",
@@ -405,6 +489,9 @@ export default {
       salario_liquido_extenso: "",
       cituacao_funcionario: "",
       estado_civil: "",
+      balcao_domicilio: "",
+      balcao_domicilio_provincia: "",
+      balcao_domicilio_municipio: "",
     });
 
     const isUpdate = computed(() => {
@@ -504,6 +591,7 @@ export default {
       moneyFormatForDirective,
       cituacao_fucnionario,
       estado_civil,
+      estado_nomeacao,
     };
   },
 };

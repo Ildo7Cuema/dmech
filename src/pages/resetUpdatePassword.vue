@@ -6,7 +6,7 @@
           <p class="col-12 text-h5 text-center q-mt-lg">Redefinição de senha</p>
           <div class="col-md-4 col-sm-6 col-xs-10 q-gutter-y-sm">
             <q-input
-              outlined
+              v-bind="{ ...inputConfig }"
               v-model="password"
               label="Senha"
               class="col-12"
@@ -61,6 +61,7 @@ import { ref } from "vue";
 import { Loading, useQuasar } from "quasar";
 import { useRouter, useRoute } from "vue-router";
 import usenotification from "src/composible/useNotify";
+import { inputConfig } from "src/utils/inputVisual";
 export default {
   name: "form-login",
   setup() {
@@ -87,6 +88,7 @@ export default {
     return {
       password,
       updatePassword,
+      inputConfig,
     };
   },
 };

@@ -133,6 +133,20 @@ const routes = [
           ),
       },
       {
+        path: "/docPrintOrdemDeServico/:dados?/:addInfo?/:model2?/:model?",
+        name: "docPrintOrdemDeServico",
+        component: () =>
+          import(
+            "pages/servicos/perh/rh/secretaria/d-servico/ordem-de-servico.vue"
+          ),
+      },
+      {
+        path: "/docPrintDecBai/:dados?/:addInfo?/:model2?/:model?",
+        name: "docPrintDecBai",
+        component: () =>
+          import("pages/servicos/perh/rh/secretaria/d-servico/decBai.vue"),
+      },
+      {
         path: "dServico",
         name: "dservico",
         component: () =>
