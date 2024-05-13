@@ -86,6 +86,14 @@
                   @click="deletarItem(props.row)"
                   ><q-tooltip>Apagar</q-tooltip></q-btn
                 >
+                <q-btn
+                  icon="mdi-plus"
+                  color="positive"
+                  dense
+                  size="sm"
+                  @click="addDoc(props.row)"
+                  ><q-tooltip>Adicionar documentos</q-tooltip></q-btn
+                >
               </q-td>
             </template>
           </q-table>
@@ -225,6 +233,12 @@
           @closeModal="closeModal"
         />
         <!-- fim dialog -->
+
+        <add-doc
+          :show="handleShowAddDoc"
+          :itens="itens"
+          @closeModal="closeModal"
+        />
       </q-page>
     </q-page-container>
   </q-layout>
@@ -239,11 +253,12 @@ import userAuth from "src/composible/userAuthUser";
 import { useQuasar } from "quasar";
 import { columns } from "./table";
 import detalhesComponent from "src/components/detalhesComponent.vue";
+import addDoc from "src/components/addDocument.vue";
 import { btnConfig, inputConfig } from "src/utils/inputVisual";
 import { fields } from "./fieldsExport";
 import JsonExcel from "vue-json-excel3";
 export default defineComponent({
-  components: { detalhesComponent, DownloadExcel: JsonExcel },
+  components: { detalhesComponent, DownloadExcel: JsonExcel, addDoc },
   setup() {
     const funcionarios = ref([]);
     const itensDetails = ref("");
@@ -252,6 +267,7 @@ export default defineComponent({
     const router = useRouter();
     const storage = "sgdme";
     const handleShowDetail = ref(false);
+    const handleShowAddDoc = ref(false);
     const $q = useQuasar();
     const itens = ref([]);
     const card = ref(false);
@@ -267,6 +283,12 @@ export default defineComponent({
 
     const closeModal = () => {
       handleShowDetail.value = false;
+      handleShowAddDoc.value = false;
+    };
+
+    const addDoc = (data) => {
+      itens.value = data;
+      handleShowAddDoc.value = true;
     };
 
     const deletarItem = async (item) => {
@@ -319,6 +341,8 @@ export default defineComponent({
       itensDetails,
       itens,
       handleShowDetail,
+      handleShowAddDoc,
+      addDoc,
       btnConfig,
       inputConfig,
       fields,
