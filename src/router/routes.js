@@ -147,6 +147,24 @@ const routes = [
           import("pages/servicos/perh/rh/secretaria/d-servico/decBai.vue"),
       },
       {
+        path: "/docPrintDecBPC/:dados?/:addInfo?/:model2?/:model?",
+        name: "docPrintDecBPC",
+        component: () =>
+          import("pages/servicos/perh/rh/secretaria/d-servico/decBpc.vue"),
+      },
+      {
+        path: "/docPrintDecBFA/:dados?/:addInfo?/:model2?/:model?",
+        name: "docPrintDecBFA",
+        component: () =>
+          import("pages/servicos/perh/rh/secretaria/d-servico/decBFA.vue"),
+      },
+      {
+        path: "/docPrintDecBCI/:dados?/:addInfo?/:model2?/:model?",
+        name: "docPrintDecBCI",
+        component: () =>
+          import("pages/servicos/perh/rh/secretaria/d-servico/decBCI.vue"),
+      },
+      {
         path: "dServico",
         name: "dservico",
         component: () =>

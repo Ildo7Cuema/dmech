@@ -41,13 +41,6 @@
             </template>
             <template v-slot:body-cell-options="props">
               <q-td :props="props" class="q-gutter-sm">
-                <!-- <q-btn
-                  size="sm"
-                  icon="mdi-file-document-outline"
-                  label="Declaração de serviço"
-                  color="primary"
-                /> -->
-
                 <div class="q-pa-md">
                   <q-btn-dropdown
                     split
@@ -73,7 +66,7 @@
                         </q-item-section>
                         <q-item-section>
                           <q-item-label>Declaração de serviço</q-item-label>
-                          <q-item-label caption>February 22, 2016</q-item-label>
+                          <q-item-label caption>{{ dateSystema }}</q-item-label>
                         </q-item-section>
                         <q-item-section side>
                           <q-icon name="print" color="primary" />
@@ -94,7 +87,7 @@
                         </q-item-section>
                         <q-item-section>
                           <q-item-label>Guia de féria</q-item-label>
-                          <q-item-label caption>February 22, 2016</q-item-label>
+                          <q-item-label caption>{{ dateSystema }}</q-item-label>
                         </q-item-section>
                         <q-item-section side>
                           <q-icon name="print" color="primary" />
@@ -115,7 +108,7 @@
                         </q-item-section>
                         <q-item-section>
                           <q-item-label>Guia médica</q-item-label>
-                          <q-item-label caption>February 22, 2016</q-item-label>
+                          <q-item-label caption>{{ dateSystema }}</q-item-label>
                         </q-item-section>
                         <q-item-section side>
                           <q-icon name="print" color="primary" />
@@ -136,7 +129,7 @@
                         </q-item-section>
                         <q-item-section>
                           <q-item-label>Ordem de serviço</q-item-label>
-                          <q-item-label caption>February 22, 2016</q-item-label>
+                          <q-item-label caption>{{ dateSystema }}</q-item-label>
                         </q-item-section>
                         <q-item-section side>
                           <q-icon name="print" color="primary" />
@@ -161,7 +154,7 @@
                           <q-item-label
                             >Declaração do Banco <b>BAI</b></q-item-label
                           >
-                          <q-item-label caption>February 22, 2016</q-item-label>
+                          <q-item-label caption>{{ dateSystema }}</q-item-label>
                         </q-item-section>
                         <q-item-section side>
                           <q-icon name="print" color="primary" />
@@ -180,14 +173,18 @@
                           <q-item-label
                             >Declaração do Banco <b>BIC</b></q-item-label
                           >
-                          <q-item-label caption>February 22, 2016</q-item-label>
+                          <q-item-label caption>{{ dateSystema }}</q-item-label>
                         </q-item-section>
                         <q-item-section side>
                           <q-icon name="print" color="primary" />
                         </q-item-section>
                       </q-item>
 
-                      <q-item clickable v-close-popup @click="onItemClick">
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="OpenModal8(props.row.id)"
+                      >
                         <q-item-section avatar>
                           <q-avatar
                             icon="mdi-file-pdf"
@@ -199,14 +196,18 @@
                           <q-item-label
                             >Declaração do Banco <b>BPC</b></q-item-label
                           >
-                          <q-item-label caption>February 22, 2016</q-item-label>
+                          <q-item-label caption>{{ dateSystema }}</q-item-label>
                         </q-item-section>
                         <q-item-section side>
                           <q-icon name="print" color="primary" />
                         </q-item-section>
                       </q-item>
 
-                      <q-item clickable v-close-popup @click="onItemClick">
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="OpenModal9(props.row.id)"
+                      >
                         <q-item-section avatar>
                           <q-avatar
                             icon="mdi-file-pdf"
@@ -218,13 +219,17 @@
                           <q-item-label
                             >Declaração do Banco <b>BCI</b></q-item-label
                           >
-                          <q-item-label caption>February 22, 2016</q-item-label>
+                          <q-item-label caption>{{ dateSystema }}</q-item-label>
                         </q-item-section>
                         <q-item-section side>
                           <q-icon name="print" color="primary" />
                         </q-item-section>
                       </q-item>
-                      <q-item clickable v-close-popup @click="onItemClick">
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="OpenModal10(props.row.id)"
+                      >
                         <q-item-section avatar>
                           <q-avatar
                             icon="mdi-file-pdf"
@@ -236,7 +241,7 @@
                           <q-item-label
                             >Declaração do Banco <b>BFA</b></q-item-label
                           >
-                          <q-item-label caption>February 22, 2016</q-item-label>
+                          <q-item-label caption>{{ dateSystema }}</q-item-label>
                         </q-item-section>
                         <q-item-section side>
                           <q-icon name="print" color="primary" />
@@ -1101,6 +1106,480 @@
             </q-form>
           </q-card>
         </q-dialog>
+        <!-- Modal 8 preenchimento de declaração BPC -->
+        <q-dialog v-model="modal8">
+          <q-card style="width: 700px; max-width: 80vw">
+            <q-form @submit.prevent="printDoc8">
+              <q-card-section>
+                <div class="text-h6" v-if="$q.platform.is.desktop">
+                  <q-icon name="mdi-cloud-print" /> Documento:
+                  <b>DECLARAÇÃO DO BANCO BPC</b>
+                </div>
+                <div
+                  class="text-small col-12 text-center"
+                  v-if="$q.platform.is.mobile"
+                >
+                  <q-icon name="mdi-cloud-print" /> Documento:
+                  <p><b>DECLARAÇÃO DO BANCO BPC</b></p>
+                </div>
+              </q-card-section>
+
+              <q-card-section class="q-pt-none">
+                <div class="row col-12 text-justify">
+                  <q-input
+                    class="q-mt-md col-12"
+                    label="Provincia a que pertence a direcção"
+                    dense
+                    v-bind="{ ...inputConfig }"
+                    v-model="addInfo.provincia"
+                    :rules="[
+                      (val) =>
+                        (val && !!val) ||
+                        'Porfavor informe o nome da província',
+                    ]"
+                  />
+                  <q-input
+                    class="q-mt-sm col-12"
+                    label="Município a que pertence a Direcçao"
+                    dense
+                    v-bind="{ ...inputConfig }"
+                    v-model="addInfo.municipio"
+                    :rules="[
+                      (val) => (val && !!val) || 'Porfavor informe o Município',
+                    ]"
+                  />
+
+                  <q-input
+                    outlined
+                    dense
+                    v-model="addInfo.contribuent_fiscal"
+                    label="Informe o nº do contribuente fiscal"
+                    class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-mt-sm"
+                    v-bind="{ ...inputConfig }"
+                    :rules="[
+                      (val) =>
+                        (val && !!val) ||
+                        'Porfavor informe nº do contribuente fiscal',
+                    ]"
+                  />
+
+                  <!-- custom size -->
+                  <b class="col-12 text-center">Asinatura</b>
+                  <div class="q-gutter-sm col-12">
+                    <q-select
+                      outlined
+                      dense
+                      v-model="model"
+                      :options="options"
+                      label="Quem assinará a Declaração ?"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor selecione quem assinará o documento',
+                      ]"
+                    />
+                    <q-input
+                      outlined
+                      dense
+                      v-model="addInfo.directoMunicipal"
+                      label="Informe o nome do Director Municipal"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-mt-sm"
+                      v-if="model == 'Director Municipal'"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor informe o nome do Director Municipal',
+                      ]"
+                    />
+                    <q-input
+                      outlined
+                      dense
+                      v-model="addInfo.directoMunicipal_interino"
+                      label="Informe o nome do Director Municipal Interino"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-mt-sm"
+                      v-if="model == 'Director Interino'"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor informe o nome do Director em Interino',
+                      ]"
+                    />
+                    <q-input
+                      outlined
+                      dense
+                      v-model="addInfo.directoMunicipal_interino_funcao"
+                      label="Informe a função do Director Municipal Interino"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-mt-sm"
+                      v-if="model == 'Director Interino'"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor informe a função do DIrector Interino',
+                      ]"
+                    />
+                  </div>
+                </div>
+              </q-card-section>
+
+              <q-card-actions align="right" class="bg-white text-teal">
+                <q-btn flat icon="mdi-close" label="Cancelar" v-close-popup />
+                <q-btn
+                  type="submit"
+                  flat
+                  icon="mdi-cloud-print"
+                  label="Gerar declaração"
+                />
+              </q-card-actions>
+            </q-form>
+          </q-card>
+        </q-dialog>
+
+        <!-- Modal 9 preenchimento de declaração BPC -->
+        <q-dialog v-model="modal9">
+          <q-card style="width: 700px; max-width: 80vw">
+            <q-form @submit.prevent="printDoc9">
+              <q-card-section>
+                <div class="text-h6" v-if="$q.platform.is.desktop">
+                  <q-icon name="mdi-cloud-print" /> Documento:
+                  <b>DECLARAÇÃO DO BANCO BCI</b>
+                </div>
+                <div
+                  class="text-small col-12 text-center"
+                  v-if="$q.platform.is.mobile"
+                >
+                  <q-icon name="mdi-cloud-print" /> Documento:
+                  <p><b>DECLARAÇÃO DO BANCO BCI</b></p>
+                </div>
+              </q-card-section>
+
+              <q-card-section class="q-pt-none">
+                <div class="row col-12 text-justify">
+                  <q-input
+                    class="q-mt-md col-12"
+                    label="Provincia a que pertence a direcção"
+                    dense
+                    v-bind="{ ...inputConfig }"
+                    v-model="addInfo.provincia"
+                    :rules="[
+                      (val) =>
+                        (val && !!val) ||
+                        'Porfavor informe o nome da província',
+                    ]"
+                  />
+                  <q-input
+                    class="q-mt-sm col-12"
+                    label="Município a que pertence a Direcçao"
+                    dense
+                    v-bind="{ ...inputConfig }"
+                    v-model="addInfo.municipio"
+                    :rules="[
+                      (val) => (val && !!val) || 'Porfavor informe o Município',
+                    ]"
+                  />
+
+                  <q-input
+                    outlined
+                    dense
+                    v-model="addInfo.contribuent_fiscal"
+                    label="Informe o nº do contribuente fiscal"
+                    class="col-xs-12 col-sm-12 col-md-12 col-lg-12 q-mt-sm"
+                    v-bind="{ ...inputConfig }"
+                    :rules="[
+                      (val) =>
+                        (val && !!val) ||
+                        'Porfavor informe nº do contribuente fiscal',
+                    ]"
+                  />
+                  <q-input
+                    outlined
+                    dense
+                    v-model="addInfo.efeito_da_declaracao"
+                    label="Informe a finalidades desta declaração"
+                    class="col-xs-12 col-sm-12 col-md-12 col-lg-12 q-mt-sm"
+                    v-bind="{ ...inputConfig }"
+                    :rules="[
+                      (val) =>
+                        (val && !!val) ||
+                        'Porfavor informe a finalidades desta declaração',
+                    ]"
+                  />
+
+                  <!-- custom size -->
+                  <b class="col-12 text-center">Asinatura</b>
+                  <div class="q-gutter-sm col-12">
+                    <q-select
+                      outlined
+                      dense
+                      v-model="model"
+                      :options="options"
+                      label="Quem assinará a Declaração ?"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor selecione quem assinará o documento',
+                      ]"
+                    />
+                    <q-input
+                      outlined
+                      dense
+                      v-model="addInfo.directoMunicipal"
+                      label="Informe o nome do Director Municipal"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-mt-sm"
+                      v-if="model == 'Director Municipal'"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor informe o nome do Director Municipal',
+                      ]"
+                    />
+                    <q-input
+                      outlined
+                      dense
+                      v-model="addInfo.directoMunicipal_interino"
+                      label="Informe o nome do Director Municipal Interino"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-mt-sm"
+                      v-if="model == 'Director Interino'"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor informe o nome do Director em Interino',
+                      ]"
+                    />
+                    <q-input
+                      outlined
+                      dense
+                      v-model="addInfo.directoMunicipal_interino_funcao"
+                      label="Informe a função do Director Municipal Interino"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-mt-sm"
+                      v-if="model == 'Director Interino'"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor informe a função do DIrector Interino',
+                      ]"
+                    />
+                  </div>
+                </div>
+              </q-card-section>
+
+              <q-card-actions align="right" class="bg-white text-teal">
+                <q-btn flat icon="mdi-close" label="Cancelar" v-close-popup />
+                <q-btn
+                  type="submit"
+                  flat
+                  icon="mdi-cloud-print"
+                  label="Gerar declaração"
+                />
+              </q-card-actions>
+            </q-form>
+          </q-card>
+        </q-dialog>
+        <!-- Modal 9 preenchimento de declaração BPC -->
+        <q-dialog v-model="modal10">
+          <q-card style="width: 700px; max-width: 80vw">
+            <q-form @submit.prevent="printDoc10">
+              <q-card-section>
+                <div class="text-h6" v-if="$q.platform.is.desktop">
+                  <q-icon name="mdi-cloud-print" /> Documento:
+                  <b>DECLARAÇÃO DO BANCO BFA</b>
+                </div>
+                <div
+                  class="text-small col-12 text-center"
+                  v-if="$q.platform.is.mobile"
+                >
+                  <q-icon name="mdi-cloud-print" /> Documento:
+                  <p><b>DECLARAÇÃO DO BANCO BFA</b></p>
+                </div>
+              </q-card-section>
+
+              <q-card-section class="q-pt-none">
+                <div class="row col-12 text-justify">
+                  <q-input
+                    class="q-mt-md col-12"
+                    label="Provincia a que pertence a direcção"
+                    dense
+                    v-bind="{ ...inputConfig }"
+                    v-model="addInfo.provincia"
+                    :rules="[
+                      (val) =>
+                        (val && !!val) ||
+                        'Porfavor informe o nome da província',
+                    ]"
+                  />
+                  <q-input
+                    class="q-mt-sm col-12"
+                    label="Município a que pertence a Direcçao"
+                    dense
+                    v-bind="{ ...inputConfig }"
+                    v-model="addInfo.municipio"
+                    :rules="[
+                      (val) => (val && !!val) || 'Porfavor informe o Município',
+                    ]"
+                  />
+
+                  <q-input
+                    outlined
+                    dense
+                    v-model="addInfo.efeito_da_declaracao"
+                    label="Informe a finalidades desta declaração"
+                    class="col-xs-12 col-sm-12 col-md-12 col-lg-12 q-mt-sm"
+                    v-bind="{ ...inputConfig }"
+                    :rules="[
+                      (val) =>
+                        (val && !!val) ||
+                        'Porfavor informe a finalidades desta declaração',
+                    ]"
+                  />
+
+                  <!-- custom size -->
+                  <b class="col-12 text-center">Informações de assinaturas</b>
+                  <div class="q-gutter-sm col-12">
+                    <q-select
+                      outlined
+                      dense
+                      v-model="model"
+                      :options="options"
+                      label="Quem assinará a Declaração ?"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor selecione quem assinará o documento',
+                      ]"
+                    />
+                    <q-input
+                      outlined
+                      dense
+                      v-model="addInfo.directoMunicipal"
+                      label="Informe o nome do Director Municipal"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-mt-sm"
+                      v-if="model == 'Director Municipal'"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor informe o nome do Director Municipal',
+                      ]"
+                    />
+                    <q-input
+                      outlined
+                      dense
+                      v-model="addInfo.directoMunicipal_interino"
+                      label="Informe o nome do Director Municipal Interino"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-mt-sm"
+                      v-if="model == 'Director Interino'"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor informe o nome do Director em Interino',
+                      ]"
+                    />
+                    <q-input
+                      outlined
+                      dense
+                      v-model="addInfo.directoMunicipal_interino_funcao"
+                      label="Informe a função do Director Municipal Interino"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-mt-sm"
+                      v-if="model == 'Director Interino'"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor informe a função do DIrector Interino',
+                      ]"
+                    />
+                  </div>
+
+                  <div class="q-gutter-sm col-12">
+                    <b>Dados do(a) Director(a) Provincial</b>
+                    <q-input
+                      outlined
+                      dense
+                      v-model="addInfo.nome_responsavel_provincial"
+                      label="Informe o nome do responsavel Provincial"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-mt-sm"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor informe o nome do responsavel Provincial',
+                      ]"
+                    />
+
+                    <q-select
+                      outlined
+                      dense
+                      v-model="addInfo.genero"
+                      :options="optionsGenero"
+                      label="Selecione o gênero"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor selecione quem assinará o documento',
+                      ]"
+                    />
+                  </div>
+
+                  <div class="q-gutter-sm col-12">
+                    <b>Dados do(a) chefe do Departamento</b>
+                    <q-input
+                      outlined
+                      dense
+                      v-model="addInfo.chefe_departamento_nome"
+                      label="Informe o nome do(a) Chefe do Departamento"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6 q-mt-sm"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor informe o nome do(a) Chefe do Departamento',
+                      ]"
+                    />
+
+                    <q-select
+                      outlined
+                      dense
+                      v-model="addInfo.chefe_departamento_genero"
+                      :options="optionsGenero2"
+                      label="Selecione o gênero"
+                      class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+                      v-bind="{ ...inputConfig }"
+                      :rules="[
+                        (val) =>
+                          (val && !!val) ||
+                          'Porfavor selecione quem assinará o documento',
+                      ]"
+                    />
+                  </div>
+                </div>
+              </q-card-section>
+
+              <q-card-actions align="right" class="bg-white text-teal">
+                <q-btn flat icon="mdi-close" label="Cancelar" v-close-popup />
+                <q-btn
+                  type="submit"
+                  flat
+                  icon="mdi-cloud-print"
+                  label="Gerar declaração"
+                />
+              </q-card-actions>
+            </q-form>
+          </q-card>
+        </q-dialog>
       </q-page>
     </q-page-container>
   </q-layout>
@@ -1121,6 +1600,7 @@ export default {
   setup() {
     const filter = ref("");
     const dataActual = moment();
+    const dateSystema = moment().format("DD [de] MM [de] YYYY");
     const router = useRouter();
     const escola_id = ref();
     const tabela = "funcionarios";
@@ -1137,12 +1617,16 @@ export default {
     const modal4 = ref(false);
     const modal5 = ref(false);
     const modal6 = ref(false);
+    const modal8 = ref(false);
+    const modal9 = ref(false);
+    const modal10 = ref(false);
     const genero = ref(null);
     const dados = ref({});
     const modelIntegrante = ref(null);
     const options = ref(["Director Municipal", "Director Interino"]);
     const options2 = ref(["Secretário", "Secretário interino"]);
     const optionsGenero = ref(["Masculino", "Feminino"]);
+    const optionsGenero2 = ref(["Masculino", "Feminino"]);
     const optionsCC = ref(["Administrador Municipal", "Director Municipal"]);
     const infoFuncionario = ref({});
     const addInfo = ref({
@@ -1169,6 +1653,10 @@ export default {
       nome_interino_funcao: "",
       genero: "",
       modelCC: "",
+      contribuent_fiscal: "",
+      nome_responsavel_provincial: "",
+      chefe_departamento_genero: "",
+      chefe_departamento_nome: "",
     });
     const docPdf = ref(true);
     const rows = ref([]);
@@ -1247,6 +1735,51 @@ export default {
       modal4.value = false;
       modal5.value = false;
       modal6.value = true;
+      try {
+        dados.value = await getFuncionarioWithCategoriasAndEscolas(tabela, id);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    const OpenModal8 = async (id) => {
+      modal.value = false;
+      modal2.value = false;
+      modal3.value = false;
+      modal4.value = false;
+      modal5.value = false;
+      modal6.value = false;
+      modal8.value = true;
+      try {
+        dados.value = await getFuncionarioWithCategoriasAndEscolas(tabela, id);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    const OpenModal9 = async (id) => {
+      modal.value = false;
+      modal2.value = false;
+      modal3.value = false;
+      modal4.value = false;
+      modal5.value = false;
+      modal6.value = false;
+      modal8.value = false;
+      modal9.value = true;
+      try {
+        dados.value = await getFuncionarioWithCategoriasAndEscolas(tabela, id);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    const OpenModal10 = async (id) => {
+      modal.value = false;
+      modal2.value = false;
+      modal3.value = false;
+      modal4.value = false;
+      modal5.value = false;
+      modal6.value = false;
+      modal8.value = false;
+      modal9.value = false;
+      modal10.value = true;
       try {
         dados.value = await getFuncionarioWithCategoriasAndEscolas(tabela, id);
       } catch (error) {
@@ -1372,6 +1905,65 @@ export default {
         console.error("addInfo.value está undefined");
       }
     };
+    const printDoc8 = async () => {
+      if (addInfo.value) {
+        if (typeof addInfo.value === "object") {
+          router.push({
+            name: "docPrintDecBPC",
+            params: {
+              dados: JSON.stringify(dados.value),
+              addInfo: JSON.stringify(addInfo.value),
+              model2: modelCC.value,
+              model: model.value,
+            },
+          });
+        } else {
+          console.error("addInfo.value é um array vazio ou não é um array");
+        }
+      } else {
+        console.error("addInfo.value está undefined");
+      }
+    };
+
+    const printDoc9 = async () => {
+      if (addInfo.value) {
+        if (typeof addInfo.value === "object") {
+          router.push({
+            name: "docPrintDecBCI",
+            params: {
+              dados: JSON.stringify(dados.value),
+              addInfo: JSON.stringify(addInfo.value),
+              model2: modelCC.value,
+              model: model.value,
+            },
+          });
+        } else {
+          console.error("addInfo.value é um array vazio ou não é um array");
+        }
+      } else {
+        console.error("addInfo.value está undefined");
+      }
+    };
+
+    const printDoc10 = async () => {
+      if (addInfo.value) {
+        if (typeof addInfo.value === "object") {
+          router.push({
+            name: "docPrintDecBFA",
+            params: {
+              dados: JSON.stringify(dados.value),
+              addInfo: JSON.stringify(addInfo.value),
+              model2: modelCC.value,
+              model: model.value,
+            },
+          });
+        } else {
+          console.error("addInfo.value é um array vazio ou não é um array");
+        }
+      } else {
+        console.error("addInfo.value está undefined");
+      }
+    };
 
     const addInfoDoc = () => {
       //modal.value = false;
@@ -1388,12 +1980,18 @@ export default {
       printDoc4,
       printDoc5,
       printDoc6,
+      printDoc8,
+      printDoc9,
+      printDoc10,
       modal,
       modal2,
       modal3,
       modal4,
       modal5,
       modal6,
+      modal8,
+      modal9,
+      modal10,
       listarEscolas,
       docPdf,
       escolas,
@@ -1414,12 +2012,17 @@ export default {
       OpenModal4,
       OpenModal5,
       OpenModal6,
+      OpenModal8,
+      OpenModal9,
+      OpenModal10,
       dados,
       escola_id,
       modelOption2,
       optionsCC,
       optionsGenero,
+      optionsGenero2,
       genero,
+      dateSystema,
     };
   },
 };
