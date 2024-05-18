@@ -86,7 +86,9 @@
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-6">
             <span class="text-body1"
               >Categoria:
-              <span class="text-blue-grey-5">{{ itens.categorias.categoria }}</span></span
+              <span class="text-blue-grey-5">{{
+                itens.categorias.categoria
+              }}</span></span
             >
           </div>
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-6">

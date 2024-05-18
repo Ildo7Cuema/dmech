@@ -120,7 +120,9 @@ export default {
       password: "",
       name: "",
       phone: "",
+      role: "User",
       photoURL: "",
+      status: "activo",
     });
 
     const createUser = async () => {

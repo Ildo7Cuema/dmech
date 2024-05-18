@@ -51,10 +51,17 @@
           v-if="user && $q.platform.is.desktop"
         >
           <q-list>
-            <q-item clickable v-close-popup @click="onItemClick">
+            <q-item clickable v-close-popup @click="meuPerfil">
               <q-item-section>
                 <q-item-label
-                  ><q-avatar icon="mdi-lock-open-plus" /> Permisão
+                  ><q-avatar icon="mdi-account" /> Meu perfil
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup @click="acesso_permissao">
+              <q-item-section>
+                <q-item-label
+                  ><q-avatar icon="mdi-account-cog" /> Utilizadores
                 </q-item-label>
               </q-item-section>
             </q-item>
@@ -142,7 +149,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, computed } from "vue";
 import EssentialLink from "components/EssentialLink.vue";
 import userAuthUser from "src/composible/userAuthUser";
 import { useQuasar, Loading } from "quasar";
@@ -169,6 +176,24 @@ export default defineComponent({
     onMounted(() => {
       getBrand();
     });
+
+    const allowdMenuItems = computed(() => {
+      return links.filter((link) => {
+        if (link.routeName == "page-service") {
+          return user.value.user_metadata.phone == "921923232";
+        }
+        if (link.routeName == "admin") {
+          return user.value.user_metadata.phone == "921923232";
+        }
+      });
+    });
+
+    const acesso_permissao = () => {
+      router.push({ name: "acesso_permissao" });
+    };
+    const meuPerfil = () => {
+      router.push({ name: "meu-perfil" });
+    };
 
     const formConfig = () => {
       router.push({ name: "form-config" });
@@ -198,13 +223,17 @@ export default defineComponent({
       logoutPage,
       user,
       tab,
-      essentialLinks: links,
+      essentialLinks: allowdMenuItems,
+      //essentialLinks: links,
       leftDrawerOpen,
       brand,
       formConfig,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
+      allowdMenuItems,
+      meuPerfil,
+      acesso_permissao,
     };
   },
 });

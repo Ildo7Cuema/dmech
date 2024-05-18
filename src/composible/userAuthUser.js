@@ -1,5 +1,6 @@
 import { ref } from "vue";
 import useSupabase from "boot/supabase";
+import sendSMS from "src/utils/sendSMS";
 
 const user = ref(null);
 const token = ref(null);
@@ -9,15 +10,16 @@ const token = ref(null);
 
 // src/composible/userAuthUser.js
 import { renewTokenIfNeeded } from "src/utils/tokenRenewal.js";
+import { data } from "autoprefixer";
 
 export default function userAuthUser() {
-  const { supabase } = useSupabase();
+  const { supabase, supabaseAdmin } = useSupabase();
 
   // Função para verificar o estado de autenticação e renovar o token se necessário
   const checkAuthState = (event, session) => {
     user.value = session?.user;
     token.value = session?.access_token;
-
+    console.log(token.value);
     // Chame a função para renovar o token JWT, se necessário
     renewTokenIfNeeded(session);
   };
@@ -29,13 +31,12 @@ export default function userAuthUser() {
   const getToken = async () => {
     const { data, error } = supabase.auth.onAuthStateChange(checkAuthState);
     if (error) throw error;
-    console.log(data);
     token.value = data;
     return data;
   };
 
   const getUser = async () => {
-    console.log(user.value);
+    return user.value;
   };
   const login = async ({ email, password }) => {
     const { user, error } = await supabase.auth.signInWithPassword({
@@ -68,6 +69,7 @@ export default function userAuthUser() {
           name: meta.name,
           phone: meta.phone,
           photoURL: meta.photoURL,
+          role: meta.role,
           redirectTo: `${window.location.origin}/me?fromEmail=registrationConfirmation`,
         },
       },
@@ -77,10 +79,98 @@ export default function userAuthUser() {
     return user;
   };
 
-  const updateUser = async (data) => {
-    const { user, error } = await supabase.auth.update(data);
+  const createNewUser = async (newUser) => {
+    const { data, error } = await supabaseAdmin.auth.admin.createUser({
+      email: newUser.email,
+      password: newUser.password,
+      user_metadata: {
+        name: newUser.name,
+        phone: newUser.phone,
+        photoURL: newUser.photoURL,
+        status: true,
+        role: newUser.role,
+      },
+    });
+    sendSMS(newUser);
     if (error) throw error;
-    return user;
+    return data;
+  };
+
+  const updateUser = async (userData) => {
+    const userID = user.value.id;
+    const { data, error } = await supabaseAdmin.auth.admin.updateUserById(
+      userID,
+      {
+        email: userData.email,
+        password: userData.password,
+        user_metadata: {
+          name: userData.name,
+          phone: userData.phone,
+          photoURL: userData.photoURL,
+          file_name: userData.file_name,
+          role: userData.role,
+          status: userData.status,
+        },
+      }
+    );
+    if (error) throw error;
+    return data;
+  };
+  const updateSingleUser = async (id, userData) => {
+    const { data, error } = await supabaseAdmin.auth.admin.updateUserById(id, {
+      email: userData.email,
+      password: userData.password,
+      user_metadata: {
+        name: userData.name,
+        phone: userData.phone,
+        photoURL: userData.photoURL,
+        file_name: userData.file_name,
+        role: userData.role,
+        status: userData.status,
+      },
+    });
+    if (error) throw error;
+    return data;
+  };
+
+  const updateStatusUser = async (id, status) => {
+    console.log(id);
+    const { data, error } = await supabaseAdmin.auth.admin.updateUserById(id, {
+      user_metadata: {
+        status: status,
+      },
+    });
+    if (error) throw error;
+    return data;
+  };
+
+  // const listUsers = async () => {
+  //   const {
+  //     data: { users },
+  //     error,
+  //   } = await supabaseAdmin.auth.admin.listUsers();
+  //   if (error) throw error;
+  //   return users;
+  // };
+
+  const listUsers = async () => {
+    const {
+      data: { users },
+      error,
+    } = await supabaseAdmin.auth.admin.listUsers();
+    if (error) throw error;
+    const unauthenticatedUsers = users.filter(
+      (itenUser) => itenUser.email !== "ildocuema@gmail.com"
+    );
+
+    console.log(unauthenticatedUsers);
+    return unauthenticatedUsers;
+  };
+
+  const deleteUser = async (id) => {
+    const { data, error } = await supabaseAdmin.auth.admin.deleteUser(id);
+    if (error) throw error;
+    return data;
   };
 
   const loginWithSocialProvider = async (provider) => {
@@ -108,5 +198,10 @@ export default function userAuthUser() {
     updateUser,
     token,
     getToken,
+    listUsers,
+    updateStatusUser,
+    deleteUser,
+    updateSingleUser,
+    createNewUser,
   };
 }

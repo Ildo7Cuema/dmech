@@ -15,9 +15,20 @@ const routes = [
         component: () => import("src/pages/categorias/FormCategoria.vue"),
       },
       {
+        path: "/Meuperfil",
+        name: "meu-perfil",
+        component: () => import("src/pages/perfil/MeuPerfil.vue"),
+      },
+      {
         path: "/form/:id?",
         name: "form-escola",
         component: () => import("src/pages/escolas/FormItem.vue"),
+      },
+      {
+        path: "/acessoPermissao",
+        name: "acesso_permissao",
+        component: () =>
+          import("src/pages/acesso_permissao/acesso_permissao.vue"),
       },
       {
         path: "/form/:id?",
