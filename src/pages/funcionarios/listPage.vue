@@ -65,6 +65,7 @@
                   color="grey"
                   dense
                   size="sm"
+                  flat
                   @click="detalhes(props.row)"
                 >
                   <q-tooltip>Ver detalhes</q-tooltip>
@@ -74,6 +75,7 @@
                   color="info"
                   dense
                   size="sm"
+                  flat
                   @click="alterarItem(props.row)"
                 >
                   <q-tooltip>Alterar</q-tooltip>
@@ -83,6 +85,7 @@
                   color="negative"
                   dense
                   size="sm"
+                  flat
                   @click="deletarItem(props.row)"
                   ><q-tooltip>Apagar</q-tooltip></q-btn
                 >
@@ -90,6 +93,7 @@
                   icon="mdi-plus"
                   color="positive"
                   dense
+                  flat
                   size="sm"
                   @click="addDoc(props.row)"
                   ><q-tooltip>Adicionar documentos</q-tooltip></q-btn
@@ -245,7 +249,7 @@
 </template>
 <script>
 import { defineComponent } from "vue";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import userApi from "src/composible/userApi";
 import usenotification from "src/composible/useNotify";
@@ -264,6 +268,7 @@ export default defineComponent({
     const itensDetails = ref("");
     const { remove, getFuncionariosWithCategoriasAndEscolas } = userApi();
     const token = userAuth();
+    const { user } = userAuth();
     const router = useRouter();
     const storage = "sgdme";
     const handleShowDetail = ref(false);
@@ -322,12 +327,22 @@ export default defineComponent({
     const listarFuncionariosComCategoria = async () => {
       try {
         funcionarioCategoriasAndEscolas.value =
-          await getFuncionariosWithCategoriasAndEscolas(table);
+          await getFuncionariosWithCategoriasAndEscolas(table, isDiferentID);
       } catch (error) {
         console.log(error);
       } finally {
       }
     };
+
+    const isDiferentID = computed(() => {
+      if (user.value.id != user.value.user_metadata.organization_id) {
+        console.log(user.value.user_metadata.organization_id);
+        return user.value.user_metadata.organization_id;
+      } else {
+        console.log(user.value.id);
+        return user.value.id;
+      }
+    });
 
     return {
       columns,
@@ -350,6 +365,7 @@ export default defineComponent({
       funcionarioCategoriasAndEscolas,
       filter,
       closeModal,
+      isDiferentID,
     };
   },
 });

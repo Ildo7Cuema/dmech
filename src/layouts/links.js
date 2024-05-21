@@ -35,5 +35,12 @@ const links = [
     icon: "mdi-cog",
     routeName: "form-config",
   },
+  //Links para secretaria
+  {
+    title: "Secretaria - Geral",
+    caption: "Buscar e gerar documentos",
+    icon: "mdi-text-box",
+    routeName: "dservico",
+  },
 ];
 export { links };

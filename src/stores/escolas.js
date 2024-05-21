@@ -16,12 +16,11 @@ export const useEscolaStore = defineStore("escolas", {
   },
 
   actions: {
-    async getEscolas(tabela) {
-      const idUser = user.value.id;
+    async getEscolas(tabela, organization_id) {
       const { data, error } = await supabase
         .from(tabela)
         .select("*")
-        .eq("user_id", idUser);
+        .eq("user_id", organization_id);
       if (error) throw error;
       return (this.$state.escolas = data);
     },

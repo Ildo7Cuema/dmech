@@ -43,7 +43,7 @@
               <q-td :props="props" class="q-gutter-sm">
                 <div class="q-pa-md">
                   <q-btn-dropdown
-                    split
+                    flat
                     color="primary"
                     push
                     no-caps

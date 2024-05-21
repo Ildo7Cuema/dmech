@@ -25,10 +25,6 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from "vue";
-import { useFuncionarioStore } from "src/stores/funcionarios.js";
-import { storeToRefs } from "pinia";
-
 export default {
   name: "dashboardCads",
   props: {

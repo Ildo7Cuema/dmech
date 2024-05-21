@@ -33,7 +33,7 @@
             </div>-->
 
             <q-input
-              v-model="form.nome"
+              v-model="form.name"
               label="Nome completo"
               class="col-12"
               :rules="[(val) => !!val || 'Porfavor digite o nome da escola']"
@@ -53,21 +53,8 @@
               :rules="[(val) => !!val || 'Porfavor o nome da maê']"
               v-bind="{ ...inputConfig }"
             />
-
             <q-input
-              v-model="form.num_bilhete"
-              label="Nº do bilhete"
-              class="col-12"
-              :rules="[
-                (val) => !!val || 'Porfavor informe o nº do Bilhete',
-                (val) =>
-                  (val && val.length == 14) ||
-                  'O nº do Bilhete tem de ter no mínimo 14 caracteres',
-              ]"
-              v-bind="{ ...inputConfig }"
-            />
-            <q-input
-              v-model="form.num_telemovel"
+              v-model="form.phone"
               label="Nº do telemóvel"
               class="col-12"
               :rules="[
@@ -86,6 +73,19 @@
               label="E-mail"
             />
             <!--:rules="[(val) => !!val || 'Informe o e-mail']" -->
+
+            <q-input
+              v-model="form.num_bilhete"
+              label="Nº do bilhete"
+              class="col-12"
+              :rules="[
+                (val) => !!val || 'Porfavor informe o nº do Bilhete',
+                (val) =>
+                  (val && val.length == 14) ||
+                  'O nº do Bilhete tem de ter no mínimo 14 caracteres',
+              ]"
+              v-bind="{ ...inputConfig }"
+            />
 
             <q-input
               v-model="form.data_emissao"
@@ -333,7 +333,7 @@
               v-model="form.escola_id"
               :options="escolas"
               option-value="id"
-              option-label="nome"
+              option-label="name"
               map-options
               emit-value
               label="Selecione a escola a que pertence"
@@ -364,6 +364,31 @@
               ]"
               v-bind="{ ...inputConfig }"
             />
+
+            <div v-if="isUpdate == null">
+              <q-separator />
+              <div class="col-12 text-center">
+                <b>Atribuir uma conta para este funcionario</b>
+              </div>
+
+              <q-input
+                v-model="form.email"
+                type="email"
+                label="Informe o e-mail da escola"
+                class="col-6"
+                :rules="[(val) => !!val || 'Porfavor informe um e-mail']"
+                v-bind="{ ...inputConfig }"
+              />
+              <q-input
+                v-model="form.password"
+                type="password"
+                label="Informe uma palavra passe"
+                class="col-6"
+                :rules="[(val) => !!val || 'Porfavor uma palavra passe']"
+                v-bind="{ ...inputConfig }"
+              />
+              <admin-access-other v-model="form.role" />
+            </div>
 
             <q-btn
               type="submit"
@@ -415,17 +440,26 @@ import { Loading, useQuasar } from "quasar";
 import { useRouter, useRoute } from "vue-router";
 import { btnConfig, inputConfig } from "src/utils/inputVisual";
 import { formatCurrency } from "src/utils/formatCurrency";
-
+import userAuthUser from "src/composible/userAuthUser";
+import adminAccessOther from "src/components/adminAccessOp/adminAccessOther.vue";
 export default {
   name: "form-categoria",
-  components: {},
+  components: { adminAccessOther },
 
   setup() {
-    const { post, getById, update, list, remove, uploadImage, fileName } =
-      userApi();
+    const {
+      postFuncionario,
+      getById,
+      update,
+      list,
+      remove,
+      uploadImage,
+      fileName,
+    } = userApi();
     const { notifyError, notifySuccess } = usenotification();
     const table = "funcionarios";
     const router = useRouter();
+    const { user } = userAuthUser();
 
     const moneyFormatForDirective = {
       decimal: ".",
@@ -457,12 +491,12 @@ export default {
     const image = ref([]);
 
     const form = ref({
-      nome: "",
+      name: "",
       nome_pai: "",
       nome_mae: "",
       num_agente: "",
       num_bilhete: "",
-      num_telemovel: "",
+      phone: "",
       data_emissao: "",
       data_caducidade: "",
       data_nascimento: "",
@@ -492,6 +526,8 @@ export default {
       balcao_domicilio: "",
       balcao_domicilio_provincia: "",
       balcao_domicilio_municipio: "",
+      role: "",
+      password: "",
     });
 
     const isUpdate = computed(() => {
@@ -499,11 +535,11 @@ export default {
     });
 
     const listarCategorias = async () => {
-      categorias.value = await list("categorias");
+      categorias.value = await list("categorias", isDiferentID.value);
     };
 
     const listarEscolas = async () => {
-      escolas.value = await list("escolas");
+      escolas.value = await list("escolas", isDiferentID.value);
     };
 
     const deletarItem = async (item) => {
@@ -558,7 +594,7 @@ export default {
           notifySuccess("Funcionário actualizado com sucesso");
         } else {
           Loading.show({ message: "Cadastro em processamento" });
-          await post(table, form.value);
+          await postFuncionario(table, form.value);
           notifySuccess("Funcionário cadastrada com sucesso");
         }
       } catch (error) {
@@ -568,6 +604,16 @@ export default {
         router.push({ name: "funcionarios" });
       }
     };
+
+    const isDiferentID = computed(() => {
+      if (user.value.id != user.value.user_metadata.organization_id) {
+        console.log(user.value.user_metadata.organization_id);
+        return user.value.user_metadata.organization_id;
+      } else {
+        console.log(user.value.id);
+        return user.value.id;
+      }
+    });
 
     const valorNumber = (valor) => {
       form.value.salario_base = valor;
@@ -592,6 +638,7 @@ export default {
       cituacao_fucnionario,
       estado_civil,
       estado_nomeacao,
+      isDiferentID,
     };
   },
 };

@@ -16,12 +16,11 @@ export const useCategoriaStore = defineStore("categorias", {
   },
 
   actions: {
-    async getCategorias(tabela) {
-      const idUser = user.value.id;
+    async getCategorias(tabela, organization_id) {
       const { data, error } = await supabase
         .from(tabela)
         .select("*")
-        .eq("user_id", idUser);
+        .eq("user_id", organization_id);
       if (error) throw error;
       return (this.$state.categorias = data);
     },

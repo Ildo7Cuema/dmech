@@ -50,6 +50,7 @@
             <template v-slot:body-cell-actions="props">
               <q-td :props="props" class="q-gutter-x-sm text-center">
                 <q-btn
+                  flat
                   icon="mdi-pencil-outline"
                   color="info"
                   dense
@@ -59,6 +60,7 @@
                   <q-tooltip>Alterar</q-tooltip>
                 </q-btn>
                 <q-btn
+                  flat
                   icon="mdi-delete-outline"
                   color="negative"
                   dense
@@ -105,7 +107,7 @@
             </q-item-section>
 
             <q-item-section>
-              <q-item-label>{{ escola.nome }}</q-item-label>
+              <q-item-label>{{ escola.name }}</q-item-label>
               <q-item-label caption lines="1"
                 >Nº da escola:
                 <strong class="secondary">{{ escola.numero }}</strong>
@@ -147,9 +149,10 @@
 </template>
 <script>
 import { defineComponent } from "vue";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import userApi from "src/composible/userApi";
+import userAuthUser from "src/composible/userAuthUser";
 import usenotification from "src/composible/useNotify";
 import { Loading, useQuasar } from "quasar";
 import { columns } from "./table";
@@ -161,6 +164,7 @@ export default defineComponent({
   setup() {
     const escolas = ref([]);
     const { list, remove } = userApi();
+    const { user } = userAuthUser();
     const router = useRouter();
     const filter = ref("");
     const $q = useQuasar();
@@ -170,7 +174,7 @@ export default defineComponent({
     const listarEscolas = async () => {
       Loading.show({ message: "Carregado escolas" });
       try {
-        escolas.value = await list(table);
+        escolas.value = await list(table, isDiferentID.value);
       } catch (error) {
         notifyError(error.message);
       } finally {
@@ -206,6 +210,16 @@ export default defineComponent({
       listarEscolas();
     });
 
+    const isDiferentID = computed(() => {
+      if (user.value.id != user.value.user_metadata.organization_id) {
+        console.log(user.value.user_metadata.organization_id);
+        return user.value.user_metadata.organization_id;
+      } else {
+        console.log(user.value.id);
+        return user.value.id;
+      }
+    });
+
     return {
       columns,
       alterarItem,
@@ -215,6 +229,7 @@ export default defineComponent({
       inputConfig,
       fields,
       filter,
+      isDiferentID,
     };
   },
 });

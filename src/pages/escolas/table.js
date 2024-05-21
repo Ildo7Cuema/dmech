@@ -1,9 +1,9 @@
 const columns = [
   {
-    name: "nome",
+    name: "name",
     label: "Nome de escola",
     align: "left",
-    field: "nome",
+    field: "name",
     sortable: true,
   },
   {

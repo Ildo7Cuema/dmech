@@ -70,6 +70,7 @@ export default function userAuthUser() {
           phone: meta.phone,
           photoURL: meta.photoURL,
           role: meta.role,
+          organization_id: user.value.id,
           redirectTo: `${window.location.origin}/me?fromEmail=registrationConfirmation`,
         },
       },
@@ -88,7 +89,9 @@ export default function userAuthUser() {
         phone: newUser.phone,
         photoURL: newUser.photoURL,
         status: true,
+        organization_id: newUser.organization_id,
         role: newUser.role,
+        redirectTo: `${window.location.origin}/me?fromEmail=registrationConfirmation`,
       },
     });
     sendSMS(newUser);
@@ -108,6 +111,7 @@ export default function userAuthUser() {
           phone: userData.phone,
           photoURL: userData.photoURL,
           file_name: userData.file_name,
+          organization_id: user.value.id,
           role: userData.role,
           status: userData.status,
         },
@@ -116,6 +120,7 @@ export default function userAuthUser() {
     if (error) throw error;
     return data;
   };
+
   const updateSingleUser = async (id, userData) => {
     const { data, error } = await supabaseAdmin.auth.admin.updateUserById(id, {
       email: userData.email,
@@ -125,6 +130,7 @@ export default function userAuthUser() {
         phone: userData.phone,
         photoURL: userData.photoURL,
         file_name: userData.file_name,
+        organization_id: user.value.id,
         role: userData.role,
         status: userData.status,
       },

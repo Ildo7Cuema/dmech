@@ -58,7 +58,12 @@
                 </q-item-label>
               </q-item-section>
             </q-item>
-            <q-item clickable v-close-popup @click="acesso_permissao">
+            <q-item
+              clickable
+              v-close-popup
+              @click="acesso_permissao"
+              v-if="user.email == 'ildocuema@gmail.com'"
+            >
               <q-item-section>
                 <q-item-label
                   ><q-avatar icon="mdi-account-cog" /> Utilizadores
@@ -168,7 +173,7 @@ export default defineComponent({
   setup() {
     const { getBrand, brand } = useApi();
     const leftDrawerOpen = ref(false);
-    const { logout, user } = userAuthUser();
+    const { logout, user, updateUserIDOrganization } = userAuthUser();
     const $q = useQuasar();
     const tab = ref("home");
     const router = useRouter();
@@ -178,13 +183,62 @@ export default defineComponent({
     });
 
     const allowdMenuItems = computed(() => {
+      if (user.value.email == "ildocuema@gmail.com") {
+        return links.filter((link) => {
+          if (link.routeName == "admin") {
+            return user.value.user_metadata.email == "ildocuema@gmail.com";
+          }
+          if (link.routeName == "page-service") {
+            return user.value.user_metadata.email == "ildocuema@gmail.com";
+          }
+          if (link.routeName == "categorias") {
+            return user.value.user_metadata.email == "ildocuema@gmail.com";
+          }
+          if (link.routeName == "escolas") {
+            return user.value.user_metadata.email == "ildocuema@gmail.com";
+          }
+          if (link.routeName == "funcionarios") {
+            return user.value.user_metadata.email == "ildocuema@gmail.com";
+          }
+          if (link.routeName == "form-config") {
+            return user.value.user_metadata.email == "ildocuema@gmail.com";
+          }
+        });
+      } else if (
+        user.value.email != "ildocuema@gmail.com" &&
+        user.value.user_metadata.role == "RH-DME"
+      ) {
+        // RH-DME
+        return links.filter((link) => {
+          if (link.routeName == "admin") {
+            return user.value.user_metadata.role == "RH-DME";
+          }
+          if (link.routeName == "categorias") {
+            return user.value.user_metadata.role == "RH-DME";
+          }
+          if (link.routeName == "escolas") {
+            return user.value.user_metadata.role == "RH-DME";
+          }
+          if (link.routeName == "funcionarios") {
+            return user.value.user_metadata.role == "RH-DME";
+          }
+        });
+      } else if (
+        user.value.email != "ildocuema@gmail.com" &&
+        user.value.user_metadata.role == "Secretaria-DME"
+      ) {
+        return links.filter((link) => {
+          // Secretaria-DME
+          if (link.routeName == "admin") {
+            return user.value.user_metadata.role == "Secretaria-DME";
+          }
+          if (link.routeName == "dservico") {
+            return user.value.user_metadata.role == "Secretaria-DME";
+          }
+        });
+      }
       return links.filter((link) => {
-        if (link.routeName == "page-service") {
-          return user.value.user_metadata.phone == "921923232";
-        }
-        if (link.routeName == "admin") {
-          return user.value.user_metadata.phone == "921923232";
-        }
+        // super-admin
       });
     });
 

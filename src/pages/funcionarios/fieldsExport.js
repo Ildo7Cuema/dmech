@@ -1,5 +1,5 @@
 const fields = {
-  "Nome completo": "nome",
+  "Nome completo": "name",
   "Nome do Pai": "nome_pai",
   "Nome da maê": "nome_mae",
   "Nº do bilhete": "num_bilhete",

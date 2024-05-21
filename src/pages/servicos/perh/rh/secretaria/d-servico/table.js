@@ -7,10 +7,10 @@ const columns = [
     sortable: true,
   },
   {
-    name: "nome",
+    name: "name",
     label: "Nome completo",
     align: "left",
-    field: "nome",
+    field: "name",
     sortable: true,
   },
   {

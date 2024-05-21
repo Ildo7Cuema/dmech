@@ -55,6 +55,7 @@
                 <q-btn
                   icon="mdi-pencil-outline"
                   color="primary"
+                  flat
                   dense
                   size="sm"
                   @click="alterarItem(props.row)"
@@ -65,6 +66,7 @@
                   icon="mdi-delete-outline"
                   color="secondary"
                   dense
+                  flat
                   size="sm"
                   @click="deletarItem(props.row)"
                   ><q-tooltip>Apagar</q-tooltip></q-btn
@@ -119,9 +121,10 @@
 </template>
 <script>
 import { defineComponent } from "vue";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import userApi from "src/composible/userApi";
+import userAuthUser from "src/composible/userAuthUser";
 import usenotification from "src/composible/useNotify";
 import { Loading, useQuasar } from "quasar";
 import { columns } from "./table";
@@ -134,6 +137,7 @@ export default defineComponent({
   setup() {
     const categorias = ref([]);
     const { list, remove } = userApi();
+    const { user } = userAuthUser();
     const router = useRouter();
     const $q = useQuasar();
     const filter = ref("");
@@ -143,7 +147,7 @@ export default defineComponent({
     const listarCategorias = async () => {
       Loading.show({ message: "Carregado categorias" });
       try {
-        categorias.value = await list(table);
+        categorias.value = await list(table, isDiferentID.value);
       } catch (error) {
         notifyError(error.message);
       } finally {
@@ -175,6 +179,16 @@ export default defineComponent({
       router.push({ name: "form-categoria", params: { id: item.id } });
     };
 
+    const isDiferentID = computed(() => {
+      if (user.value.id != user.value.user_metadata.organization_id) {
+        console.log(user.value.user_metadata.organization_id);
+        return user.value.user_metadata.organization_id;
+      } else {
+        console.log(user.value.id);
+        return user.value.id;
+      }
+    });
+
     onMounted(() => {
       listarCategorias();
     });
@@ -189,6 +203,7 @@ export default defineComponent({
       inputConfig,
       filter,
       fields,
+      isDiferentID,
     };
   },
 });

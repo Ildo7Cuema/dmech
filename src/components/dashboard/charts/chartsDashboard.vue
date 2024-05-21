@@ -19,7 +19,7 @@
 
 <script>
 import ApexCharts from "apexcharts";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import userSupabase from "boot/supabase";
 import userAuthUser from "src/composible/userAuthUser";
 
@@ -41,14 +41,14 @@ export default {
         const { data, error } = await supabase
           .from("funcionarios")
           .select("nivelAcademico")
-          .eq("user_id", user.value.id);
+          .eq("user_id", isDiferentID.value);
 
         if (error) {
           throw error;
         }
 
         const academicLevels = [
-          "Técnico Básico",
+          "Técnico Basico",
           "Técnico Médio",
           "Licenciado(a)",
           "Mestre",
@@ -126,7 +126,7 @@ export default {
         const { data, error } = await supabase
           .from("funcionarios")
           .select("genero")
-          .eq("user_id", user.value.id);
+          .eq("user_id", isDiferentID.value);
 
         if (error) {
           throw error;
@@ -178,9 +178,20 @@ export default {
       chart.render();
     };
 
+    const isDiferentID = computed(() => {
+      if (user.value.id != user.value.user_metadata.organization_id) {
+        console.log(user.value.user_metadata.organization_id);
+        return user.value.user_metadata.organization_id;
+      } else {
+        console.log(user.value.id);
+        return user.value.id;
+      }
+    });
+
     return {
       chartData,
       chartDataPizza,
+      isDiferentID,
     };
   },
 };

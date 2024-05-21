@@ -10,23 +10,17 @@
           </p>
           <div class="col-md-6 col-sm-6 col-xs-10 q-gutter-y-sm">
             <q-input
-              v-model="form.nome"
+              v-model="form.name"
               label="Nome da escola"
               class="col-12"
-              :rules="[
-                (val) =>
-                  (val && val.length > 0) || 'Porfavor digite o nome da escola',
-              ]"
+              :rules="[(val) => !!val || 'Porfavor digite o nome da escola']"
               v-bind="{ ...inputConfig }"
             />
             <q-input
               v-model="form.numero"
               label="Nº da escola"
               class="col-6"
-              :rules="[
-                (val) =>
-                  (val && val.length > 0) || 'Porfavor digite o nº da escola',
-              ]"
+              :rules="[(val) => !!val || 'Porfavor digite o nº da escola']"
               v-bind="{ ...inputConfig }"
             />
             <q-input
@@ -34,9 +28,7 @@
               label="Nº do decreto"
               class="col-6"
               :rules="[
-                (val) =>
-                  (val && val.length > 0) ||
-                  'Porfavor digite o nº do decreto de criação',
+                (val) => !!val || 'Porfavor digite o nº do decreto de criação',
               ]"
               v-bind="{ ...inputConfig }"
             />
@@ -46,9 +38,7 @@
               label="Provincia"
               class="col-6"
               :rules="[
-                (val) =>
-                  (val && val.length > 0) ||
-                  'Porfavor informe o nome da província',
+                (val) => !!val || 'Porfavor informe o nome da província',
               ]"
               v-bind="{ ...inputConfig }"
             />
@@ -58,9 +48,7 @@
               label="Município"
               class="col-6"
               :rules="[
-                (val) =>
-                  (val && val.length > 0) ||
-                  'Porfavor informe o nome do município',
+                (val) => !!val || 'Porfavor informe o nome do município',
               ]"
               v-bind="{ ...inputConfig }"
             />
@@ -70,9 +58,7 @@
               label="Natureza da escola"
               class="col-6"
               :rules="[
-                (val) =>
-                  (val && val.length > 0) ||
-                  'Porfavor informe a natureza da escola',
+                (val) => !!val || 'Porfavor informe a natureza da escola',
               ]"
               v-bind="{ ...inputConfig }"
             />
@@ -80,11 +66,7 @@
               v-model="form.tipo_escola"
               label="Tipo de escola"
               class="col-6"
-              :rules="[
-                (val) =>
-                  (val && val.length > 0) ||
-                  'Porfavor informe o tipo de escola',
-              ]"
+              :rules="[(val) => !!val || 'Porfavor informe o tipo de escola']"
               v-bind="{ ...inputConfig }"
             />
 
@@ -92,10 +74,7 @@
               v-model="form.salas_professores"
               label="Total de salas de professores"
               class="col-6"
-              :rules="[
-                (val) =>
-                  (val && val.length > 0) || 'Nº total de salas de professores',
-              ]"
+              :rules="[(val) => !!val || 'Nº total de salas de professores']"
               v-bind="{ ...inputConfig }"
             />
 
@@ -103,13 +82,44 @@
               v-model="form.salas_alunos"
               label="Total de salas de alunos"
               class="col-6"
-              :rules="[
-                (val) =>
-                  (val && val.length > 0) || 'Nº total de salas de alunos',
-              ]"
+              :rules="[(val) => !!val || 'Nº total de salas de alunos']"
               v-bind="{ ...inputConfig }"
             />
+            <div v-if="isUpdate == null">
+              <q-separator />
+              <div class="col-12 text-center">
+                <b>Atribuir uma conta para a escola</b>
+              </div>
 
+              <q-input
+                v-model="form.email"
+                type="email"
+                label="Informe o e-mail da escola"
+                class="col-6"
+                :rules="[(val) => !!val || 'Porfavor informe um e-mail']"
+                v-bind="{ ...inputConfig }"
+              />
+              <q-input
+                v-model="form.password"
+                type="password"
+                label="Informe uma palavra passe"
+                class="col-6"
+                :rules="[(val) => !!val || 'Porfavor uma palavra passe']"
+                v-bind="{ ...inputConfig }"
+              />
+              <q-input
+                v-model="form.phone"
+                label="Informe o contacto do responsável"
+                class="col-6"
+                :rules="[
+                  (val) => !!val || 'Porfavor uma contacto do responsável',
+                  (val) =>
+                    val.length == 9 ||
+                    'O nº de telemóvel deve conter 9 caracter',
+                ]"
+                v-bind="{ ...inputConfig }"
+              />
+            </div>
             <q-btn
               type="submit"
               :icon="
@@ -156,14 +166,14 @@ import { btnConfig, inputConfig } from "src/utils/inputVisual";
 export default {
   name: "form-categoria",
   setup() {
-    const { post, getById, update, remove, uploadImage } = userApi();
+    const { postEscola, getById, update, remove, uploadImage } = userApi();
     const { notifyError, notifySuccess } = usenotification();
     const table = "escolas";
     const router = useRouter();
     const $q = useQuasar();
     const route = useRoute();
     const form = ref({
-      nome: "",
+      name: "",
       numero: "",
       num_decreto: "",
       provincia: "",
@@ -172,6 +182,10 @@ export default {
       tipo_escola: "",
       salas_professores: "",
       salas_alunos: "",
+      email: "",
+      password: "",
+      phone: "",
+      role: "Admin-Escola",
     });
 
     const isUpdate = computed(() => {
@@ -188,7 +202,7 @@ export default {
       try {
         $q.dialog({
           title: "Confirmação",
-          message: `tens a certeza que pretendes eliminar a ${item.nome} ?`,
+          message: `tens a certeza que pretendes eliminar a ${item.name} ?`,
           cancel: true,
           persistent: true,
         }).onOk(async () => {
@@ -223,10 +237,11 @@ export default {
           notifySuccess("Escola actualizada com sucesso");
         } else {
           Loading.show({ message: "Cadastro em processamento" });
-          await post(table, form.value);
+          await postEscola(table, form.value);
           notifySuccess("Escola cadastrada com sucesso");
         }
       } catch (error) {
+        console.log(error);
         notifyError(error.message);
       } finally {
         Loading.hide();

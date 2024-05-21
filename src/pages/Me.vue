@@ -5,6 +5,7 @@
         <div class="row q-col-gutter-sm">
           <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
             <cards-dashboard
+              v-if="user.email == 'ildocuema@gmail.com'"
               class="col-xs-12 col-sm-12 col-md-4 col-lg-4"
               tabela="escolas"
               titulo="Total de utilizador"
@@ -76,21 +77,31 @@ export default {
 
     const getAllFuncionarios = () => {
       const store = useFuncionarioStore();
-      store.getFuncionarios("funcionarios");
+      store.getFuncionarios("funcionarios", isDiferentID.value);
     };
     const getAllEscolas = () => {
       const store = useEscolaStore();
-      store.getEscolas("escolas");
+      store.getEscolas("escolas", isDiferentID.value);
     };
     const getAllCategorias = () => {
       const store = useCategoriaStore();
-      store.getCategorias("categorias");
+      store.getCategorias("categorias", isDiferentID.value);
     };
 
     const getAllUsers = () => {
       const store = useUtilizadores();
       store.utilizadoresList();
     };
+
+    const isDiferentID = computed(() => {
+      if (user.value.id != user.value.user_metadata.organization_id) {
+        console.log(user.value.user_metadata.organization_id);
+        return user.value.user_metadata.organization_id;
+      } else {
+        console.log(user.value.id);
+        return user.value.id;
+      }
+    });
 
     return {
       user,
@@ -99,6 +110,7 @@ export default {
       categoriasCount,
       countUtilizadores,
       getAllUsers,
+      isDiferentID,
     };
   },
 };

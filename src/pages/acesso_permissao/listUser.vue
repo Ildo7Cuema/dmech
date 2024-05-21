@@ -2,7 +2,13 @@
   <q-layout>
     <q-page-container>
       <q-page padding>
-        <span class="">Acesso e Permissões</span>
+        <span class="q-mb-md"
+          ><q-icon name="mdi-account-group" size="md" />
+          <b class="q-ml-md"
+            >UTILIZADORES <span class="text-red-10">- Administrador</span>
+            {{ form.emailAdmin }}</b
+          >
+        </span>
         <div class="row" v-if="$q.platform.is.desktop && users != null">
           <q-table
             :rows="users"
@@ -30,7 +36,7 @@
               <q-btn
                 v-if="$q.platform.is.desktop"
                 icon="mdi-account-plus"
-                label="Criar novo usuário"
+                label="Criar novo utilizadores"
                 @click="addNewUser"
                 v-bind="{ ...btnConfig }"
                 color="primary"
@@ -60,12 +66,6 @@
                   style="border-radius: 18px; font-size: 11px"
                   v-if="props.row.user_metadata.role == 'Admin-DME'"
                   class="bg-cyan q-pa-sm text-white rounded"
-                  ><b>{{ props.row.user_metadata.role }}</b></span
-                >
-                <span
-                  style="border-radius: 18px; font-size: 11px"
-                  v-if="props.row.user_metadata.role == 'Admin-Escola'"
-                  class="bg-cyan-8 q-pa-sm text-white rounded"
                   ><b>{{ props.row.user_metadata.role }}</b></span
                 >
                 <span
@@ -106,12 +106,6 @@
                 >
                 <span
                   style="border-radius: 18px; font-size: 11px"
-                  v-if="props.row.user_metadata.role == 'Secretaria-DME'"
-                  class="bg-blue-grey-8 q-pa-sm text-white rounded"
-                  ><b>{{ props.row.user_metadata.role }}</b></span
-                >
-                <span
-                  style="border-radius: 18px; font-size: 11px"
                   v-if="props.row.user_metadata.role == 'RH-DME'"
                   class="bg-blue-grey-8 q-pa-sm text-white rounded"
                   ><b>{{ props.row.user_metadata.role }}</b></span
@@ -131,9 +125,10 @@
                   class="text-green-10"
                   ><b>Activo</b></span
                 >
-                <span v-else class="text-red-10"><b>Inativo</b></span>
+                <span v-else class="text-red-10"><b>Bloqueado</b></span>
               </q-td>
             </template>
+
             <template v-slot:body-cell-actions="props">
               <q-td :props="props" class="q-gutter-x-sm text-center">
                 <q-btn
@@ -157,6 +152,7 @@
                 >
 
                 <q-toggle
+                  v-if="form.emailAdmin == 'ildocuema@gmail.com'"
                   size="sm"
                   checked-icon="check"
                   color="green"
@@ -176,7 +172,7 @@
           v-if="$q.platform.is.desktop && users == null"
         >
           <q-btn flat color="red">
-            De momento não tens nenhum usuario cadastrada
+            De momento não tens nenhum usuario cadastrado
           </q-btn>
         </div>
 
@@ -398,6 +394,7 @@ export default defineComponent({
       phone: "",
       photoURL: "",
       emailAdmin: user.value.email,
+      organization_id: user.value.id,
     });
 
     const listarUsuarios = async () => {
@@ -499,6 +496,9 @@ export default defineComponent({
 
     onMounted(() => {
       listarUsuarios();
+      if (user.value.email != "ildocuema@gmail.com") {
+        window.history.back();
+      }
     });
 
     return {
@@ -521,6 +521,7 @@ export default defineComponent({
       addNewUser,
       formNewUser,
       cleanForm,
+      user,
     };
   },
 });
