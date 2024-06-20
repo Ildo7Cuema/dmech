@@ -5,7 +5,7 @@
         <p class="text-body1">
           Documento: <i><b>Secretaria && documentos</b></i>
         </p>
-        <btn-back-page />
+
         <q-separator />
         <div class="q-pa-md" v-if="$q.platform.is.desktop && docPdf">
           <q-table
@@ -49,7 +49,6 @@
                     no-caps
                     icon="folder"
                     label="Gerar documentos"
-                    @click="onMainClick"
                   >
                     <q-list>
                       <q-item
@@ -161,7 +160,7 @@
                         </q-item-section>
                       </q-item>
 
-                      <q-item clickable v-close-popup @click="onItemClick">
+                      <q-item clickable v-close-popup>
                         <q-item-section avatar>
                           <q-avatar
                             icon="mdi-file-pdf"
@@ -299,7 +298,7 @@
                     <q-item
                       clickable
                       v-close-popup
-                      @click="alterarItem(funcionario)"
+                      @click="OpenModal2(funcionario.id)"
                     >
                       <q-item-section>
                         <q-item-label>
@@ -309,24 +308,135 @@
                             size="sm"
                             icon="mdi-file-document-outline"
                             color="green-10"
-                            label="Guia de colocaçao"
-                            @click="OpenModal2(funcionario.id)"
+                            label="Declaração de serviço"
                           />
                         </q-item-label>
                       </q-item-section>
                     </q-item>
 
-                    <q-item clickable v-close-popup>
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="OpenModal3(funcionario.id)"
+                    >
                       <q-item-section>
                         <q-item-label>
                           <q-btn
                             dense
                             flat
                             size="sm"
-                            label="Termo de função"
+                            label="Guia de férias"
                             icon="mdi-file-document-outline"
                             color="blue-grey-8"
-                            @click="OpenModal(funcionario.id)"
+                          />
+                        </q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="OpenModal4(funcionario.id)"
+                    >
+                      <q-item-section>
+                        <q-item-label>
+                          <q-btn
+                            dense
+                            flat
+                            size="sm"
+                            label="Guia de médica"
+                            icon="mdi-file-document-outline"
+                            color="blue-grey-8"
+                          />
+                        </q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="OpenModal5(funcionario.id)"
+                    >
+                      <q-item-section>
+                        <q-item-label>
+                          <q-btn
+                            dense
+                            flat
+                            size="sm"
+                            label="Ordem de serviço"
+                            icon="mdi-file-document-outline"
+                            color="blue-grey-8"
+                          />
+                        </q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="OpenModal6(funcionario.id)"
+                    >
+                      <q-item-section>
+                        <q-item-label>
+                          <q-btn
+                            dense
+                            flat
+                            size="sm"
+                            label="Dec. Banco BAI"
+                            icon="mdi-file-document-outline"
+                            color="blue-grey-8"
+                          />
+                        </q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="OpenModal8(funcionario.id)"
+                    >
+                      <q-item-section>
+                        <q-item-label>
+                          <q-btn
+                            dense
+                            flat
+                            size="sm"
+                            label="Dec. Banco BPC"
+                            icon="mdi-file-document-outline"
+                            color="blue-grey-8"
+                          />
+                        </q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="OpenModal9(funcionario.id)"
+                    >
+                      <q-item-section>
+                        <q-item-label>
+                          <q-btn
+                            dense
+                            flat
+                            size="sm"
+                            label="Dec. Banco BCI"
+                            icon="mdi-file-document-outline"
+                            color="blue-grey-8"
+                          />
+                        </q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="OpenModal10(funcionario.id)"
+                    >
+                      <q-item-section>
+                        <q-item-label>
+                          <q-btn
+                            dense
+                            flat
+                            size="sm"
+                            label="Dec. Banco BFA"
+                            icon="mdi-file-document-outline"
+                            color="blue-grey-8"
                           />
                         </q-item-label>
                       </q-item-section>
@@ -1585,10 +1695,10 @@
   </q-layout>
 </template>
 <script>
-import btnBackPage from "src/components/btnBack/btnBackPage.vue";
 import { columns } from "./table";
 import { ref, onMounted } from "vue";
 import userApi from "src/composible/userApi";
+import userAuthUser from "src/composible/userAuthUser";
 import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
 import usenotification from "src/composible/useNotify";
@@ -1596,9 +1706,10 @@ import moment from "moment";
 import { btnConfig, inputConfig } from "src/utils/inputVisual";
 export default {
   name: "DocRH",
-  components: { btnBackPage },
+  components: {},
   setup() {
     const filter = ref("");
+    const { user } = userAuthUser();
     const dataActual = moment();
     const dateSystema = moment().format("DD [de] MM [de] YYYY");
     const router = useRouter();
@@ -1674,7 +1785,10 @@ export default {
     });
 
     const listarEscolas = async () => {
-      escolas.value = await list("escolas");
+      escolas.value = await list(
+        "escolas",
+        user.value.user_metadata.organization_id
+      );
     };
     const carregarFuncionarios = async () => {
       try {

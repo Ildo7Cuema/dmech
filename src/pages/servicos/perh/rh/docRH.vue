@@ -5,7 +5,6 @@
         <p class="text-body1">
           Documentos: <i>Termos de Início de funções & Guias de colocações</i>
         </p>
-        <btn-back-page />
         <q-separator />
         <div class="q-pa-md" v-if="$q.platform.is.desktop && docPdf">
           <q-table
@@ -405,7 +404,6 @@
   </q-layout>
 </template>
 <script>
-import btnBackPage from "src/components/btnBack/btnBackPage.vue";
 import { columns } from "./table";
 import { ref, onMounted } from "vue";
 import userApi from "src/composible/userApi";
@@ -416,7 +414,7 @@ import moment from "moment";
 import { btnConfig, inputConfig } from "src/utils/inputVisual";
 export default {
   name: "DocRH",
-  components: { btnBackPage },
+  components: {},
   setup() {
     const filter = ref("");
     const dataActual = moment();

@@ -50,7 +50,7 @@ export default function userApi() {
       escolas (id, name), categorias (id, categoria)
     `
       )
-      .eq("user_id", idFuncionario);
+      .eq("id", idFuncionario);
     if (error) throw error;
     return data;
   };

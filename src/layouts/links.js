@@ -42,5 +42,12 @@ const links = [
     icon: "mdi-text-box",
     routeName: "dservico",
   },
+  //Links para docentes autenticados
+  {
+    title: "Meus documentos",
+    caption: "ver e baixar documentos",
+    icon: "mdi-dock-window",
+    routeName: "myDocument",
+  },
 ];
 export { links };

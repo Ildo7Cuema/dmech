@@ -24,8 +24,6 @@ export const useUtilizadores = defineStore("utilizadores", {
       const unauthenticatedUsers = users.filter(
         (itenUser) => itenUser.email !== "ildocuema@gmail.com"
       );
-
-      console.log(users);
       return (this.$state.utilizadores = unauthenticatedUsers);
     },
   },

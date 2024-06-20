@@ -4,9 +4,7 @@
     size="ms"
     dense
     icon="mdi-arrow-left"
-    label="voltar"
     @click="backPage"
-    color="primary"
     class="small-text"
   ></q-btn>
 </template>

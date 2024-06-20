@@ -2,7 +2,10 @@
   <q-layout>
     <q-page-container>
       <q-page padding>
-        <div class="row q-col-gutter-sm">
+        <div
+          class="row q-col-gutter-sm"
+          v-if="user.user_metadata.role != 'Docente'"
+        >
           <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
             <cards-dashboard
               v-if="user.email == 'ildocuema@gmail.com'"
@@ -35,7 +38,20 @@
           </div>
         </div>
 
-        <charts-dashboard class="q-mt-lg" />
+        <charts-dashboard
+          class="q-mt-lg"
+          v-if="user.user_metadata.role != 'Docente'"
+        />
+        <!-- Informações de dashboard de Docentes -->
+        <div
+          class="row q-col-gutter-sm"
+          v-if="user.user_metadata.role == 'Docente'"
+        >
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <!-- <cards-dashboard /> -->
+            <span>Informações não definida para Dashboard</span>
+          </div>
+        </div>
       </q-page>
     </q-page-container>
   </q-layout>
@@ -52,7 +68,6 @@ import { useEscolaStore } from "src/stores/escolas.js";
 import { useCategoriaStore } from "src/stores/categorias.js";
 import { useUtilizadores } from "src/stores/utilizadores.js";
 import { storeToRefs } from "pinia";
-import { store } from "quasar/wrappers";
 
 export default {
   name: "mePage",
@@ -63,6 +78,7 @@ export default {
     const escolasStore = useEscolaStore();
     const categoriaStore = useCategoriaStore();
     const utilizadorStore = useUtilizadores();
+
     const { funcionarioCount } = storeToRefs(funcionarioStore);
     const { escolasCount } = storeToRefs(escolasStore);
     const { categoriasCount } = storeToRefs(categoriaStore);
@@ -98,7 +114,6 @@ export default {
         console.log(user.value.user_metadata.organization_id);
         return user.value.user_metadata.organization_id;
       } else {
-        console.log(user.value.id);
         return user.value.id;
       }
     });

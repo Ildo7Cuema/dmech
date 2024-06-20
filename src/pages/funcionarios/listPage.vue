@@ -132,7 +132,7 @@
             </q-item-section>
 
             <q-item-section>
-              <q-item-label>{{ funcionario.nome }}</q-item-label>
+              <q-item-label>{{ funcionario.name }}</q-item-label>
               <q-item-label caption lines="1"
                 >Nº de agente:
                 <strong class="secondary">{{ funcionario.num_agente }}</strong>
@@ -201,6 +201,26 @@
                             icon="mdi-delete-circle-outline"
                             color="red-8"
                           />
+                        </q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="addDoc(funcionario)"
+                    >
+                      <q-item-section>
+                        <q-item-label>
+                          <q-btn
+                            icon="cloud_upload"
+                            color="positive"
+                            label="Arquivar documentos"
+                            dense
+                            flat
+                            size="sm"
+                            no-caps
+                          ></q-btn>
                         </q-item-label>
                       </q-item-section>
                     </q-item>

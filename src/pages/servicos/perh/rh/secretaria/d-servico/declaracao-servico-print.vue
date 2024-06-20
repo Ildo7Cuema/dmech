@@ -37,8 +37,8 @@
               Para fins julgados convenientes, a Direcção Municipal da Educação,
               declara que,</span
             >
-            <span v-if="dados[0].genero == 'Masculino'">o senhor</span>
-            <span v-else>a senhora</span>, <b>{{ dados[0].nome }}</b>
+            <span v-if="dados[0].genero == 'Masculino'"> o senhor</span>
+            <span v-else> a senhora</span>, <b>{{ dados[0].name }}</b>
             <span v-if="dados[0].genero == 'Masculino'"> filho </span>
             <span v-else> filha </span> de {{ dados[0].nome_pai }} e de
             {{ dados[0].nome_mae }},
@@ -55,7 +55,7 @@
             <span v-else> funcionária</span> em efectivo serviço, colocado neste
             Município com o nº de agente {{ dados[0].num_agente }},
             desempenhando as funções de {{ dados[0].categorias.categoria }},
-            {{ artigoInstituicao }} {{ dados[0].escolas.nome }}, auferindo um
+            {{ artigoInstituicao }} {{ dados[0].escolas.name }}, auferindo um
             rendimento mensal cerca de
             {{ formatCurrency(dados[0].salario_base) }}
             ({{ dados[0].salario_base_extenso }}) na conta nº

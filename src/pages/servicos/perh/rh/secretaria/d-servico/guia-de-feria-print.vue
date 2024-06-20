@@ -39,7 +39,7 @@
             Autoridades a quem o conhecimento desta competir, que
             <span v-if="dados[0].genero == 'Masculino'">o senhor</span>
             <span v-else>a senhora</span>,
-            <b>{{ dados[0].nome }}</b> funcionário desta Direção Municipal,
+            <b>{{ dados[0].name }}</b> funcionário desta Direção Municipal,
             exercendo as funções de {{ addInfo.exerce_funcao }}, entra em gozo
             de férias referente ao ano de {{ dateNowYear }}, a partir do dia
             {{ dataDeFeria }}.

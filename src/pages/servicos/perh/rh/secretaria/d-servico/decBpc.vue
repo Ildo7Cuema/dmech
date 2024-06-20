@@ -45,7 +45,7 @@
             </span>
             Contribuinte Fiscal nº {{ addInfo.contribuent_fiscal }}, declara que
             <span v-if="dados[0].genero == 'Masculino'">o senhor</span>
-            <span v-else>a senhora</span>, <b>{{ dados[0].nome }}</b
+            <span v-else>a senhora</span>, <b>{{ dados[0].name }}</b
             >, exerce funções de
             <span v-if="dados[0].status_nomeacao == 'Sim'">{{
               dados[0].nome_cargo

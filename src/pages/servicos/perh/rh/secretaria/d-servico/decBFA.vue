@@ -55,7 +55,7 @@
             celebrado entre o Ministério da Educação e o Banco de Fomento de
             Angola, declaramos que
             <span v-if="dados[0].genero == 'Masculino'">o senhor</span>
-            <span v-else>a senhora</span>, <b>{{ dados[0].nome }}</b
+            <span v-else>a senhora</span>, <b>{{ dados[0].name }}</b
             >, portador do Bilhete de Identidade nº {{ dados[0].num_bilhete }},
             residente no bairro {{ dados[0].localidade }}, com terminal
             telefónico nº {{ dados[0].num_telemovel }}, é trabalhador desta

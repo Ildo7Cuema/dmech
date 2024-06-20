@@ -3,8 +3,11 @@
     <q-card style="width: 800px; max-width: 100vw">
       <q-card-section>
         <div class="text-h6">
-          <q-avatar icon="mdi-file-document-multiple" /> Arquivar documento do
-          Funcionário
+          <q-avatar icon="mdi-file-document-multiple" />
+          <span v-if="$q.platform.is.mobile" style="font-size: 14px"
+            >Arquivar documento do Funcionário</span
+          >
+          <span v-else>Arquivar documento do Funcionário</span>
         </div>
       </q-card-section>
 
@@ -12,7 +15,7 @@
         <q-card-section class="bg-primary">
           <span class="q-pl-sm"
             ><span class="text-white">Nome: </span>
-            <b class="text-white">{{ itens.nome }}</b></span
+            <b class="text-white">{{ itens.name }}</b></span
           >
         </q-card-section>
         <q-card-section class="q-gutter-sm">

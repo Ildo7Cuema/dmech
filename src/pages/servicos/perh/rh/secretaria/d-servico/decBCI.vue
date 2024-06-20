@@ -44,7 +44,7 @@
             </span>
             Contribuinte Fiscal nº {{ addInfo.contribuent_fiscal }}, declara que
             <span v-if="dados[0].genero == 'Masculino'">o senhor</span>
-            <span v-else>a senhora</span>, <b>{{ dados[0].nome }}</b
+            <span v-else>a senhora</span>, <b>{{ dados[0].name }}</b
             >, com o B.I nº {{ dados[0].num_bilhete }}, é trabalhador efectivo
             desta instituição com contrato de trabalho por tempo indeterminado,
             desde {{ dataInicioFuncao }}, com a categoria actual de

@@ -67,7 +67,7 @@
           <div class="col-12" style="line-height: 1.5">
             <br />
             <pre class="StyleFontDocument">
-   Nome do beneficiário: <b>{{ dados[0].nome }}</b>
+   Nome do beneficiário: <b>{{ dados[0].name }}</b>
    Situação: <b>{{ dados[0].cituacao_funcionario }}</b>
    Categoria:<b>{{dados[0].categorias.categoria}}</b>
    Provimentos mensais do agregado familiar

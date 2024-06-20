@@ -181,6 +181,11 @@ const routes = [
         component: () =>
           import("pages/servicos/perh/rh/secretaria/d-servico/dServico.vue"),
       },
+      {
+        path: "my-document",
+        name: "myDocument",
+        component: () => import("pages/docentes/myDocuments.vue"),
+      },
     ],
     meta: { requiresAuth: true },
   },

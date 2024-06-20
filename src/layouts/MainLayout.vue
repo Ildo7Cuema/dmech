@@ -15,6 +15,9 @@
           <span v-else> <span class="q-ml-sm">D.M.E</span></span>
         </q-toolbar-title>
         <q-space />
+        <q-toolbar-title v-if="$q.platform.is.mobile">
+          <btn-back-page-vue />
+        </q-toolbar-title>
         <darkmode-change />
         <q-btn
           dense
@@ -43,7 +46,11 @@
           <span v-else>D.M.E</span>
         </q-toolbar-title>
 
+        <q-toolbar-title>
+          <btn-back-page-vue />
+        </q-toolbar-title>
         <darkmode-change />
+
         <q-btn-dropdown
           flat
           icon="person"
@@ -155,6 +162,7 @@
 
 <script>
 import { defineComponent, ref, onMounted, computed } from "vue";
+import btnBackPageVue from "src/components/btnBack/btnBackPage.vue";
 import EssentialLink from "components/EssentialLink.vue";
 import userAuthUser from "src/composible/userAuthUser";
 import { useQuasar, Loading } from "quasar";
@@ -168,6 +176,7 @@ export default defineComponent({
   components: {
     EssentialLink,
     darkmodeChange,
+    btnBackPageVue,
   },
 
   setup() {
@@ -234,6 +243,19 @@ export default defineComponent({
           }
           if (link.routeName == "dservico") {
             return user.value.user_metadata.role == "Secretaria-DME";
+          }
+        });
+      } else if (
+        user.value.email != "ildocuema@gmail.com" &&
+        user.value.user_metadata.role == "Docente"
+      ) {
+        return links.filter((link) => {
+          // Docente
+          if (link.routeName == "admin") {
+            return user.value.user_metadata.role == "Docente";
+          }
+          if (link.routeName == "myDocument") {
+            return user.value.user_metadata.role == "Docente";
           }
         });
       }

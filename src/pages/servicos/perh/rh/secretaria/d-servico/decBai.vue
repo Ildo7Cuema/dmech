@@ -49,7 +49,7 @@
             <br />
 
             <div style="line-height: 1.3">
-              <br />Nome: <b>{{ dados[0].nome }}</b>
+              <br />Nome: <b>{{ dados[0].name }}</b>
               <p />
               N.º de conta: {{ dados[0].num_conta_bancaria }}.10.001
               <p />

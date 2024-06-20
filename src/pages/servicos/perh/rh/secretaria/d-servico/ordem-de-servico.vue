@@ -134,7 +134,7 @@
             <br />
             <br />
             <span class="q-pa-md">
-              {{ dados[0].nome }}
+              {{ dados[0].name }}
             </span>
           </div>
         </div>

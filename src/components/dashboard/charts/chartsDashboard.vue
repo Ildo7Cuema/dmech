@@ -183,7 +183,6 @@ export default {
         console.log(user.value.user_metadata.organization_id);
         return user.value.user_metadata.organization_id;
       } else {
-        console.log(user.value.id);
         return user.value.id;
       }
     });

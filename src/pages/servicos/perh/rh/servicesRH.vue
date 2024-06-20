@@ -3,7 +3,6 @@
     <q-page-container>
       <q-page padding>
         <topo-name-page-vue titulo="Área de Recursos humanos" />
-        <btn-back-page-vue />
         <div class="row justify-center q-gutter-sm">
           <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
             <q-btn
@@ -47,11 +46,10 @@
   </q-layout>
 </template>
 <script>
-import btnBackPageVue from "src/components/btnBack/btnBackPage.vue";
 import topoNamePageVue from "src/components/topoNamePage/topoNamePage.vue";
 import { btnConfig } from "src/utils/inputVisual";
 export default {
-  components: { topoNamePageVue, btnBackPageVue },
+  components: { topoNamePageVue },
   setup(props) {
     return {
       btnConfig,

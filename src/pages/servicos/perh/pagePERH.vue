@@ -3,7 +3,6 @@
     <q-page-container>
       <q-page padding>
         <topo-name-page-vue :titulo="titulo" />
-        <btn-back-page-vue />
         <q-separator />
         <div class="row q-gutter-sm q-pa-md flex-center">
           <q-btn
@@ -47,7 +46,6 @@
 </template>
 
 <script>
-import btnBackPageVue from "src/components/btnBack/btnBackPage.vue";
 import { defineComponent } from "vue";
 import topoNamePageVue from "src/components/topoNamePage/topoNamePage.vue";
 import { btnConfig } from "src/utils/inputVisual";
@@ -55,7 +53,7 @@ import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "Page-Recursos-Humanos",
-  components: { btnBackPageVue, topoNamePageVue },
+  components: { topoNamePageVue },
   setup() {
     const titulo =
       "Secção Municipal de Planeamento Estatística e Recursos Humanos";
