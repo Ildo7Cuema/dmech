@@ -163,6 +163,7 @@ export default function userApi() {
       },
     });
     sendSMS(itemForm);
+    sendMagicLink(itemForm.email);
     if (error) throw error;
     return user;
   };
@@ -267,6 +268,15 @@ export default function userApi() {
     const { data, error } = await supabase.from(table).select("*");
     if (error) throw error;
     return data;
+  };
+
+  //send magic link
+  const sendMagicLink = async (email) => {
+    const { data, error } = await supabase.auth.signInWithOtp({ email });
+    if (error) throw error;
+    else {
+      console.log("link magico enviado com sucesso");
+    }
   };
 
   return {

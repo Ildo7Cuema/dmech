@@ -190,6 +190,47 @@ const routes = [
     meta: { requiresAuth: true },
   },
 
+  //routa para o layout de gestao escolar
+  {
+    path: "/gestao-escolar",
+    name: "homeEscola",
+    component: () => import("layouts/layout-gestEscolar.vue"),
+    children: [
+      {
+        path: "",
+        name: "gestao-escolar",
+        component: () => import("pages/gestaoEscolar/homeEscola.vue"),
+      },
+      {
+        path: "/page-aluno",
+        name: "pageAlunos",
+        component: () => import("pages/alunos/alunosPage.vue"),
+      },
+      {
+        path: "/page-cursos",
+        name: "pageCurso",
+        component: () => import("pages/cursos/cursoPage.vue"),
+      },
+      {
+        path: "/page-turma",
+        name: "pageTurma",
+        component: () => import("pages/turmas/turmaPage.vue"),
+      },
+      {
+        path: "/page-periodo",
+        name: "pagePeriodo",
+        component: () => import("pages/periodo/periodoPage.vue"),
+      },
+      {
+        path: "/page-disciplina",
+        name: "pageDisciplina",
+        component: () => import("pages/disciplinas/disciplinaPage.vue"),
+      },
+    ],
+    meta: { requiresAuth: true },
+  },
+
+  //Routa para visitante da pagina
   {
     path: "/",
     component: () => import("layouts/HomeLayout.vue"),

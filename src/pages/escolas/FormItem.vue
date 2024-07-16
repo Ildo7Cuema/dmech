@@ -33,6 +33,16 @@
               v-bind="{ ...inputConfig }"
             />
 
+            <!-- Select nivel de ensino: Ensino primário, Ensino médio, ensino superios -->
+            <q-select
+              v-model="form.nivel_ensino"
+              :options="options"
+              label="Nivel de ensino"
+              class="col-12"
+              v-bind="{ ...inputConfig }"
+              :rules="[(val) => !!val || 'Selecione o nivel de ensino']"
+            ></q-select>
+
             <q-input
               v-model="form.provincia"
               label="Provincia"
@@ -172,10 +182,12 @@ export default {
     const router = useRouter();
     const $q = useQuasar();
     const route = useRoute();
+    const options = ref(["Ensino primário", "Ensino médio", "Ensino superior"]);
     const form = ref({
       name: "",
       numero: "",
       num_decreto: "",
+      nivel_ensino: "",
       provincia: "",
       municipio: "",
       natureza_escola: "",
@@ -257,6 +269,7 @@ export default {
       addItems,
       btnConfig,
       inputConfig,
+      options,
     };
   },
 };

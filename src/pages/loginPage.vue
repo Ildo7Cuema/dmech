@@ -87,7 +87,7 @@ import { inputConfig } from "src/utils/inputVisual";
 export default {
   name: "form-login",
   setup() {
-    const { login } = userAuth();
+    const { login, user } = userAuth();
     const { notifyError, notifySuccess } = useNotification();
     const $q = useQuasar();
     const router = useRouter();
@@ -101,8 +101,6 @@ export default {
       try {
         Loading.show({ message: "Porfavor aguarde..." });
         await login(form.value);
-        router.push({ name: "admin" });
-        notifySuccess("Autorizado com sucesso");
       } catch (error) {
         notifyError(error.message);
       } finally {

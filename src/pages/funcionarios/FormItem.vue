@@ -340,6 +340,50 @@
               :rules="[(val) => !!val || 'Porfavor a escola a que pertence']"
               v-bind="{ ...inputConfig }"
             />
+            <div class="col-12 q-pa-md">
+              <span><b>É docente em frente do aluno?</b></span>
+              <div class="q-gutter-sm">
+                <q-radio
+                  v-model="form.tipo_funcionario"
+                  checked-icon="task_alt"
+                  unchecked-icon="panorama_fish_eye"
+                  val="Docente"
+                  label="Sim"
+                />
+                <q-radio
+                  v-model="form.tipo_funcionario"
+                  checked-icon="task_alt"
+                  unchecked-icon="panorama_fish_eye"
+                  val="Pessoal administrativo"
+                  label="Não"
+                />
+                <div class="q-px-sm">
+                  Você o selecionou como:
+                  <strong class="text-red-10">{{
+                    form.tipo_funcionario
+                  }}</strong>
+                </div>
+
+                <q-select
+                  v-if="form.tipo_funcionario == 'Docente'"
+                  v-model="form.disciplinas_ministrada"
+                  :options="disciplinas"
+                  option-value="id"
+                  option-label="name"
+                  map-options
+                  emit-value
+                  label="Disciplinas ministradas"
+                  multiple
+                  filled
+                  v-bind="{ ...inputConfig }"
+                  :rules="[
+                    (val) =>
+                      !!val ||
+                      'Selecione as disciplinas que o docente ministra',
+                  ]"
+                />
+              </div>
+            </div>
             <q-input
               v-model="form.habilitacao"
               label="Habilitação"
@@ -442,6 +486,7 @@ import { btnConfig, inputConfig } from "src/utils/inputVisual";
 import { formatCurrency } from "src/utils/formatCurrency";
 import userAuthUser from "src/composible/userAuthUser";
 import adminAccessOther from "src/components/adminAccessOp/adminAccessOther.vue";
+import { disciplinas } from "./disciplinas";
 export default {
   name: "form-categoria",
   components: { adminAccessOther },
@@ -501,11 +546,13 @@ export default {
       data_caducidade: "",
       data_nascimento: "",
       num_conta_bancaria: "",
+      disciplinas_ministrada: [],
       email: "",
       genero: "",
       data_inicio_funcao: "",
       provincia: "",
       municipio: "",
+      tipo_funcionario: "",
       comuna: "",
       localidade: "",
       status_nomeacao: "",
@@ -639,6 +686,7 @@ export default {
       estado_civil,
       estado_nomeacao,
       isDiferentID,
+      disciplinas,
     };
   },
 };

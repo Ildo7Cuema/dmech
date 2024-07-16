@@ -68,6 +68,8 @@ import { useEscolaStore } from "src/stores/escolas.js";
 import { useCategoriaStore } from "src/stores/categorias.js";
 import { useUtilizadores } from "src/stores/utilizadores.js";
 import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
+import usenotification from "src/composible/useNotify";
 
 export default {
   name: "mePage",
@@ -78,6 +80,8 @@ export default {
     const escolasStore = useEscolaStore();
     const categoriaStore = useCategoriaStore();
     const utilizadorStore = useUtilizadores();
+    const router = useRouter();
+    const { notifyError, notifySuccess } = usenotification();
 
     const { funcionarioCount } = storeToRefs(funcionarioStore);
     const { escolasCount } = storeToRefs(escolasStore);
@@ -85,6 +89,8 @@ export default {
     const { countUtilizadores } = storeToRefs(utilizadorStore);
 
     onMounted(() => {
+      console.log(user.value);
+      verifyAccessPainel();
       getAllFuncionarios();
       getAllEscolas();
       getAllCategorias();
@@ -117,6 +123,23 @@ export default {
         return user.value.id;
       }
     });
+
+    //Verifica o painel onde este usuário vai acessar
+    const verifyAccessPainel = () => {
+      //depois de fazer o login verifica se o usuário é uma escola, professor, aluno ou encarregado de educacao
+      if (
+        user.value.user_metadata.role === "Admin-Escola" ||
+        user.value.user_metadata.role === "Docente" ||
+        user.value.user_metadata.role === "Estudante" ||
+        user.value.user_metadata.role === "Encarregado"
+      ) {
+        router.push({ name: "gestao-escolar" });
+        notifySuccess("Autorizado com sucesso");
+      } else {
+        router.push({ name: "admin" });
+        notifySuccess("Autorizado com sucesso");
+      }
+    };
 
     return {
       user,
