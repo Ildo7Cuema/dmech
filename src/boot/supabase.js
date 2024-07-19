@@ -9,8 +9,8 @@ const supabase_service_role = process.env.SERVICE_ROLE;
 const supabase = createClient(supabaseUrl, supabaseKey);
 const supabaseAdmin = createClient(supabaseUrl, supabase_service_role, {
   auth: {
-    autoRefreshToken: false,
-    persistSession: false,
+    autoRefreshToken: true,
+    persistSession: true,
   },
 });
 

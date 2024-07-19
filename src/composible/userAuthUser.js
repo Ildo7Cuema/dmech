@@ -9,7 +9,7 @@ const token = ref(null);
 // Você pode chamar a função renewTokenIfNeeded lá
 
 // src/composible/userAuthUser.js
-import { renewTokenIfNeeded } from "src/utils/tokenRenewal.js";
+//import { renewTokenIfNeeded } from "src/utils/tokenRenewal.js";
 import { data } from "autoprefixer";
 
 export default function userAuthUser() {
@@ -21,7 +21,7 @@ export default function userAuthUser() {
     token.value = session?.access_token;
     console.log(token.value);
     // Chame a função para renovar o token JWT, se necessário
-    renewTokenIfNeeded(session);
+    //renewTokenIfNeeded(session);
   };
 
   const isLoggidIn = async () => {

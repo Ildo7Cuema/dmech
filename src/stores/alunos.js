@@ -16,6 +16,7 @@ export const useAlunosStore = defineStore("alunos", {
   getters: {
     AlunosCountByEscolaId: (state) => (escolaId) => {
       //return escolaId ? state.Turmas.filter((Turma) => Turma.escola_id === escolaId).length : 0;
+      if (!state.alunos) return 0;
       return state.alunos.filter((aluno) => aluno.escola_id === escolaId)
         .length;
     },
@@ -28,7 +29,7 @@ export const useAlunosStore = defineStore("alunos", {
         const { data, error } = await supabase
           .from(tabela)
           .select(
-            `*, escola:escola_id(*), turmas:turma_id(*), classe:classe_id(*)`
+            `*, escola:escola_id(*), cursos:curso_id(*), turmas:turma_id(*), periodo:periodo_id(*)`
           )
           .eq("escola_id", escola_id);
         if (error) throw error.message;
@@ -42,16 +43,37 @@ export const useAlunosStore = defineStore("alunos", {
     //Cadastrar informações no banco
     async addAluno(formData) {
       try {
+        // Verifique se escola_id é um número
+        const escolaId = Number(formData.escola_id);
+        if (isNaN(escolaId)) throw new Error("escola_id deve ser um número");
+
         const { data, error } = await supabase.from(tabela).insert([
           {
-            nome_aluno: formData.nome_aluno,
-            descricao: formData.descricao,
+            nome: formData.nome,
+            data_nascimento: formData.data_nascimento,
+            morada: formData.morada,
+            email: formData.email,
+            telemovel: formData.telemovel,
+            natural: formData.natural,
+            municipio: formData.municipio,
+            provincia: formData.provincia,
+            nome_pai: formData.nome_pai,
+            nome_mae: formData.nome_mae,
+            genero: formData.genero,
+            num_doc: formData.num_doc,
+            data_emissao: formData.data_emissao,
+            local_emissao: formData.local_emissao,
+            ano_lectivo: formData.ano_lectivo,
+            turma_id: formData.turma_id,
+            classe: formData.classe,
+            curso_id: formData.curso_id,
             escola_id: formData.escola_id,
+            nivel_ensino: formData.nivel_ensino,
           },
         ]);
         if (error) throw error.message;
 
-        notifySuccess("Príodo cadastrado com sucesso");
+        notifySuccess("Aluno cadastrado com sucesso");
         return (this.alunos = data);
       } catch (error) {}
     },
@@ -74,17 +96,37 @@ export const useAlunosStore = defineStore("alunos", {
     // Atualizar informações no banco pelo id
     async updateAlunoById(id, formData) {
       try {
+        // Verifique se escola_id é um número
+        const escolaId = Number(formData.escola_id);
+        if (isNaN(escolaId)) throw new Error("escola_id deve ser um número");
         const { data, error } = await supabase
           .from(tabela)
           .update({
-            nome_aluno: formData.nome_aluno,
-            descricao: formData.descricao,
+            nome: formData.nome,
+            data_nascimento: formData.data_nascimento,
+            morada: formData.morada,
+            email: formData.email,
+            telemovel: formData.telemovel,
+            natural: formData.natural,
+            municipio: formData.municipio,
+            provincia: formData.provincia,
+            nome_pai: formData.nome_pai,
+            nome_mae: formData.nome_mae,
+            genero: formData.genero,
+            num_doc: formData.num_doc,
+            data_emissao: formData.data_emissao,
+            local_emissao: formData.local_emissao,
+            ano_lectivo: formData.ano_lectivo,
+            turma_id: formData.turma_id,
+            classe: formData.classe,
+            curso_id: formData.curso_id,
             escola_id: formData.escola_id,
+            nivel_ensino: formData.nivel_ensino,
           })
           .eq("id", id);
 
         if (error) throw error.message;
-        notifySuccess("Príodo actualizado com sucesso");
+        notifySuccess("Aluno actualizado com sucesso");
         return data;
       } catch (error) {
         console.log(error);
@@ -135,7 +177,6 @@ export const useAlunosStore = defineStore("alunos", {
     },
 
     async getAnoLectivoIdByEscolaId(escola_id) {
-      console.log(escola_id);
       try {
         const { data, error } = await supabase
           .from(tabela_ano_lectivo)

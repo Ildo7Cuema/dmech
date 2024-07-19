@@ -23,14 +23,12 @@ export const useTurmaStore = defineStore("turmas", {
   actions: {
     //Pegar todos os dados no banco de dados
     async getAllTurmas(escola_id) {
-      console.log(escola_id);
       try {
         const { data, error } = await supabase
           .from(tabela)
           .select(`*, curso:curso_id(*), escola:escola_id(*)`)
           .eq("escola_id", escola_id);
         if (error) throw error.message;
-        console.log(data);
         return (this.turmas = data);
       } catch (error) {
         console.log(error);

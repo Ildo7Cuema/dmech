@@ -222,6 +222,11 @@ const routes = [
         component: () => import("pages/periodo/periodoPage.vue"),
       },
       {
+        path: "/page-classe",
+        name: "pageClasse",
+        component: () => import("pages/classes/classesPage.vue"),
+      },
+      {
         path: "/page-disciplina",
         name: "pageDisciplina",
         component: () => import("pages/disciplinas/disciplinaPage.vue"),

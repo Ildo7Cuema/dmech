@@ -31,7 +31,14 @@ const columns = [
     name: "classe",
     label: "Classe",
     align: "left",
-    field: (row) => row.classe.nome_classe,
+    field: "classe",
+    sortable: true,
+  },
+  {
+    name: "periodo",
+    label: "Período",
+    align: "left",
+    field: (row) => row.periodo.nome_periodo,
     sortable: true,
   },
   {
@@ -39,6 +46,14 @@ const columns = [
     label: "Ano lectivo",
     align: "left",
     field: "ano_lectivo",
+    sortable: true,
+  },
+  {
+    name: "idade",
+    label: "Idade",
+    align: "left",
+    field: (row) =>
+      new Date().getFullYear() - new Date(row.data_nascimento).getFullYear(),
     sortable: true,
   },
   {

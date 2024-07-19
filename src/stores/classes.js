@@ -6,57 +6,68 @@ import usenotification from "src/composible/useNotify";
 
 const { supabase } = useSupabase();
 const { notifyError, notifySuccess } = usenotification();
-const tabela = "cursos";
-export const useCursoStore = defineStore("cursos", {
+const tabela = "classes";
+export const useClasseStore = defineStore("classes", {
   state: () => ({
-    cursos: [],
+    classes: [],
   }),
 
   getters: {
-    cursoCountByEscolaId: (state) => (escolaId) => {
-      console.log(escolaId);
-      //return escolaId ? state.cursos.filter((curso) => curso.escola_id === escolaId).length : 0;
-      return state.cursos.filter((curso) => curso.escola_id === escolaId)
+    classesCountByEscolaId: (state) => (escolaId) => {
+      //return escolaId ? state.Turmas.filter((Turma) => Turma.escola_id === escolaId).length : 0;
+      return state.classes.filter((classe) => classe.escola_id === escolaId)
         .length;
     },
   },
 
   actions: {
     //Pegar todos os dados no banco de dados
-    async getAllCursos(escola_id) {
+    async getAllClasses(escola_id) {
       try {
         const { data, error } = await supabase
           .from(tabela)
-          .select("*")
+          .select(`*, escola:escola_id(*)`)
           .eq("escola_id", escola_id);
         if (error) throw error.message;
-        return (this.cursos = data);
+        return (this.classes = data);
       } catch (error) {
         console.log(error);
       }
     },
 
     //Cadastrar informações no banco
-    async addCurso(formData) {
-      console.log(formData);
+    async addClasse(formData) {
+      console.log(formData.id);
+
       try {
-        const { data, error } = await supabase.from(tabela).insert([
-          {
-            nome_curso: formData.nome_curso,
-            descricao: formData.descricao,
-            duracao: formData.duracao,
-            escola_id: formData.escola_id,
-          },
-        ]);
+        // Verifica se curso_id é um array e cria um array de objetos a serem inseridos
+        const dataToInsert = Array.isArray(formData.id)
+          ? formData.id.map((classId) => ({
+              nome_classe: formData.nome_classe,
+              escola_id: formData.escola_id,
+            }))
+          : [
+              {
+                nome_classe: formData.nome_classe,
+                escola_id: formData.escola_id,
+              },
+            ];
+
+        const { data, error } = await supabase
+          .from(tabela)
+          .insert(dataToInsert);
+
         if (error) throw error.message;
 
-        notifySuccess("Curso cadastrado com sucesso");
-        return (this.cursos = data);
-      } catch (error) {}
+        notifySuccess("Classe(s) cadastrada(s) com sucesso");
+        return (this.classes = data);
+      } catch (error) {
+        console.error("Erro ao cadastrar classe(s):", error);
+      }
     },
 
     //Buscar informações no banco pelo id
-    async getCursoById(id) {
+    async getClasseById(id) {
       try {
         const { data, error } = await supabase
           .from(tabela)
@@ -71,32 +82,38 @@ export const useCursoStore = defineStore("cursos", {
     },
 
     // Atualizar informações no banco pelo id
-    async updateCursoById(id, formData) {
+    async updateClasseById(id, formData) {
       try {
+        const dataToInsert = Array.isArray(formData.id)
+          ? formData.id.map((classId) => ({
+              nome_classe: formData.nome_classe,
+              escola_id: formData.escola_id,
+            }))
+          : [
+              {
+                nome_classe: formData.nome_classe,
+                escola_id: formData.escola_id,
+              },
+            ];
+
         const { data, error } = await supabase
           .from(tabela)
-          .update({
-            nome_curso: formData.nome_curso,
-            descricao: formData.descricao,
-            duracao: formData.duracao,
-            escola_id: formData.escola_id,
-          })
+          .update(dataToInsert)
           .eq("id", id);
 
         if (error) throw error.message;
-        notifySuccess("Curso actualizado com sucesso");
+        notifySuccess("Classe actualizado com sucesso");
         return data;
       } catch (error) {
         console.log(error);
       }
     },
-
     // Apagar informações no banco pelo id, mas antes perguntar se pretende apagar ou não. Se sim, apaga; se não, cancela.
-    async deleteCursoById(id) {
+    async deleteClasseById(id) {
       try {
         Dialog.create({
           title: "Confirme",
-          message: "Você tens a certeza que pretendes apagar este curso?",
+          message: "Você tens a certeza que pretendes apagar este período?",
           cancel: true,
           persistent: true,
         })
@@ -108,7 +125,7 @@ export const useCursoStore = defineStore("cursos", {
               .match({ id });
 
             if (error) throw error;
-            notifySuccess("Curso apagado com sucesso");
+            notifySuccess("Período apagado com sucesso");
             return data;
           })
           .onCancel(() => {

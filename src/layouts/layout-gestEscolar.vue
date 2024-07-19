@@ -138,6 +138,22 @@
         <q-item
           clickable
           class="GPLAY__drawer-link GPLAY__drawer-link--books"
+          @click="handleClasses()"
+        >
+          <q-item-section
+            avatar
+            class="books-icon bg-red-6 text-grey-1 text-center"
+          >
+            <q-icon name="mdi-chart-line" />
+          </q-item-section>
+          <q-item-section class="books-text">
+            <q-item-label>Classes</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-item
+          clickable
+          class="GPLAY__drawer-link GPLAY__drawer-link--books"
           @click="hendleDisciplina()"
         >
           <q-item-section
@@ -336,6 +352,10 @@ export default {
       router.push({ name: "pageDisciplina" });
     };
 
+    const handleClasses = () => {
+      router.push({ name: "pageClasse" });
+    };
+
     const logoutUser = async () => {
       await Dialog.create({
         title: "Sair",
@@ -366,6 +386,7 @@ export default {
       logoutUser,
       handlePeriodo,
       hendleDisciplina,
+      handleClasses,
 
       links1: [
         { text: "Minha conta", icon: "mdi-account" },

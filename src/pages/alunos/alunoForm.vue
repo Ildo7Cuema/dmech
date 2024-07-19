@@ -4,7 +4,7 @@
     <q-card>
       <q-card-section class="row items-center">
         <q-avatar
-          :icon="isEditForm ? 'mdi-file-edit' : 'mdi-clock-outline'"
+          :icon="isEditForm ? 'mdi-file-edit' : 'mdi-account-group'"
           :color="isEditForm ? 'green-9' : 'dark'"
           text-color="white"
         />
@@ -29,120 +29,110 @@
           />
           <q-input
             v-model="form.data_nascimento"
-            :label="`Nome` + artigo1 + ` ` + nome"
+            label="Data de nascimento"
             dense
             type="date"
             outlined
             clearable
-            :placeholder="nome"
+            placeholder="Data de nascimento"
             class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
-            :rules="[
-              (val) =>
-                !!val || 'Porfavor informe o nome ' + artigo1 + ' ' + nome,
-            ]"
+            :rules="[(val) => !!val || 'Porfavor informe a data de nascimento']"
           />
           <q-input
             v-model="form.morada"
-            :label="`Nome` + artigo1 + ` ` + nome"
+            label="Informe a morada"
             dense
             type="text"
             outlined
             clearable
-            :placeholder="nome"
+            placeholder="Morada"
             class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
-            :rules="[
-              (val) =>
-                !!val || 'Porfavor informe o nome ' + artigo1 + ' ' + nome,
-            ]"
+            :rules="[(val) => !!val || 'Porfavor informe a morada']"
           />
           <q-input
             v-model="form.email"
-            :label="`Nome` + artigo1 + ` ` + nome"
+            label="E-mail"
             dense
             type="text"
             outlined
             clearable
-            :placeholder="nome"
+            placeholder="E-mail"
             class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
           />
           <q-input
             v-model="form.telemovel"
-            :label="`Nome` + artigo1 + ` ` + nome"
+            label="Nº de telemóvel"
             dense
             type="text"
             outlined
             clearable
-            :placeholder="nome"
+            placeholder="Nº de telemóvel"
             class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
           />
           <q-input
             v-model="form.natural"
-            :label="`Nome` + artigo1 + ` ` + nome"
+            label="Nauralidade"
             dense
             type="text"
             outlined
             clearable
-            :placeholder="nome"
+            placeholder="Naturalidade"
             class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
             :rules="[
-              (val) =>
-                !!val || 'Porfavor informe o nome ' + artigo1 + ' ' + nome,
+              (val) => !!val || 'Porfavor informe a naturalidade do aluno',
             ]"
           />
           <q-input
             v-model="form.municipio"
-            :label="`Nome` + artigo1 + ` ` + nome"
+            label="Município onde vive"
             dense
             type="text"
             outlined
             clearable
-            :placeholder="nome"
+            placeholder="Município onde vive"
             class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
             :rules="[
-              (val) =>
-                !!val || 'Porfavor informe o nome ' + artigo1 + ' ' + nome,
+              (val) => !!val || 'Porfavor informe Municipio onde o aluno vive',
             ]"
           />
           <q-input
             v-model="form.provincia"
-            :label="`Nome` + artigo1 + ` ` + nome"
+            label="Província onde vive"
             dense
             type="text"
             outlined
             clearable
-            :placeholder="nome"
+            placeholder="Província onde vive"
             class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
             :rules="[
               (val) =>
-                !!val || 'Porfavor informe o nome ' + artigo1 + ' ' + nome,
+                !!val || 'Porfavor informe a Província onde o aluno vive',
             ]"
           />
           <q-input
             v-model="form.nome_pai"
-            :label="`Nome` + artigo1 + ` ` + nome"
+            label="Nome do Pai"
             dense
             type="text"
             outlined
             clearable
-            :placeholder="nome"
+            placeholder="Nome do Pai"
             class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
             :rules="[
-              (val) =>
-                !!val || 'Porfavor informe o nome ' + artigo1 + ' ' + nome,
+              (val) => !!val || 'Porfavor informe o nome do pai do aluno',
             ]"
           />
           <q-input
             v-model="form.nome_mae"
-            :label="`Nome` + artigo1 + ` ` + nome"
+            label="Nome da Mãe"
             dense
             type="text"
             outlined
             clearable
-            :placeholder="nome"
+            placeholder="Nome da Mãe"
             class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
             :rules="[
-              (val) =>
-                !!val || 'Porfavor informe o nome ' + artigo1 + ' ' + nome,
+              (val) => !!val || 'Porfavor informe o nome da mãe do aluno',
             ]"
           />
           <q-radio
@@ -150,72 +140,61 @@
             label="Masculino"
             val="masculino"
             dense
+            class="col-6 text-center"
           />
           <q-radio
             v-model="form.genero"
             label="Feminino"
             val="feminino"
             dense
+            class="col-6 text-center"
           />
 
           <q-input
             v-model="form.num_doc"
-            :label="`Nome` + artigo1 + ` ` + nome"
+            label="Nº do documento pessoal"
             dense
             type="text"
             outlined
             clearable
-            :placeholder="nome"
+            placeholder="Nº do documento pessoal"
             class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
             :rules="[
               (val) =>
-                !!val || 'Porfavor informe o nome ' + artigo1 + ' ' + nome,
+                !!val || 'Porfavor informe o número do documento pessoal',
             ]"
           />
 
           <q-input
             v-model="form.data_emissao"
-            :label="`Nome` + artigo1 + ` ` + nome"
+            label="Data de emissão"
+            type="date"
             dense
-            type="text"
             outlined
             clearable
-            :placeholder="nome"
+            placeholder="Data de emissão"
             class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
             :rules="[
               (val) =>
-                !!val || 'Porfavor informe o nome ' + artigo1 + ' ' + nome,
+                !!val ||
+                'Porfavor informe a data de emissão do documento pessoal',
             ]"
           />
           <q-input
             v-model="form.local_emissao"
-            :label="`Nome` + artigo1 + ` ` + nome"
+            label="Local de emissão"
             dense
             type="text"
             outlined
             clearable
-            :placeholder="nome"
+            placeholder="Local de emissão"
             class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
             :rules="[
               (val) =>
-                !!val || 'Porfavor informe o nome ' + artigo1 + ' ' + nome,
+                !!val ||
+                'Porfavor informe o local de emissão do documento pessoal',
             ]"
           />
-          <q-input
-            v-model="form.local_emissao"
-            :label="`Nome` + artigo1 + ` ` + nome"
-            dense
-            type="text"
-            outlined
-            clearable
-            :placeholder="nome"
-            class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
-            :rules="[
-              (val) =>
-                !!val || 'Porfavor informe o nome ' + artigo1 + ' ' + nome,
-            ]"
-          />
-
           <q-select
             v-model="form.ano_lectivo"
             :label="`Ano Letivo`"
@@ -227,6 +206,65 @@
             :rules="[(val) => !!val || 'Por favor selecione o Ano Letivo']"
             option-value="ano_lectivo"
             option-label="ano_lectivo"
+            map-options
+            emit-value
+          />
+
+          <q-select
+            v-model="form.turma_id"
+            :label="`Seleciione uma turma`"
+            dense
+            outlined
+            :options="turmasOptions"
+            :placeholder="`Selecione uma turma`"
+            class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+            :rules="[(val) => !!val || 'Por favor selecione uma turma']"
+            option-value="id"
+            option-label="nome_turma"
+            map-options
+            emit-value
+          />
+
+          <q-select
+            v-model="form.classe"
+            :label="`Selecione uma classe`"
+            dense
+            outlined
+            :options="classesOptions"
+            :placeholder="`Selecione uma classe`"
+            class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+            :rules="[(val) => !!val || 'Por favor selecione uma classe']"
+            option-value="nome_classe"
+            option-label="nome_classe"
+            map-options
+            emit-value
+          />
+
+          <q-select
+            v-model="form.curso_id"
+            :label="`Selecione um curso`"
+            dense
+            outlined
+            :options="cursos"
+            :placeholder="`Selecione um curso`"
+            class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+            :rules="[(val) => !!val || 'Por favor selecione um curso']"
+            option-value="id"
+            option-label="nome_curso"
+            map-options
+            emit-value
+          />
+          <q-select
+            v-model="form.periodo_id"
+            :label="`Selecione um período`"
+            dense
+            outlined
+            :options="periodoOptions"
+            :placeholder="`Selecione um período`"
+            class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+            :rules="[(val) => !!val || 'Por favor selecione um período']"
+            option-value="id"
+            option-label="nome_periodo"
             map-options
             emit-value
           />
@@ -264,13 +302,30 @@ import { ref, watch, onMounted, computed } from "vue";
 export default {
   props: {
     anoLectivoOptions: { type: Array },
-    nivel_ensino: String,
+    nivel_ensino: { type: String, required: true },
     nome: String,
     cursos: {
       type: Array,
     },
     periodo: {
       type: Object,
+    },
+    turmasOptions: {
+      type: Array,
+    },
+    periodoOptions: {
+      type: Array,
+    },
+    classesOptions: {
+      type: Array,
+    },
+    escolaId: {
+      type: Number,
+      required: true,
+    },
+    showInfoToEdit: {
+      type: Object,
+      required: true,
     },
     showModal: Boolean,
     loading: Boolean,
@@ -279,22 +334,60 @@ export default {
   emits: ["save"],
   setup(props, { emit }) {
     const form = ref({
-      nome_periodo: "",
+      nome: "",
+      data_nascimento: "",
+      morada: "",
+      email: "",
+      telemovel: "",
+      natural: "",
+      municipio: "",
+      provincia: "",
+      nome_pai: "",
+      nome_mae: "",
+      genero: "",
+      num_doc: "",
+      data_emissao: "",
+      local_emissao: "",
+      ano_lectivo: "",
+      turma_id: "",
+      classe: "",
+      curso_id: "",
       escola_id: "",
-      descricao: "",
+      nivel_ensino: "",
+      periodo_id: "",
     });
     const statusForm = ref(false);
 
-    const emitForm = () => {
+    const emitForm = async () => {
       // Emit the form data using the 'emit' method
-      emit("save", form.value);
+      form.value.escola_id = props.escolaId;
+      form.value.nivel_ensino = props.nivel_ensino;
+      await emit("save", form.value);
     };
 
     const closeForm = () => {
       form.value = {
-        nome_periodo: "",
-        escola_id: "",
-        descricao: "",
+        nome: "",
+        data_nascimento: "",
+        morada: "",
+        email: "",
+        telemovel: "",
+        natural: "",
+        municipio: "",
+        provincia: "",
+        nome_pai: "",
+        nome_mae: "",
+        genero: "",
+        num_doc: "",
+        data_emissao: "",
+        local_emissao: "",
+        ano_lectivo: "",
+        turma_id: "",
+        classe: "",
+        curso_id: "",
+        escola_id: props.escolaId,
+        nivel_ensino: props.nivel_ensino,
+        periodo_id: "",
       };
       statusForm.value = false;
     };
@@ -316,10 +409,10 @@ export default {
     });
 
     watch(
-      () => props.periodo,
-      (newPeriodo) => {
-        if (newPeriodo) {
-          form.value = { ...newPeriodo };
+      () => props.showInfoToEdit,
+      (newInfor) => {
+        if (newInfor) {
+          form.value = { ...newInfor };
           statusForm.value = true;
         }
       },
@@ -340,16 +433,31 @@ export default {
       }
     );
 
-    watch(
+    /* watch(
       () => props.loading,
       (newVal) => {
         if (newVal != true) {
-          form.value.nome_periodo = "";
-          form.value.escola_id = "";
-          form.value.descricao = "";
+          (form.value.nome = ""),
+            (form.value.data_nascimento = ""),
+            (form.value.morada = ""),
+            (form.value.email = ""),
+            (form.value.telemovel = ""),
+            (form.value.natural = ""),
+            (form.value.municipio = ""),
+            (form.value.provincia = ""),
+            (form.value.nome_pai = ""),
+            (form.value.nome_mae = ""),
+            (form.value.genero = ""),
+            (form.value.num_doc = ""),
+            (form.value.data_emissao = ""),
+            (form.value.local_emissao = ""),
+            (form.value.ano_lectivo = ""),
+            (form.value.turma_id = ""),
+            (form.value.classe = ""),
+            (form.value.curso_id = "");
         }
       }
-    );
+    );*/
     return {
       form,
       emitForm,
