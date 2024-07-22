@@ -122,6 +122,7 @@ export default {
       loading.value;
     });
 
+    //atribbuir cor nas notas de acordo os valores atribuidos
     const getColorMac = () => {
       if (props.curso == "Ensino primário" && form.value.mac < 4.44) {
         return "red";
@@ -152,6 +153,7 @@ export default {
       }
     };
 
+    //calcular a média de acordo os campos que vai alterando
     watch(
       () => form.value.mac,
       async (newValue) => {
@@ -200,6 +202,7 @@ export default {
         loading.value = false;
       }
     );
+    //===================================================================================================================
     return {
       nome_disciplina,
       loading,
