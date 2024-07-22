@@ -231,6 +231,11 @@ const routes = [
         name: "pageDisciplina",
         component: () => import("pages/disciplinas/disciplinaPage.vue"),
       },
+      {
+        path: "/page-editNotas/:info?",
+        name: "addOrEditNota",
+        component: () => import("pages/notas/addOrEditNotas.vue"),
+      },
     ],
     meta: { requiresAuth: true },
   },

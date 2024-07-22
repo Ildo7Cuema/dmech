@@ -13,13 +13,24 @@
       </q-card-section>
 
       <q-card-section class="row q-col-gutter-sm">
-        <p><b>Período: </b>{{ showInformation.nome_periodo }}</p>
+        <p><b>Nome completo: </b>{{ showInformation.nome }}</p>
         <br />
-        <p><b>Nome da escola:</b>{{ showInformation.escola.name }}</p>
+        <p><b>Nome do Pai: </b>{{ showInformation.nome_pai }}</p>
         <br />
-        <p>
-          <b>Descrição: </b>
-        </p>
+        <p><b>Nome da maê: </b>{{ showInformation.nome_mae }}</p>
+        <br />
+        <p><b>Nº do documento: </b>{{ showInformation.num_doc }}</p>
+        <br />
+        <p><b>Morada:</b>{{ showInformation.morada }}</p>
+        <p><b>Natural:</b>{{ showInformation.natural }}</p>
+        <p><b>Município:</b>{{ showInformation.municipio }}</p>
+        <p><b>Província:</b>{{ showInformation.provincia }}</p>
+        <p><b>Nível de ensino:</b>{{ showInformation.nivel_ensino }}</p>
+        <p><b>Turma:</b>{{ showInformation.turmas.nome_turma }}</p>
+        <p><b>Classe:</b>{{ showInformation.classe }}</p>
+        <p><b>Período:</b>{{ showInformation.periodo.nome_periodo }}</p>
+        <br />
+        <p><b>Escola onde frequenta:</b>{{ showInformation.escola.name }}</p>
         <br />
         <p><b>Data de registo:</b> {{ momentDate }}</p>
       </q-card-section>

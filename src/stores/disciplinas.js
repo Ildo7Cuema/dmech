@@ -24,68 +24,65 @@ export const useDisciplinaStore = defineStore("disciplinas", {
   actions: {
     //Pegar todos os dados no banco de dados
     async getAllDisciplinas(escola_id) {
-      console.log(escola_id);
       try {
         const { data, error } = await supabase
           .from(tabela)
-          .select(`*, escola:escola_id(*), cursos:curso_id(*)`)
+          .select(`*, escola:escola_id(*)`)
           .eq("escola_id", escola_id);
         if (error) throw error.message;
-        console.log(data);
+
         return (this.disciplinas = data);
       } catch (error) {
         console.log(error);
       }
     },
 
-    //Cadastrar informações no banco
-    /*async addDisciplina(formData) {
-      try {
-        const { data, error } = await supabase.from(tabela).insert([
-          {
-            nome_disciplina: formData.nome_disciplina,
-            curso_id: formData.curso_id,
-            descricao: formData.descricao,
-            escola_id: formData.escola_id,
-          },
-        ]);
-        if (error) throw error.message;
-
-        notifySuccess("Príodo cadastrado com sucesso");
-        return (this.disciplinas = data);
-      } catch (error) {}
-    },*/
-
     async addDisciplina(formData) {
       try {
-        // Verifica se curso_id é um array e cria um array de objetos a serem inseridos
-        const dataToInsert = Array.isArray(formData.curso_id)
-          ? formData.curso_id.map((cursoId) => ({
-              nome_disciplina: formData.nome_disciplina,
-              curso_id: cursoId,
-              descricao: formData.descricao,
-              escola_id: formData.escola_id,
-            }))
-          : [
-              {
-                nome_disciplina: formData.nome_disciplina,
-                curso_id: formData.curso_id,
-                descricao: formData.descricao,
-                escola_id: formData.escola_id,
-              },
-            ];
-
         const { data, error } = await supabase
           .from(tabela)
-          .insert(dataToInsert);
-
+          .insert([
+            {
+              nome_disciplina: formData.nome_disciplina,
+              descricao: formData.descricao,
+              escola_id: formData.escola_id,
+            },
+          ])
+          .select();
+        const disciplinaId = data[0].id;
         if (error) throw error.message;
-
-        notifySuccess("Disciplina(s) cadastrada(s) com sucesso");
+        this.addDisciplinaCurso(disciplinaId, formData);
         return (this.disciplinas = data);
-      } catch (error) {
-        console.error("Erro ao cadastrar disciplina(s):", error);
-      }
+      } catch (error) {}
+    },
+
+    async addDisciplinaCurso(disciplinaID, formData) {
+      try {
+        // Verifica se curso_id é um array e cria um array de objetos a serem inseridos
+
+        if (Array.isArray(formData.curso_id)) {
+          const disciplinaCursos = formData.curso_id.map((cursoId) => ({
+            disciplina_id: disciplinaID,
+            curso_id: cursoId,
+            escola_id: formData.escola_id,
+          }));
+          const { data, error } = await supabase
+            .from("disciplinas_curso")
+            .insert(disciplinaCursos);
+
+          if (error) throw error.message;
+        } else {
+          const { data, error } = await supabase
+            .from("disciplinas_curso")
+            .insert({
+              disciplina_id: disciplinaID,
+              curso_id: formData.curso_id,
+              escola_id: formData.escola_id,
+            });
+
+          if (error) throw error.message;
+        }
+      } catch (error) {}
     },
 
     //Buscar informações no banco pelo id
@@ -162,6 +159,18 @@ export const useDisciplinaStore = defineStore("disciplinas", {
       } catch (error) {
         console.log(error);
       }
+    },
+
+    async disciplinaCursos(id) {
+      try {
+        const { data, error } = await supabase
+          .from("disciplinas_curso")
+          .select(`curso_id, cursos:curso_id(*)`)
+          .eq("disciplina_id", id);
+        if (error) throw error.message;
+        console.log(data);
+        return data;
+      } catch (error) {}
     },
 
     async getEscolaIdByEmail(email) {

@@ -35,32 +35,56 @@ export const useClasseStore = defineStore("classes", {
       }
     },
 
-    //Cadastrar informações no banco
     async addClasse(formData) {
-      console.log(formData.id);
-
       try {
-        // Verifica se curso_id é um array e cria um array de objetos a serem inseridos
-        const dataToInsert = Array.isArray(formData.id)
-          ? formData.id.map((classId) => ({
-              nome_classe: formData.nome_classe,
-              escola_id: formData.escola_id,
-            }))
-          : [
-              {
-                nome_classe: formData.nome_classe,
-                escola_id: formData.escola_id,
-              },
-            ];
-
         const { data, error } = await supabase
           .from(tabela)
-          .insert(dataToInsert);
-
+          .insert([
+            {
+              nome_classe: formData.nome_classe,
+              escola_id: formData.escola_id,
+            },
+          ])
+          .select();
         if (error) throw error.message;
-
-        notifySuccess("Classe(s) cadastrada(s) com sucesso");
+        const classeId = data[0].id;
+        console.log(classeId);
+        this.addClasseDisciplina(classeId, formData);
         return (this.classes = data);
+      } catch (error) {}
+    },
+
+    //Cadastrar informações no banco classes_disciplina
+    async addClasseDisciplina(classeID, formData) {
+      console.log(classeID);
+      try {
+        // Verifica se curso_id é um array e cria um array de objetos a serem inseridos
+        if (Array.isArray(formData.disciplina_id)) {
+          const classesDisciplinas = formData.disciplina_id.map(
+            (disciplinaID) => ({
+              disciplina_id: disciplinaID,
+              classe_id: classeID,
+              escola_id: formData.escola_id,
+              curso_id: formData.curso_id,
+            })
+          );
+          const { data, error } = await supabase
+            .from("classes_disciplina")
+            .insert(classesDisciplinas);
+
+          if (error) throw error.message;
+        } else {
+          const { data, error } = await supabase
+            .from("classes_disciplina")
+            .insert({
+              disciplina_id: disciplinaID,
+              classe_id: classeID,
+              escola_id: formData.escola_id,
+              curso_id: formData.curso_id,
+            });
+
+          if (error) throw error.message;
+        }
       } catch (error) {
         console.error("Erro ao cadastrar classe(s):", error);
       }
@@ -84,26 +108,34 @@ export const useClasseStore = defineStore("classes", {
     // Atualizar informações no banco pelo id
     async updateClasseById(id, formData) {
       try {
-        const dataToInsert = Array.isArray(formData.id)
-          ? formData.id.map((classId) => ({
-              nome_classe: formData.nome_classe,
+        if (Array.isArray(formData.disciplina_id)) {
+          const classesDisciplinas = formData.disciplina_id.map(
+            (disciplinaID) => ({
+              disciplina_id: disciplinaID,
+              classe_id: classeID,
               escola_id: formData.escola_id,
-            }))
-          : [
-              {
-                nome_classe: formData.nome_classe,
-                escola_id: formData.escola_id,
-              },
-            ];
+              curso_id: formData.curso_id,
+            })
+          );
+          const { data, error } = await supabase
+            .from("classes_disciplina")
+            .update(classesDisciplinas)
+            .eq("classe_id", id);
 
-        const { data, error } = await supabase
-          .from(tabela)
-          .update(dataToInsert)
-          .eq("id", id);
+          if (error) throw error.message;
+        } else {
+          const { data, error } = await supabase
+            .from("classes_disciplina")
+            .update({
+              disciplina_id: disciplinaID,
+              classe_id: classeID,
+              escola_id: formData.escola_id,
+              curso_id: formData.curso_id,
+            })
+            .eq("classe_id", id);
 
-        if (error) throw error.message;
-        notifySuccess("Classe actualizado com sucesso");
-        return data;
+          if (error) throw error.message;
+        }
       } catch (error) {
         console.log(error);
       }
@@ -146,6 +178,20 @@ export const useClasseStore = defineStore("classes", {
         if (error) throw error.message;
         const escolaId = data[0].id;
         return escolaId;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async getClassesDisciplinas(classeId) {
+      try {
+        const { data, error } = await supabase
+          .from("classes_disciplina")
+          .select(`disciplina_id, disciplinas:disciplina_id(*)`)
+          .eq("classe_id", classeId);
+        if (error) throw error.message;
+        console.log(data);
+        return data;
       } catch (error) {
         console.log(error);
       }

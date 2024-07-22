@@ -224,9 +224,9 @@
             map-options
             emit-value
           />
-
+          {{ form.classe_id }}
           <q-select
-            v-model="form.classe"
+            v-model="form.classe_id"
             :label="`Selecione uma classe`"
             dense
             outlined
@@ -234,7 +234,7 @@
             :placeholder="`Selecione uma classe`"
             class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
             :rules="[(val) => !!val || 'Por favor selecione uma classe']"
-            option-value="nome_classe"
+            option-value="id"
             option-label="nome_classe"
             map-options
             emit-value
@@ -350,7 +350,7 @@ export default {
       local_emissao: "",
       ano_lectivo: "",
       turma_id: "",
-      classe: "",
+      classe_id: "",
       curso_id: "",
       escola_id: "",
       nivel_ensino: "",

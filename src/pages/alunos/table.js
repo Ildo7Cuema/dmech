@@ -21,17 +21,10 @@ const columns = [
     sortable: true,
   },
   {
-    name: "turma",
-    label: "Sala nº",
-    align: "left",
-    field: (row) => row.turmas.num_sala,
-    sortable: true,
-  },
-  {
     name: "classe",
     label: "Classe",
     align: "left",
-    field: "classe",
+    field: (row) => row.classes.nome_classe,
     sortable: true,
   },
   {

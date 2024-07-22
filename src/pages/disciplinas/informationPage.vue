@@ -19,11 +19,17 @@
             showInformation.nome_disciplina
           }}</span>
         </p>
-        <br />
-        <p><b>Nome da escola:</b>{{ showInformation.escola.name }}</p>
-        <br />
-        <p><b>Pertence ao curso:</b> {{ showInformation.cursos.nome_curso }}</p>
-        <br />
+        <div class="col-12">
+          <p><b>Nome da escola: </b>{{ showInformation.escola.name }}</p>
+        </div>
+        <div class="col-12">
+          <b class="text-red-9">Cursos a que a disciplina pertence: </b>
+          <ul>
+            <li v-for="cursos in disciplinasCursos" :key="cursos.id">
+              {{ cursos.cursos.nome_curso }}
+            </li>
+          </ul>
+        </div>
         <p><b>Data de registo:</b> {{ momentDate }}</p>
       </q-card-section>
 
@@ -48,6 +54,10 @@ export default {
   props: {
     nome: String,
     showModal2: Boolean,
+    disciplinasCursos: {
+      type: Array,
+      required: true,
+    },
     showInformation: {
       type: Object,
       required: true,

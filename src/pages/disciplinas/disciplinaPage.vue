@@ -54,14 +54,14 @@
       </template>
       <template v-slot:body-cell-options="props">
         <q-td :props="props">
-          <q-btn
+          <!--<q-btn
             flat
             dense
             icon="mdi-file-edit-outline"
             color="green-9"
             @click="edit(props.row)"
             size="sm"
-          />
+          />-->
           <q-btn
             flat
             dense
@@ -96,6 +96,7 @@
     <showInformation
       v-model="showModal2"
       :showInformation="DisciplinaInfo"
+      :disciplinasCursos="disciplinasCursos"
       nome="disciplina"
     />
   </div>
@@ -131,6 +132,7 @@ export default {
       getDisciplinaById,
       updateDisciplinaById,
       getEscolaIdByEmail,
+      disciplinaCursos,
     } = useDisciplinaStore();
 
     const { getAllCursos } = useCursoStore();
@@ -142,6 +144,7 @@ export default {
     const cursos = ref([]);
     const DisciplinaInfo = ref({});
     const rows = ref([]);
+    const disciplinasCursos = ref([]);
 
     onMounted(() => {
       listDisciplinas();
@@ -174,9 +177,12 @@ export default {
     };
 
     //Mostrar modal de informação de Disciplinas
-    const information = (info) => {
+    const information = async (info) => {
       console.log(info);
       DisciplinaInfo.value = { ...info };
+      await disciplinaCursos(info.id).then((item) => {
+        disciplinasCursos.value = item;
+      });
       showModal2.value = true;
     };
 
@@ -240,6 +246,7 @@ export default {
       showModal2,
       DisciplinaInfo,
       cursos,
+      disciplinasCursos,
     };
   },
 };

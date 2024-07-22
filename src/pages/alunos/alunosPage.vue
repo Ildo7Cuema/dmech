@@ -104,6 +104,15 @@
             @click="information(props.row)"
             size="sm"
           />
+          <q-btn
+            flat
+            dense
+            icon="mdi-microsoft-excel"
+            color="green-9"
+            @click="addOrEditNotas(props.row)"
+            size="sm"
+            title="Mini-pautas-edit"
+          />
         </q-td>
       </template>
     </q-table>
@@ -146,6 +155,7 @@ import userAuthUser from "src/composible/userAuthUser";
 import { useTurmaStore } from "src/stores/turmas";
 import { useClasseStore } from "src/stores/classes";
 import { usePeriodoStore } from "src/stores/periodos";
+import { useRouter } from "vue-router";
 
 export default {
   components: {
@@ -191,6 +201,7 @@ export default {
     const cursos = ref([]);
     const AlunoInfo = ref({});
     const rows = ref([]);
+    const router = useRouter();
 
     onMounted(async () => {
       const escola = await getEscolaIdByEmail(user.value.email);
@@ -202,7 +213,7 @@ export default {
       turmasOptions.value = await getAllTurmas(escola[0].id);
       await getAllAnoLectivo(escola[0].id);
       getAllClasses(escola[0].id).then((item) => {
-        classesOptions.value = JSON.parse(item[0].nome_classe);
+        classesOptions.value = item;
       });
       cursos.value = await getAllCursos(escola[0].id);
       periodoOptions.value = await getAllPeriodos(escola[0].id);
@@ -299,12 +310,11 @@ export default {
       const worksheet = workbook.addWorksheet("Alunos");
 
       // Add headers
-      worksheet.addRow(["Turma", "Classe", "Sala nº", "Ano lectivo"]);
+      worksheet.addRow(["Turma", "Classe", "Ano lectivo"]);
 
       worksheet.addRow([
         filteredRows.value[0].turmas.nome_turma,
-        filteredRows.value[0].classe,
-        filteredRows.value[0].turmas.num_sala,
+        filteredRows.value[0].classes.nome_classe,
         filteredRows.value[0].ano_lectivo,
       ]);
 
@@ -318,8 +328,7 @@ export default {
           new Date().getFullYear() -
             new Date(row.data_nascimento).getFullYear(),
           /* row.turmas.nome_turma,
-          row.classe,
-          row.turmas.num_sala,*/
+          row.classe,*/
         ]);
       });
 
@@ -337,6 +346,12 @@ export default {
 
         loadingDownload.value = false;
       });
+    };
+
+    const addOrEditNotas = (info) => {
+      console.log(info);
+      const infoString = JSON.stringify(info);
+      router.push({ name: "addOrEditNota", params: { info: infoString } });
     };
 
     return {
@@ -368,6 +383,7 @@ export default {
       filteredRows,
       anoLectivoSelect,
       loadingDownload,
+      addOrEditNotas,
     };
   },
 };

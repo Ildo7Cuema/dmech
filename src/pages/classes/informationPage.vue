@@ -13,10 +13,18 @@
       </q-card-section>
 
       <q-card-section class="row q-col-gutter-sm">
-        <p><b>Período: </b>{{ showInformation.nome_classe }}</p>
-        <br />
-        <p><b>Nome da escola:</b>{{ showInformation.escola.name }}</p>
-        <br />
+        <p><b>Nome: </b>{{ showInformation.nome_classe }}</p>
+        <div class="col-12">
+          <p><b>Nome da escola: </b>{{ showInformation.escola.name }}</p>
+        </div>
+        <div class="col-12 text-left">
+          <ul>
+            <b class="text-red-9">Disciplinas pertecente a classe:</b>
+            <li v-for="disciplina in classesEdisciplinas" :key="disciplina.id">
+              {{ disciplina.disciplinas.nome_disciplina }}
+            </li>
+          </ul>
+        </div>
         <p><b>Data de registo:</b> {{ momentDate }}</p>
       </q-card-section>
 
@@ -45,6 +53,10 @@ export default {
       type: Object,
       required: true,
     },
+    classesEdisciplinas: {
+      type: Array,
+      required: true,
+    },
   },
   setup(props) {
     const momentDate = moment(props.showInformation.created_at).format(
@@ -52,6 +64,8 @@ export default {
     );
     const artigo = computed(() => {
       if (props.nome.endsWith("a")) {
+        return "da";
+      } else if (props.nome.endsWith("e")) {
         return "da";
       } else {
         return "do";

@@ -7,13 +7,6 @@ const columns = [
     sortable: true,
   },
   {
-    name: "curso_id",
-    label: "Curso a que pertence",
-    align: "left",
-    field: (row) => row.cursos.nome_curso,
-    sortable: true,
-  },
-  {
     name: "escola.name",
     label: "Minha escola",
     align: "left",

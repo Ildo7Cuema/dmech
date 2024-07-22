@@ -29,7 +29,7 @@ export const useAlunosStore = defineStore("alunos", {
         const { data, error } = await supabase
           .from(tabela)
           .select(
-            `*, escola:escola_id(*), cursos:curso_id(*), turmas:turma_id(*), periodo:periodo_id(*)`
+            `*, escola:escola_id(*), cursos:curso_id(*), turmas:turma_id(*), periodo:periodo_id(*), classes:classe_id(*)`
           )
           .eq("escola_id", escola_id);
         if (error) throw error.message;
@@ -65,10 +65,11 @@ export const useAlunosStore = defineStore("alunos", {
             local_emissao: formData.local_emissao,
             ano_lectivo: formData.ano_lectivo,
             turma_id: formData.turma_id,
-            classe: formData.classe,
+            classe_id: formData.classe_id,
             curso_id: formData.curso_id,
             escola_id: formData.escola_id,
             nivel_ensino: formData.nivel_ensino,
+            periodo_id: formData.periodo_id,
           },
         ]);
         if (error) throw error.message;
@@ -118,10 +119,11 @@ export const useAlunosStore = defineStore("alunos", {
             local_emissao: formData.local_emissao,
             ano_lectivo: formData.ano_lectivo,
             turma_id: formData.turma_id,
-            classe: formData.classe,
+            classe_id: formData.classe_id,
             curso_id: formData.curso_id,
             escola_id: formData.escola_id,
             nivel_ensino: formData.nivel_ensino,
+            periodo_id: formData.periodo_id,
           })
           .eq("id", id);
 

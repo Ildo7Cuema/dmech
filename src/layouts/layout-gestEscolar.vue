@@ -134,6 +134,21 @@
             <q-item-label>Período</q-item-label>
           </q-item-section>
         </q-item>
+        <q-item
+          clickable
+          class="GPLAY__drawer-link GPLAY__drawer-link--books"
+          @click="hendleDisciplina()"
+        >
+          <q-item-section
+            avatar
+            class="books-icon bg-red-6 text-grey-1 text-center"
+          >
+            <q-icon name="book" />
+          </q-item-section>
+          <q-item-section class="books-text">
+            <q-item-label>Disciplinas</q-item-label>
+          </q-item-section>
+        </q-item>
 
         <q-item
           clickable
@@ -148,22 +163,6 @@
           </q-item-section>
           <q-item-section class="books-text">
             <q-item-label>Classes</q-item-label>
-          </q-item-section>
-        </q-item>
-
-        <q-item
-          clickable
-          class="GPLAY__drawer-link GPLAY__drawer-link--books"
-          @click="hendleDisciplina()"
-        >
-          <q-item-section
-            avatar
-            class="books-icon bg-red-6 text-grey-1 text-center"
-          >
-            <q-icon name="book" />
-          </q-item-section>
-          <q-item-section class="books-text">
-            <q-item-label>Disciplinas</q-item-label>
           </q-item-section>
         </q-item>
 

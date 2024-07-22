@@ -52,14 +52,14 @@
       </template>
       <template v-slot:body-cell-options="props">
         <q-td :props="props">
-          <q-btn
+          <!--<q-btn
             flat
             dense
             icon="mdi-file-edit-outline"
             color="green-9"
             @click="edit(props.row)"
             size="sm"
-          />
+          />-->
           <q-btn
             flat
             dense
@@ -83,16 +83,19 @@
 
     <ClassesForm
       v-model="showModal"
-      @save="handleSave"
+      @saveClasse="handleSave"
       :loading="loading"
       :isEditForm="formStatus"
+      :cursos="cursos"
       :classes="classes"
       nome="classe"
+      :disciplinas="disciplinas"
     />
 
     <showInformation
       v-model="showModal2"
       :showInformation="ClasseInfo"
+      :classesEdisciplinas="classesDisciplinaInfo"
       nome="classe"
     />
   </div>
@@ -103,6 +106,7 @@ import { ref, onMounted } from "vue";
 //importar o store de Classe
 import { useClasseStore } from "src/stores/classes";
 import { useCursoStore } from "src/stores/cursos";
+import { useDisciplinaStore } from "src/stores/disciplinas";
 import ClassesForm from "./classesForm.vue";
 import showInformation from "./informationPage.vue";
 import { columns } from "./table";
@@ -128,7 +132,10 @@ export default {
       getClasseById,
       updateClasseById,
       getEscolaIdByEmail,
+      getClassesDisciplinas,
     } = useClasseStore();
+
+    const { getAllDisciplinas } = useDisciplinaStore();
 
     const { getAllCursos } = useCursoStore();
     const escolaId = ref("");
@@ -136,6 +143,9 @@ export default {
     const search = ref("");
     const filter = ref("");
     const classe = ref({});
+    const disciplinas = ref([]);
+    const cursos = ref([]);
+    const classesDisciplinaInfo = ref([]);
     const classes = ref([
       {
         id: 0,
@@ -203,6 +213,9 @@ export default {
       getEscolaIdByEmail(user.value.email).then((id) => {
         //pega todos os Classes exclusivamente da escola logada
         escolaId.value = id;
+        getAllDisciplinas(escolaId.value).then((item) => {
+          disciplinas.value = item;
+        });
         getAllClasses(id).then((item) => {
           rows.value = item;
           loading.value = false;
@@ -216,23 +229,25 @@ export default {
       getEscolaIdByEmail(user.value.email).then((id) => {
         //pega todos os Classes exclusivamente da escola logada
         escolaId.value = id;
-        /* getAllCursos(id).then((item) => {
+        getAllCursos(id).then((item) => {
           cursos.value = item;
           loading.value = false;
-        });*/
+        });
       });
     };
 
     //Mostrar modal de informação de Classes
-    const information = (info) => {
-      console.log(info);
+    const information = async (info) => {
       ClasseInfo.value = { ...info };
+      await getClassesDisciplinas(info.id).then((item) => {
+        classesDisciplinaInfo.value = item;
+      });
       showModal2.value = true;
     };
 
     const edit = (ClasseEdit) => {
       console.log(ClasseEdit);
-      classe.value = { ...ClasseEdit };
+      classes.value = { ...ClasseEdit };
       formStatus.value = true;
       showModal.value = true;
     };
@@ -289,6 +304,9 @@ export default {
       showModal2,
       ClasseInfo,
       classes,
+      disciplinas,
+      classesDisciplinaInfo,
+      cursos,
     };
   },
 };
