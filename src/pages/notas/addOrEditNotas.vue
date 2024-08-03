@@ -2,6 +2,7 @@
   <q-page>
     <br />
     <br />
+    <!-- <br />
     <br />
     <q-card
       flat
@@ -44,19 +45,19 @@
           </div>
         </div>
       </q-card-section>
-    </q-card>
+    </q-card>-->
 
-    <div class="row q-gutter-sm q-mt-sm">
+    <div class="row q-gutter-sm q-mt-sm bg-green-10 text-white">
       <div class="col-3">
         <q-select
           flat
           dense
           label="Seleciona um trimestre"
-          outlined
           v-model="form.trimestre"
           :options="selectTrimestre"
           emit-value
           map-options
+          dark
         />
       </div>
       <div class="col-3">
@@ -65,23 +66,20 @@
             flat
             dense
             label="Seleciona uma disciplina"
-            outlined
             v-model="form.disciplina_id"
             :options="selectDisciplinas"
             option-value="id"
             option-label="nome"
             emit-value
             map-options
+            dark
           />
         </div>
       </div>
     </div>
 
-    <PrimeiraClassePagePrimeiroTrimestre
-      v-if="
-        infoAluno.classes.nome_classe == '1ª Classe' &&
-        form.trimestre == 'I Trimestre'
-      "
+    <primeiroTrimestre
+      v-if="form.trimestre == 'I Trimestre'"
       :classe="infoAluno.classes.nome_classe"
       :turma="infoAluno.turmas.nome_turma"
       :periodo="infoAluno.periodo.nome_periodo"
@@ -91,6 +89,36 @@
       :idCurso="infoAluno.classes.id"
       :disciplina="form.disciplina_id"
       :trimestre="form.trimestre"
+      :escola="infoAluno.escola.name"
+      :infoAluno="infoAluno"
+    />
+    <segundoTrimestre
+      v-if="form.trimestre == 'II Trimestre'"
+      :classe="infoAluno.classes.nome_classe"
+      :turma="infoAluno.turmas.nome_turma"
+      :periodo="infoAluno.periodo.nome_periodo"
+      :ano_lectivo="infoAluno.ano_lectivo"
+      :curso="infoAluno.cursos.nome_curso"
+      :nome_aluno="infoAluno.nome"
+      :idCurso="infoAluno.classes.id"
+      :disciplina="form.disciplina_id"
+      :trimestre="form.trimestre"
+      :escola="infoAluno.escola.name"
+      :infoAluno="infoAluno"
+    />
+    <terceiroTrimestre
+      v-if="form.trimestre == 'III Trimestre'"
+      :classe="infoAluno.classes.nome_classe"
+      :turma="infoAluno.turmas.nome_turma"
+      :periodo="infoAluno.periodo.nome_periodo"
+      :ano_lectivo="infoAluno.ano_lectivo"
+      :curso="infoAluno.cursos.nome_curso"
+      :nome_aluno="infoAluno.nome"
+      :idCurso="infoAluno.classes.id"
+      :disciplina="form.disciplina_id"
+      :trimestre="form.trimestre"
+      :escola="infoAluno.escola.name"
+      :infoAluno="infoAluno"
     />
   </q-page>
 </template>
@@ -100,10 +128,12 @@ import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useClasseStore } from "src/stores/classes";
 
-import PrimeiraClassePagePrimeiroTrimestre from "./primeira_classe/pagePrimeiroTrimestre.vue";
+import primeiroTrimestre from "./primeira_classe/pagePrimeiroTrimestre.vue";
+import segundoTrimestre from "./primeira_classe/pageSegundoTrimestre.vue";
+import terceiroTrimestre from "./primeira_classe/pageTerceiroTrimestre.vue";
 
 export default {
-  components: { PrimeiraClassePagePrimeiroTrimestre },
+  components: { primeiroTrimestre, segundoTrimestre, terceiroTrimestre },
   setup(props) {
     const route = useRoute();
     const { getClassesDisciplinas } = useClasseStore();
