@@ -179,7 +179,11 @@
           </q-item-section>
         </q-item>
 
-        <q-item clickable class="GPLAY__drawer-link GPLAY__drawer-link--books">
+        <q-item
+          clickable
+          class="GPLAY__drawer-link GPLAY__drawer-link--books"
+          @click="handleNotas()"
+        >
           <q-item-section
             avatar
             class="books-icon bg-blue-7 text-grey-1 text-center"
@@ -187,11 +191,15 @@
             <q-icon name="mdi-numeric-9-plus-box" />
           </q-item-section>
           <q-item-section class="books-text">
-            <q-item-label>Notas</q-item-label>
+            <q-item-label>Inserir notas</q-item-label>
           </q-item-section>
         </q-item>
 
-        <q-item clickable class="GPLAY__drawer-link GPLAY__drawer-link--books">
+        <q-item
+          clickable
+          class="GPLAY__drawer-link GPLAY__drawer-link--books"
+          @click="hendleMiniPauta()"
+        >
           <q-item-section
             avatar
             class="books-icon bg-blue-7 text-grey-1 text-center"
@@ -290,6 +298,7 @@
 
       <q-page-sticky expand position="top">
         <q-toolbar class="GPLAY__sticky bg-white q-px-xl">
+          <btn-back-page />
           <q-space />
           <q-btn
             icon="help"
@@ -316,9 +325,11 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import userAuthUser from "src/composible/userAuthUser";
 import { useQuasar, Dialog } from "quasar";
+import btnBackPage from "src/components/btnBack/btnBackPage.vue";
 
 export default {
   name: "GooglePlayLayout",
+  components: { btnBackPage },
 
   setup() {
     const leftDrawerOpen = ref(false);
@@ -333,6 +344,10 @@ export default {
 
     const handleAlunos = () => {
       router.push({ name: "pageAlunos" });
+    };
+
+    const handleNotas = () => {
+      router.push({ name: "pageNotas" });
     };
 
     const handleCurso = () => {
@@ -353,6 +368,10 @@ export default {
 
     const handleClasses = () => {
       router.push({ name: "pageClasse" });
+    };
+
+    const hendleMiniPauta = () => {
+      router.push({ name: "mini-pautas" });
     };
 
     const logoutUser = async () => {
@@ -386,6 +405,8 @@ export default {
       handlePeriodo,
       hendleDisciplina,
       handleClasses,
+      handleNotas,
+      hendleMiniPauta,
 
       links1: [
         { text: "Minha conta", icon: "mdi-account" },

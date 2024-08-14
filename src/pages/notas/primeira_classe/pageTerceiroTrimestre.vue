@@ -31,22 +31,18 @@
           </p>
         </div>
       </q-card-section>
-      <div class="row">
-        <div class="col-12 text-center text-h6">
-          Inserindo nota do "<b class="text-red-10">{{ trimestre }}</b
-          >"
-        </div>
-      </div>
+
       <q-separator />
       <q-card-section>
-        {{ isLinguaPortuguesaOrEstrangeira.includes(nome_disciplina) }}
+        [ <b class="text-red-10">{{ nome_disciplina }}</b> ] [
+        <b class="text-red-9">{{ trimestre }}</b> ]
         <table class="table green-border">
           <thead>
             <tr>
               <th rowspan="2" style="width: 200px !important">Nome do aluno</th>
               <th colspan="4">I Trimestre</th>
               <th colspan="4">II Trimestre</th>
-              <th colspan="4" class="text-red-10">{{ trimestre }}</th>
+              <th colspan="4">{{ trimestre }}</th>
               <th rowspan="2">MFD</th>
               <th
                 rowspan="2"
@@ -346,7 +342,7 @@
                   icon="mdi-content-save-outline"
                   color="green-10"
                   size="sm"
-                  class="flex item-center"
+                  class="flex item-center q-ml-sm"
                   @click="addNotas()"
                   :loading="loadingSaveBtn"
                   :disable="loadingSaveBtn"
@@ -358,6 +354,39 @@
         </table>
       </q-card-section>
     </q-card>
+    <br />
+    <div class="row">
+      <div class="col-12 text-center">
+        <p v-if="form.mf < 9.45">
+          <i
+            >Faltam pelomenos
+            <b class="text-red">{{ notaFinal }} - Valores </b>
+            para que transite na disciplina</i
+          >
+        </p>
+        <p v-else><b>PARABENS !!</b></p>
+      </div>
+      <div class="col-12 text-center">
+        <q-btn
+          v-if="form.mf < 9.45"
+          label="Não transita"
+          class="q-ma-sm"
+          style="font-size: 2rem"
+          :icon="sadEmoji"
+          color="negative"
+        />
+
+        <!-- Botão com emoji de alegria -->
+        <q-btn
+          v-else
+          label="Transita"
+          class="q-ma-sm"
+          style="font-size: 2rem"
+          :icon="happyEmoji"
+          color="positive"
+        />
+      </div>
+    </div>
   </q-page>
 </template>
 <script>
@@ -390,8 +419,7 @@ export default {
     const loading = ref(false);
     const loadingSaveBtn = ref(false);
     const {
-      addNota_primeiroTrimestre,
-      addNota_segundoTrimestre,
+      addNota_terceiroTrimestre,
       getNotas,
       getNotaPrimeiroTrimestre,
       getNotaSegundoTrimestre,
@@ -428,6 +456,7 @@ export default {
       escola_id: props.infoAluno.escola_id,
       ano_lectivo: props.ano_lectivo,
       trimestre: props.trimestre,
+      nome_disciplina: "",
     });
 
     onMounted(() => {
@@ -467,43 +496,10 @@ export default {
         props.infoAluno.periodo_id,
         props.infoAluno.curso_id
       );
-
-      form.value.mfd = mediaMFD;
-      form.value.mec = mediaMEC;
-      form.value.mf = mediaFinal;
     });
-
-    const mediaMFD = computed(() => {
-      const mt1 = parseFloat(form.value.mt1 || 0);
-      const mt2 = parseFloat(form.value.mt2 || 0);
-      const mt3 = parseFloat(form.value.mt3 || 0);
-
-      const soma = mt1 + mt2 + mt3;
-      const media = soma / 3;
-      return media.toFixed(2);
-    });
-
-    const mediaMEC = computed(() => {
-      const nee = parseFloat(form.value.nee || 0);
-      const neo = parseFloat(form.value.neo || 0);
-
-      const soma = nee + neo;
-      const media = soma / 2;
-      return media.toFixed(2);
-    });
-
-    const mediaFinal = computed(() => {
-      if (isLinguaPortuguesaOrEstrangeira.includes(nome_disciplina.value)) {
-        const mfd = parseFloat(form.value.mfd || 0);
-        const mec = parseFloat(form.value.mec || 0);
-        const soma = mfd * 0.4 + mec * 0.6;
-        return soma.toFixed(0);
-      } else {
-        const mfd = parseFloat(form.value.mfd || 0);
-        const ne = parseFloat(form.value.ne || 0);
-        const soma = mfd * 0.4 + ne * 0.6;
-        return soma.toFixed(0);
-      }
+    const notaFinal = computed(() => {
+      const nota = 9.45 - form.value.mf;
+      return nota.toFixed(2);
     });
 
     //listar notas do  I trimestre
@@ -586,24 +582,39 @@ export default {
     ) => {
       console.log(idAluno, anoLectivo, escolaId, disciplina, trimestre);
       loadingNota.value = true;
-      await getNotaTerceiroTrimestre(
-        idAluno,
-        anoLectivo,
-        escolaId,
-        disciplina,
-        trimestre,
-        classeId,
-        turmaId,
-        periodoId,
-        cursoId
-      ).then((item) => {
-        console.log(item.mac3Data);
+
+      try {
+        const item = await getNotaTerceiroTrimestre(
+          idAluno,
+          anoLectivo,
+          escolaId,
+          disciplina,
+          trimestre,
+          classeId,
+          turmaId,
+          periodoId,
+          cursoId
+        );
+
+        console.log(item.mfd3Data);
+
+        // Usando Vue.set ou a maneira reativa adequada para atualizar o objeto
         form.value.mac3 = item.mac3Data.mac3 || 0;
         form.value.npp3 = item.npp3Data.npp3 || 0;
         form.value.npt3 = item.npt3Data.npt3 || 0;
         form.value.mt3 = item.mt3Data.mt3 || 0;
-      });
-      loadingNota.value = false;
+
+        form.value.mfd = item.mfd3Data.mfd || 0;
+        form.value.nee = item.nee3Data.nee || 0;
+        form.value.neo = item.neo3Data.neo || 0;
+        form.value.mec = item.mec3Data.mec || 0;
+        form.value.mf = item.mf3Data.mf || 0;
+        form.value.ne = item.ne3Data.ne || 0;
+      } catch (error) {
+        console.error("Erro ao listar notas:", error);
+      } finally {
+        loadingNota.value = false;
+      }
     };
 
     watch(
@@ -643,6 +654,11 @@ export default {
           props.infoAluno.periodo_id,
           props.infoAluno.curso_id
         );
+        await getDisciplinaById(newValue).then((item) => {
+          form.value.disciplina_id = item.id;
+          nome_disciplina.value = item.nome_disciplina;
+          form.value.nome_disciplina = item.nome_disciplina;
+        });
 
         loadingNota.value = false;
       }
@@ -652,12 +668,23 @@ export default {
     const getColorMac = () => {
       if (props.curso == "Ensino primário" && form.value.mac1 < 4.44) {
         return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.mac1 < 9.45)
+      ) {
+        return "red";
       } else {
         return "blue";
       }
     };
+
     const getColorNpp = () => {
       if (props.curso == "Ensino primário" && form.value.npp1 < 4.44) {
+        return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.npp1 < 9.45)
+      ) {
         return "red";
       } else {
         return "blue";
@@ -666,6 +693,11 @@ export default {
     const getColorNpt = () => {
       if (props.curso == "Ensino primário" && form.value.npt1 < 4.44) {
         return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.npt1 < 9.45)
+      ) {
+        return "red";
       } else {
         return "blue";
       }
@@ -673,6 +705,11 @@ export default {
 
     const getColorMt1 = () => {
       if (props.curso == "Ensino primário" && form.value.mt1 < 4.44) {
+        return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.mt1 < 9.45)
+      ) {
         return "red";
       } else {
         return "blue";
@@ -683,12 +720,22 @@ export default {
     const getColorMac2 = () => {
       if (props.curso == "Ensino primário" && form.value.mac2 < 4.44) {
         return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.mac2 < 9.45)
+      ) {
+        return "red";
       } else {
         return "blue";
       }
     };
     const getColorNpp2 = () => {
       if (props.curso == "Ensino primário" && form.value.npp2 < 4.44) {
+        return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.npp2 < 9.45)
+      ) {
         return "red";
       } else {
         return "blue";
@@ -697,6 +744,11 @@ export default {
     const getColorNpt2 = () => {
       if (props.curso == "Ensino primário" && form.value.npt2 < 4.44) {
         return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.npt2 < 9.45)
+      ) {
+        return "red";
       } else {
         return "blue";
       }
@@ -704,6 +756,11 @@ export default {
 
     const getColorMt2 = () => {
       if (props.curso == "Ensino primário" && form.value.mt2 < 4.44) {
+        return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.mt2 < 9.45)
+      ) {
         return "red";
       } else {
         return "blue";
@@ -714,6 +771,11 @@ export default {
     const getColorMac3 = () => {
       if (props.curso == "Ensino primário" && form.value.mac3 < 4.44) {
         return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.mac3 < 9.45)
+      ) {
+        return "red";
       } else {
         return "blue";
       }
@@ -721,12 +783,22 @@ export default {
     const getColorNpp3 = () => {
       if (props.curso == "Ensino primário" && form.value.npp3 < 4.44) {
         return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.npp3 < 9.45)
+      ) {
+        return "red";
       } else {
         return "blue";
       }
     };
     const getColorNpt3 = () => {
       if (props.curso == "Ensino primário" && form.value.npt3 < 4.44) {
+        return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.npt3 < 9.45)
+      ) {
         return "red";
       } else {
         return "blue";
@@ -736,12 +808,22 @@ export default {
     const getColorMt3 = () => {
       if (props.curso == "Ensino primário" && form.value.mt3 < 4.44) {
         return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.mt3 < 9.45)
+      ) {
+        return "red";
       } else {
         return "blue";
       }
     };
     const getColorMfd = () => {
       if (props.curso == "Ensino primário" && form.value.mfd < 4.44) {
+        return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.mfd < 9.45)
+      ) {
         return "red";
       } else {
         return "blue";
@@ -750,12 +832,22 @@ export default {
     const getColorNe = () => {
       if (props.curso == "Ensino primário" && form.value.ne < 4.44) {
         return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.ne < 9.45)
+      ) {
+        return "red";
       } else {
         return "blue";
       }
     };
     const getColorNee = () => {
       if (props.curso == "Ensino primário" && form.value.nee < 4.44) {
+        return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.nee < 9.45)
+      ) {
         return "red";
       } else {
         return "blue";
@@ -764,6 +856,11 @@ export default {
     const getColorNeo = () => {
       if (props.curso == "Ensino primário" && form.value.neo < 4.44) {
         return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.neo < 9.45)
+      ) {
+        return "red";
       } else {
         return "blue";
       }
@@ -771,12 +868,22 @@ export default {
     const getColorMec = () => {
       if (props.curso == "Ensino primário" && form.value.mec < 4.44) {
         return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.mec < 9.45)
+      ) {
+        return "red";
       } else {
         return "blue";
       }
     };
     const getColorMf = () => {
       if (props.curso == "Ensino primário" && form.value.mf < 4.44) {
+        return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.mf < 9.45)
+      ) {
         return "red";
       } else {
         return "blue";
@@ -813,11 +920,82 @@ export default {
         const media = soma / 3;
         if (media.toString().length > 5) {
           form.value.mt3 = media.toFixed(2);
-          form.value.mfd = mediaMFD;
         } else {
           form.value.mt3 = media;
-          form.value.mfd = mediaMFD;
         }
+      }
+    );
+
+    watch(
+      () => form.value.mt1,
+      (newValue) => {
+        const mt1 = parseFloat(newValue || 0);
+        const mt2 = parseFloat(form.value.mt2 || 0);
+        const mt3 = parseFloat(form.value.mt3 || 0);
+
+        const soma = mt1 + mt2 + mt3;
+        const media = soma / 3;
+        if (media.toString().length > 5) {
+          form.value.mfd = media.toFixed(2);
+        } else {
+          form.value.mfd = media;
+        }
+      }
+    );
+    watch(
+      () => form.value.mt2,
+      (newValue) => {
+        const mt2 = parseFloat(newValue || 0);
+        const mt1 = parseFloat(form.value.mt1 || 0);
+        const mt3 = parseFloat(form.value.mt3 || 0);
+
+        const soma = mt1 + mt2 + mt3;
+        const media = soma / 3;
+        if (media.toString().length > 5) {
+          form.value.mfd = media.toFixed(2);
+        } else {
+          form.value.mfd = media;
+        }
+      }
+    );
+    watch(
+      () => form.value.mt3,
+      (newValue) => {
+        const mt3 = parseFloat(newValue || 0);
+        const mt1 = parseFloat(form.value.mt1 || 0);
+        const mt2 = parseFloat(form.value.mt2 || 0);
+
+        const soma = mt1 + mt2 + mt3;
+        const media = soma / 3;
+        if (media.toString().length > 5) {
+          form.value.mfd = media.toFixed(2);
+        } else {
+          form.value.mfd = media;
+        }
+      }
+    );
+
+    watch(
+      () => form.value.nee,
+      (newValue) => {
+        const nee = parseFloat(newValue || 0);
+        const neo = parseFloat(form.value.neo || 0);
+
+        const soma = nee + neo;
+        const media = soma / 2;
+        form.value.mec = media.toFixed(2);
+      }
+    );
+
+    watch(
+      () => form.value.neo,
+      (newValue) => {
+        const neo = parseFloat(newValue || 0);
+        const nee = parseFloat(form.value.nee || 0);
+
+        const soma = nee + neo;
+        const media = soma / 2;
+        form.value.mec = media.toFixed(2);
       }
     );
 
@@ -848,10 +1026,8 @@ export default {
         const media = soma / 3;
         if (media.toString().length > 5) {
           form.value.mt3 = media.toFixed(2);
-          form.value.mfd = mediaMFD;
         } else {
           form.value.mt3 = media;
-          form.value.mfd = mediaMFD;
         }
       }
     );
@@ -883,43 +1059,9 @@ export default {
         const media = soma / 3;
         if (media.toString().length > 5) {
           form.value.mt3 = media.toFixed(2);
-          form.value.mfd = mediaMFD;
         } else {
           form.value.mt3 = media;
-          form.value.mfd = mediaMFD;
         }
-      }
-    );
-
-    watch(
-      () => form.value.nee,
-      async (newValue) => {
-        form.value.mec = mediaMEC;
-      }
-    );
-    watch(
-      () => form.value.neo,
-      async (newValue) => {
-        form.value.mec = mediaMEC;
-      }
-    );
-
-    watch(
-      () => form.value.mfd,
-      async (newValue) => {
-        form.value.mf = mediaFinal;
-      }
-    );
-
-    watch(
-      () => props.disciplina,
-      async (newVal) => {
-        loading.value = true;
-        await getDisciplinaById(newVal).then((item) => {
-          form.value.disciplina_id = item.id;
-          nome_disciplina.value = item.nome_disciplina;
-        });
-        loading.value = false;
       }
     );
 
@@ -934,6 +1076,55 @@ export default {
       "Frances",
     ];
 
+    watch(
+      () => form.value.mfd,
+      (newValue) => {
+        if (isLinguaPortuguesaOrEstrangeira.includes(nome_disciplina.value)) {
+          const mfd = parseFloat(newValue || 0);
+          const mec = parseFloat(form.value.mec || 0);
+          const soma = mfd * 0.4 + mec * 0.6;
+          form.value.mf = soma.toFixed(0);
+        } else {
+          const mfd = parseFloat(form.value.mfd || 0);
+          const ne = parseFloat(form.value.ne || 0);
+          const soma = mfd * 0.4 + ne * 0.6;
+          form.value.mf = soma.toFixed(0);
+        }
+      }
+    );
+    watch(
+      () => form.value.ne,
+      (newValue) => {
+        if (isLinguaPortuguesaOrEstrangeira.includes(nome_disciplina.value)) {
+          const mfd = parseFloat(newValue || 0);
+          const mec = parseFloat(form.value.mec || 0);
+          const soma = mfd * 0.4 + mec * 0.6;
+          form.value.mf = soma.toFixed(0);
+        } else {
+          const mfd = parseFloat(form.value.mfd || 0);
+          const ne = parseFloat(newValue || 0);
+          const soma = mfd * 0.4 + ne * 0.6;
+          form.value.mf = soma.toFixed(0);
+        }
+      }
+    );
+    watch(
+      () => form.value.mec,
+      (newValue) => {
+        if (isLinguaPortuguesaOrEstrangeira.includes(nome_disciplina.value)) {
+          const mec = parseFloat(newValue || 0);
+          const mfd = parseFloat(form.value.mfd || 0);
+          const soma = mfd * 0.4 + mec * 0.6;
+          form.value.mf = soma.toFixed(0);
+        } else {
+          const mfd = parseFloat(form.value.mfd || 0);
+          const ne = parseFloat(newValue || 0);
+          const soma = mfd * 0.4 + ne * 0.6;
+          form.value.mf = soma.toFixed(0);
+        }
+      }
+    );
+
     //salvar nota
     const addNotas = async () => {
       try {
@@ -942,8 +1133,8 @@ export default {
           return;
         } else {
           loadingSaveBtn.value = true;
-          await addNota_segundoTrimestre(form.value);
-          listNotasSegundoTrimestre(
+          await addNota_terceiroTrimestre(form.value);
+          listNotasTerceiroTrimestre(
             props.infoAluno.id,
             props.ano_lectivo,
             props.infoAluno.escola_id,
@@ -987,8 +1178,10 @@ export default {
       loadingSaveBtn,
       addNotas,
       loadingNota,
-      mediaMFD,
       isLinguaPortuguesaOrEstrangeira,
+      sadEmoji: "😢", // Emoji de tristeza
+      happyEmoji: "😊", // Emoji de alegria
+      notaFinal,
     };
   },
 };

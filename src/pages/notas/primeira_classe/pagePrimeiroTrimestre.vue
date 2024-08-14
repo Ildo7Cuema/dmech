@@ -31,14 +31,12 @@
           </p>
         </div>
       </q-card-section>
-      <div class="row">
-        <div class="col-12 text-center text-h6">
-          Inserindo nota do "<b class="text-red-10">{{ trimestre }}</b
-          >"
-        </div>
-      </div>
+
       <q-separator />
+
       <q-card-section>
+        [ <b class="text-red-10">{{ nome_disciplina }}</b> ] [
+        <b class="text-red-9">{{ trimestre }}</b> ]
         <table class="table green-border">
           <thead>
             <tr>
@@ -249,12 +247,22 @@ export default {
     const getColorMac = () => {
       if (props.curso == "Ensino primário" && form.value.mac < 4.44) {
         return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.mac < 9.45)
+      ) {
+        return "red";
       } else {
         return "blue";
       }
     };
     const getColorNpp = () => {
       if (props.curso == "Ensino primário" && form.value.npp < 4.44) {
+        return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.npp < 9.45)
+      ) {
         return "red";
       } else {
         return "blue";
@@ -263,6 +271,11 @@ export default {
     const getColorNpt = () => {
       if (props.curso == "Ensino primário" && form.value.npt < 4.44) {
         return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.npt < 9.45)
+      ) {
+        return "red";
       } else {
         return "blue";
       }
@@ -270,6 +283,11 @@ export default {
 
     const getColorMt1 = () => {
       if (props.curso == "Ensino primário" && form.value.mt1 < 4.44) {
+        return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.mt1 < 9.45)
+      ) {
         return "red";
       } else {
         return "blue";
@@ -395,6 +413,22 @@ export default {
 };
 </script>
 <style scoped>
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table.green-border th,
+.table.green-border td {
+  min-width: 100px; /* Ajuste a largura conforme necessário */
+  white-space: nowrap;
+}
+
+.table.green-border {
+  width: 100%;
+  table-layout: fixed;
+}
+
 .table {
   margin: 0 auto;
   border-collapse: collapse;

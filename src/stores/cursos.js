@@ -24,6 +24,7 @@ export const useCursoStore = defineStore("cursos", {
   actions: {
     //Pegar todos os dados no banco de dados
     async getAllCursos(escola_id) {
+      console.log(escola_id);
       try {
         const { data, error } = await supabase
           .from(tabela)

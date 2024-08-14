@@ -87,6 +87,7 @@ export const useDisciplinaStore = defineStore("disciplinas", {
 
     //Buscar informações no banco pelo id
     async getDisciplinaById(id) {
+      console.log(id);
       try {
         const { data, error } = await supabase
           .from(tabela)

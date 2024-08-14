@@ -54,55 +54,17 @@
           </template>
         </q-input>
         <q-space />
-        <q-btn
-          outline
-          color="primary"
-          :disable="loading"
-          label="Novo aluno"
-          @click="formModal"
-          no-caps
-          icon="mdi-database-plus"
-          :filter="filter"
-        />
-        <q-btn
-          outline
-          color="grey-7"
-          :disable="loadingDownload"
-          label="Baixar lista"
-          @click="printList"
-          no-caps
-          icon="cloud_download"
-          :filter="filter"
-          class="q-ml-sm"
-          :loading="loadingDownload"
-        />
       </template>
       <template v-slot:body-cell-options="props">
         <q-td :props="props">
           <q-btn
             flat
             dense
-            icon="mdi-file-edit-outline"
+            icon="mdi-microsoft-excel"
             color="green-9"
-            @click="edit(props.row)"
+            @click="addOrEditNotas(props.row)"
             size="sm"
-          />
-          <q-btn
-            flat
-            dense
-            icon="mdi-delete-outline"
-            color="red-9"
-            @click="remove(props.row.id)"
-            :loading="loading"
-            size="sm"
-          />
-          <q-btn
-            flat
-            dense
-            icon="mdi-information-outline"
-            color="grey-9"
-            @click="information(props.row)"
-            size="sm"
+            title="Mini-pautas-edit"
           />
         </q-td>
       </template>
@@ -217,30 +179,6 @@ export default {
         console.log(error);
       }
     };
-
-    // Mostrar modal de informação de Alunos
-    const information = (info) => {
-      AlunoInfo.value = { ...info };
-      showModal2.value = true;
-    };
-
-    const edit = (AlunoEdit) => {
-      aluno.value = { ...AlunoEdit };
-      formStatus.value = true;
-      showModal.value = true;
-    };
-    const remove = async (id) => {
-      loading.value = true;
-      try {
-        await deleteAlunoById(id);
-        listAlunos(escolaId.value);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        listAlunos(escolaId.value);
-        loading.value = false;
-      }
-    };
     const formModal = (Aluno) => {
       formStatus.value = false;
       showModal.value = true;
@@ -351,8 +289,6 @@ export default {
       search,
       filter,
       loading,
-      edit,
-      remove,
       formModal,
       aluno,
       showModal,
@@ -360,7 +296,6 @@ export default {
       formStatus,
       AlunosCountByEscolaId,
       escolaId,
-      information,
       showModal2,
       AlunoInfo,
       cursos,

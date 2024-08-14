@@ -1,19 +1,38 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
+import useSupabase from "src/boot/supabase";
+const { supabase } = useSupabase();
 
-export const useCounterStore = defineStore('counter', {
+export const useMiniPautaStore = defineStore("counter", {
   state: () => ({
-    counter: 0
+    miniPautas: [],
   }),
 
   getters: {
-    doubleCount (state) {
-      return state.counter * 2
-    }
+    miniPautaCount: (state) => state.miniPautas.length,
   },
 
   actions: {
-    increment () {
-      this.counter++
-    }
-  }
-})
+    async getNotas(
+      escolaId,
+      cursoID,
+      classeID,
+      turmaID,
+      periodoID,
+      anoLectivo,
+      disciplinaID
+    ) {
+      const { data: view_notas, error } = await supabase
+        .from("view_notas_completa")
+        .select("*")
+        .eq("escolaid", escolaId)
+        .eq("cursoid", cursoID)
+        .eq("classeid", classeID)
+        .eq("turmaid", turmaID)
+        .eq("periodoid", periodoID)
+        .eq("ano_lectivo", anoLectivo.ano_lectivo)
+        .eq("disciplinaid", disciplinaID);
+      if (error) throw error.message;
+      return (this.miniPautas = view_notas);
+    },
+  },
+});

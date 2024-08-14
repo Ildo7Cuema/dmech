@@ -22,7 +22,9 @@ export const useUtilizadores = defineStore("utilizadores", {
 
       if (error) throw error;
       const unauthenticatedUsers = users.filter(
-        (itenUser) => itenUser.email !== "ildocuema@gmail.com"
+        (itenUser) =>
+          itenUser.email !== "ildocuema@gmail.com" ||
+          itenUser.email !== "ildomarquescuema@gmail.com"
       );
       return (this.$state.utilizadores = unauthenticatedUsers);
     },

@@ -207,6 +207,11 @@ const routes = [
         component: () => import("pages/alunos/alunosPage.vue"),
       },
       {
+        path: "/page-notas",
+        name: "pageNotas",
+        component: () => import("pages/alunos/alunosNotas.vue"),
+      },
+      {
         path: "/page-cursos",
         name: "pageCurso",
         component: () => import("pages/cursos/cursoPage.vue"),
@@ -235,6 +240,11 @@ const routes = [
         path: "/page-editNotas/:info?",
         name: "addOrEditNota",
         component: () => import("pages/notas/addOrEditNotas.vue"),
+      },
+      {
+        path: "/mini-pautas",
+        name: "mini-pautas",
+        component: () => import("pages/mini-pautas/mini-pauta.vue"),
       },
     ],
     meta: { requiresAuth: true },

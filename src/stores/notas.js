@@ -518,6 +518,11 @@ export const useNotasStore = defineStore("notas", {
               },
             ])
             .eq("id", id);
+          notifySuccess(
+            `Valor do MAC actualizado com sucesso: `,
+            infoAluno.mac3,
+            `VALORES`
+          );
         } else {
           // Insert new record
           await supabase.from(mac3).insert([
@@ -534,6 +539,12 @@ export const useNotasStore = defineStore("notas", {
               ano_lectivo: infoAluno.ano_lectivo,
             },
           ]);
+
+          notifySuccess(
+            `Valor do MAC inserido com sucesso: `,
+            infoAluno.mac3,
+            `VALORES`
+          );
         }
       } catch (error) {
         notifyError("Erro ao inserir a nota ", error.message);
@@ -572,9 +583,14 @@ export const useNotasStore = defineStore("notas", {
               },
             ])
             .eq("id", id);
+          notifySuccess(
+            `Valor do NPP actualizado com sucesso: `,
+            infoAluno.npp3,
+            `VALORES`
+          );
         } else {
           // Insert new record
-          await supabase.from(npp2).insert([
+          await supabase.from(npp3).insert([
             {
               npp3: infoAluno.npp3,
               disciplina_id: infoAluno.disciplina_id,
@@ -588,6 +604,12 @@ export const useNotasStore = defineStore("notas", {
               ano_lectivo: infoAluno.ano_lectivo,
             },
           ]);
+
+          notifySuccess(
+            `Valor do NPP foi inserido com sucesso: `,
+            infoAluno.npp3,
+            `VALORES`
+          );
         }
       } catch (error) {
         console.error(error);
@@ -626,6 +648,11 @@ export const useNotasStore = defineStore("notas", {
               },
             ])
             .eq("id", id);
+          notifySuccess(
+            `Valor do NPT foi actualizado com sucesso: `,
+            infoAluno.npt3,
+            `VALORES`
+          );
         } else {
           // Insert new record
           await supabase.from(npt3).insert([
@@ -642,6 +669,11 @@ export const useNotasStore = defineStore("notas", {
               ano_lectivo: infoAluno.ano_lectivo,
             },
           ]);
+          notifySuccess(
+            `Valor do NPT foi inserido com sucesso: `,
+            infoAluno.npp3,
+            `VALORES`
+          );
         }
       } catch (error) {
         console.error(error);
@@ -682,7 +714,6 @@ export const useNotasStore = defineStore("notas", {
             .eq("id", id);
           if (error)
             throw notifyError("Erro ao inserir a nota ", error.message);
-          else notifySuccess("Nota actualizada com sucesso!");
         } else {
           // Insert new record
           await supabase.from(mt3).insert([
@@ -699,7 +730,6 @@ export const useNotasStore = defineStore("notas", {
               ano_lectivo: infoAluno.ano_lectivo,
             },
           ]);
-          notifySuccess("Notas inseridas com sucesso");
         }
       } catch (error) {
         console.error(error);
@@ -740,7 +770,6 @@ export const useNotasStore = defineStore("notas", {
             .eq("id", id);
           if (error)
             throw notifyError("Erro ao inserir a nota ", error.message);
-          else notifySuccess("Nota actualizada com sucesso!");
         } else {
           // Insert new record
           await supabase.from(mfd).insert([
@@ -762,14 +791,75 @@ export const useNotasStore = defineStore("notas", {
       } catch (error) {
         console.error(error);
       }
+      console.log(infoAluno);
 
+      //insert to mf table
+      try {
+        const { data, error } = await supabase
+          .from(mf)
+          .select("*")
+          .eq("aluno_id", infoAluno.aluno_id)
+          .eq("ano_lectivo", infoAluno.ano_lectivo)
+          .eq("disciplina_id", infoAluno.disciplina_id)
+          .eq("trimestre", infoAluno.trimestre);
+
+        if (error) {
+          throw new Error(error.message);
+        }
+
+        if (data.length > 0) {
+          // Update existing record
+          const { id } = data[0];
+          const { error } = await supabase
+            .from(mf)
+            .update([
+              {
+                mf: infoAluno.mf,
+                disciplina_id: infoAluno.disciplina_id,
+                curso_id: infoAluno.curso_id,
+                turma_id: infoAluno.turma_id,
+                periodo_id: infoAluno.periodo_id,
+                escola_id: infoAluno.escola_id,
+                trimestre: infoAluno.trimestre,
+                classe_id: infoAluno.classe_id,
+                aluno_id: infoAluno.aluno_id,
+                ano_lectivo: infoAluno.ano_lectivo,
+              },
+            ])
+            .eq("id", id);
+          if (error)
+            throw notifyError("Erro ao inserir a nota ", error.message);
+          else notifySuccess("Nota MF actualizado com sucesso!");
+        } else {
+          // Insert new record
+          await supabase.from(mf).insert([
+            {
+              mf: infoAluno.mf,
+              disciplina_id: infoAluno.disciplina_id,
+              curso_id: infoAluno.curso_id,
+              turma_id: infoAluno.turma_id,
+              periodo_id: infoAluno.periodo_id,
+              escola_id: infoAluno.escola_id,
+              trimestre: infoAluno.trimestre,
+              classe_id: infoAluno.classe_id,
+              aluno_id: infoAluno.aluno_id,
+              ano_lectivo: infoAluno.ano_lectivo,
+            },
+          ]);
+          notifySuccess("Notas do MF inserido com sucesso");
+        }
+      } catch (error) {
+        console.error(error);
+      }
       // confirmar ou verifica se o usuario selecionou o III Trimestre e as disciplinas de L. port para inserir os dados nas tabelas nee, neo, mec, mf
       if (
         (infoAluno.trimestre == "III Trimestre" &&
           infoAluno.nome_disciplina == "Língua Portuguesa") ||
         infoAluno.nome_disciplina == "Língua Estrangeira" ||
         infoAluno.nome_disciplina == "L. Portuguesa" ||
-        infoAluno.nome_disciplina == "L. Estrangeira"
+        infoAluno.nome_disciplina == "L. Estrangeira" ||
+        infoAluno.nome_disciplina == "Inglês" ||
+        infoAluno.nome_disciplina == "Francês"
       ) {
         //insert to nee table
         try {
@@ -929,65 +1019,6 @@ export const useNotasStore = defineStore("notas", {
             await supabase.from(mec).insert([
               {
                 mec: infoAluno.mec,
-                disciplina_id: infoAluno.disciplina_id,
-                curso_id: infoAluno.curso_id,
-                turma_id: infoAluno.turma_id,
-                periodo_id: infoAluno.periodo_id,
-                escola_id: infoAluno.escola_id,
-                trimestre: infoAluno.trimestre,
-                classe_id: infoAluno.classe_id,
-                aluno_id: infoAluno.aluno_id,
-                ano_lectivo: infoAluno.ano_lectivo,
-              },
-            ]);
-            notifySuccess("Notas inseridas com sucesso");
-          }
-        } catch (error) {
-          console.error(error);
-        }
-
-        //insert to mf table
-        try {
-          const { data, error } = await supabase
-            .from(mf)
-            .select("*")
-            .eq("aluno_id", infoAluno.aluno_id)
-            .eq("ano_lectivo", infoAluno.ano_lectivo)
-            .eq("disciplina_id", infoAluno.disciplina_id)
-            .eq("trimestre", infoAluno.trimestre);
-
-          if (error) {
-            throw new Error(error.message);
-          }
-
-          if (data.length > 0) {
-            // Update existing record
-            const { id } = data[0];
-            const { error } = await supabase
-              .from(mf)
-              .update([
-                {
-                  mf: infoAluno.mf,
-                  disciplina_id: infoAluno.disciplina_id,
-                  curso_id: infoAluno.curso_id,
-                  turma_id: infoAluno.turma_id,
-                  periodo_id: infoAluno.periodo_id,
-                  escola_id: infoAluno.escola_id,
-                  trimestre: infoAluno.trimestre,
-                  classe_id: infoAluno.classe_id,
-                  aluno_id: infoAluno.aluno_id,
-                  ano_lectivo: infoAluno.ano_lectivo,
-                },
-              ])
-              .eq("id", id);
-            if (error)
-              throw notifyError("Erro ao inserir a nota ", error.message);
-            else notifySuccess("Nota actualizada com sucesso!");
-          } else {
-            // Insert new record
-            await supabase.from(mf).insert([
-              {
-                mf: infoAluno.mf,
                 disciplina_id: infoAluno.disciplina_id,
                 curso_id: infoAluno.curso_id,
                 turma_id: infoAluno.turma_id,
@@ -1317,16 +1348,437 @@ export const useNotasStore = defineStore("notas", {
 
         const mt3Data = mtData.length > 0 ? mtData[0] : 0;
 
+        const { data: mfdData, error: mfdError } = await supabase
+          .from(mfd)
+          .select("mfd")
+          .eq("aluno_id", idAluno)
+          .eq("ano_lectivo", anoLectivo)
+          .eq("escola_id", escolaId)
+          .eq("disciplina_id", disciplina)
+          .eq("trimestre", trimestre)
+          .eq("classe_id", classeId)
+          .eq("turma_id", turmaId)
+          .eq("periodo_id", periodoId)
+          .eq("curso_id", cursoId);
+
+        if (mfdError) {
+          throw new Error(mfdError.message);
+        }
+        const mfd3Data = mfdData.length > 0 ? mfdData[0] : 0;
+
+        const { data: neeData, error: neeError } = await supabase
+          .from(nee)
+          .select("nee")
+          .eq("aluno_id", idAluno)
+          .eq("ano_lectivo", anoLectivo)
+          .eq("escola_id", escolaId)
+          .eq("disciplina_id", disciplina)
+          .eq("trimestre", trimestre)
+          .eq("classe_id", classeId)
+          .eq("turma_id", turmaId)
+          .eq("periodo_id", periodoId)
+          .eq("curso_id", cursoId);
+
+        if (neeError) {
+          throw new Error(neeError.message);
+        }
+        const nee3Data = neeData.length > 0 ? neeData[0] : 0;
+
+        const { data: neoData, error: neoError } = await supabase
+          .from(neo)
+          .select("neo")
+          .eq("aluno_id", idAluno)
+          .eq("ano_lectivo", anoLectivo)
+          .eq("escola_id", escolaId)
+          .eq("disciplina_id", disciplina)
+          .eq("trimestre", trimestre)
+          .eq("classe_id", classeId)
+          .eq("turma_id", turmaId)
+          .eq("periodo_id", periodoId)
+          .eq("curso_id", cursoId);
+
+        if (neoError) {
+          throw new Error(neoError.message);
+        }
+        const neo3Data = neoData.length > 0 ? neoData[0] : 0;
+
+        const { data: mecData, error: mecError } = await supabase
+          .from(mec)
+          .select("mec")
+          .eq("aluno_id", idAluno)
+          .eq("ano_lectivo", anoLectivo)
+          .eq("escola_id", escolaId)
+          .eq("disciplina_id", disciplina)
+          .eq("trimestre", trimestre)
+          .eq("classe_id", classeId)
+          .eq("turma_id", turmaId)
+          .eq("periodo_id", periodoId)
+          .eq("curso_id", cursoId);
+
+        if (mecError) {
+          throw new Error(mecError.message);
+        }
+        const mec3Data = mecData.length > 0 ? mecData[0] : 0;
+
+        const { data: neData, error: neError } = await supabase
+          .from(ne)
+          .select("ne")
+          .eq("aluno_id", idAluno)
+          .eq("ano_lectivo", anoLectivo)
+          .eq("escola_id", escolaId)
+          .eq("disciplina_id", disciplina)
+          .eq("trimestre", trimestre)
+          .eq("classe_id", classeId)
+          .eq("turma_id", turmaId)
+          .eq("periodo_id", periodoId)
+          .eq("curso_id", cursoId);
+
+        if (neError) {
+          throw new Error(neError.message);
+        }
+        const ne3Data = neData.length > 0 ? neData[0] : 0;
+
+        const { data: mfData, error: mfError } = await supabase
+          .from(mf)
+          .select("mf")
+          .eq("aluno_id", idAluno)
+          .eq("ano_lectivo", anoLectivo)
+          .eq("escola_id", escolaId)
+          .eq("disciplina_id", disciplina)
+          .eq("trimestre", trimestre)
+          .eq("classe_id", classeId)
+          .eq("turma_id", turmaId)
+          .eq("periodo_id", periodoId)
+          .eq("curso_id", cursoId);
+
+        if (mfError) {
+          throw new Error(mfError.message);
+        }
+        const mf3Data = mfData.length > 0 ? mfData[0] : 0;
+
         return {
           mac3Data,
           npp3Data,
           npt3Data,
           mt3Data,
+          mfd3Data,
+          nee3Data,
+          neo3Data,
+          mec3Data,
+          ne3Data,
+          mf3Data,
         };
       } catch (error) {
         console.error(error);
         return null;
       }
+    },
+
+    async getMiniPautas(
+      escolaId,
+      cursoId,
+      classeId,
+      turmaId,
+      periodoId,
+      anoLectivo,
+      disciplinaId
+    ) {
+      console.log(escolaId, classeId, cursoId);
+      try {
+        //I Trimestre
+        const { data: mac1Data, error: mac1Error } = await supabase
+          .from(mac1)
+          .select(
+            `mac1, alunos:aluno_id(nome, genero), disciplinas:disciplina_id(nome_disciplina), escolas:escola_id(nivel_ensino)`
+          )
+          .eq("curso_id", cursoId)
+          .eq("periodo_id", periodoId)
+          .eq("ano_lectivo", anoLectivo.ano_lectivo)
+          .eq("escola_id", escolaId)
+          .eq("turma_id", turmaId)
+          .eq("classe_id", classeId)
+          .eq("disciplina_id", disciplinaId);
+        if (mac1Error) throw mac1Error;
+        const dataMac1 = mac1Data.length > 0 ? mac1Data : null;
+
+        const { data: npp1Data, error: npp1Error } = await supabase
+          .from(npp1)
+          .select(
+            `npp1, alunos:aluno_id(nome, genero), disciplinas:disciplina_id(nome_disciplina), escolas:escola_id(nivel_ensino)`
+          )
+          .eq("curso_id", cursoId)
+          .eq("periodo_id", periodoId)
+          .eq("ano_lectivo", anoLectivo.ano_lectivo)
+          .eq("escola_id", escolaId)
+          .eq("turma_id", turmaId)
+          .eq("classe_id", classeId)
+          .eq("disciplina_id", disciplinaId);
+        if (mac1Error) throw npp1Error;
+        const dataNpp1 = npp1Data.length > 0 ? npp1Data : null;
+
+        const { data: npt1Data, error: npt1Error } = await supabase
+          .from(npt1)
+          .select(
+            `npt1, alunos:aluno_id(nome, genero), disciplinas:disciplina_id(nome_disciplina), escolas:escola_id(nivel_ensino)`
+          )
+          .eq("curso_id", cursoId)
+          .eq("periodo_id", periodoId)
+          .eq("ano_lectivo", anoLectivo.ano_lectivo)
+          .eq("escola_id", escolaId)
+          .eq("turma_id", turmaId)
+          .eq("classe_id", classeId)
+          .eq("disciplina_id", disciplinaId);
+        if (npt1Error) throw npt1Error;
+        const dataNpt1 = npt1Data.length > 0 ? npt1Data : null;
+
+        const { data: mt1Data, error: mt1Error } = await supabase
+          .from(mt1)
+          .select(
+            `mt1, alunos:aluno_id(nome, genero), disciplinas:disciplina_id(nome_disciplina), escolas:escola_id(nivel_ensino)`
+          )
+          .eq("curso_id", cursoId)
+          .eq("periodo_id", periodoId)
+          .eq("ano_lectivo", anoLectivo.ano_lectivo)
+          .eq("escola_id", escolaId)
+          .eq("turma_id", turmaId)
+          .eq("classe_id", classeId)
+          .eq("disciplina_id", disciplinaId);
+        if (mt1Error) throw mt1Error;
+        const dataMt1 = mt1Data.length > 0 ? mt1Data : null;
+
+        //II Trimestres
+        const { data: mac2Data, error: mac2Error } = await supabase
+          .from(mac2)
+          .select(
+            `mac2, alunos:aluno_id(nome, genero), disciplinas:disciplina_id(nome_disciplina), escolas:escola_id(nivel_ensino)`
+          )
+          .eq("curso_id", cursoId)
+          .eq("periodo_id", periodoId)
+          .eq("ano_lectivo", anoLectivo.ano_lectivo)
+          .eq("escola_id", escolaId)
+          .eq("turma_id", turmaId)
+          .eq("classe_id", classeId)
+          .eq("disciplina_id", disciplinaId);
+        if (mac2Error) throw mac2Error;
+        const dataMac2 = mac2Data.length > 0 ? mac2Data : null;
+
+        const { data: npp2Data, error: npp2Error } = await supabase
+          .from(npp2)
+          .select(
+            `npp2, alunos:aluno_id(nome, genero), disciplinas:disciplina_id(nome_disciplina), escolas:escola_id(nivel_ensino)`
+          )
+          .eq("curso_id", cursoId)
+          .eq("periodo_id", periodoId)
+          .eq("ano_lectivo", anoLectivo.ano_lectivo)
+          .eq("escola_id", escolaId)
+          .eq("turma_id", turmaId)
+          .eq("classe_id", classeId)
+          .eq("disciplina_id", disciplinaId);
+        if (npp2Error) throw npp2Error;
+        const dataNpp2 = npp2Data.length > 0 ? npp2Data : null;
+
+        const { data: npt2Data, error: npt2Error } = await supabase
+          .from(npt2)
+          .select(
+            `npt2, alunos:aluno_id(nome, genero), disciplinas:disciplina_id(nome_disciplina), escolas:escola_id(nivel_ensino)`
+          )
+          .eq("curso_id", cursoId)
+          .eq("periodo_id", periodoId)
+          .eq("ano_lectivo", anoLectivo.ano_lectivo)
+          .eq("escola_id", escolaId)
+          .eq("turma_id", turmaId)
+          .eq("classe_id", classeId)
+          .eq("disciplina_id", disciplinaId);
+        if (npt2Error) throw npt2Error;
+        const dataNpt2 = npt2Data.length > 0 ? npt2Data : null;
+
+        const { data: mt2Data, error: mt2Error } = await supabase
+          .from(mt2)
+          .select(
+            `mt2, alunos:aluno_id(nome, genero), disciplinas:disciplina_id(nome_disciplina), escolas:escola_id(nivel_ensino)`
+          )
+          .eq("curso_id", cursoId)
+          .eq("periodo_id", periodoId)
+          .eq("ano_lectivo", anoLectivo.ano_lectivo)
+          .eq("escola_id", escolaId)
+          .eq("turma_id", turmaId)
+          .eq("classe_id", classeId)
+          .eq("disciplina_id", disciplinaId);
+        if (mt2Error) throw mt2Error;
+        const dataMt2 = mt2Data.length > 0 ? mt2Data : null;
+
+        //III Trimestres
+        const { data: mac3Data, error: mac3Error } = await supabase
+          .from(mac3)
+          .select(
+            `mac3, alunos:aluno_id(nome, genero), disciplinas:disciplina_id(nome_disciplina), escolas:escola_id(nivel_ensino)`
+          )
+          .eq("curso_id", cursoId)
+          .eq("periodo_id", periodoId)
+          .eq("ano_lectivo", anoLectivo.ano_lectivo)
+          .eq("escola_id", escolaId)
+          .eq("turma_id", turmaId)
+          .eq("classe_id", classeId)
+          .eq("disciplina_id", disciplinaId);
+        if (mac3Error) throw mac3Error;
+        const dataMac3 = mac3Data.length > 0 ? mac3Data : null;
+
+        const { data: npp3Data, error: npp3Error } = await supabase
+          .from(npp3)
+          .select(
+            `npp3, alunos:aluno_id(nome, genero), disciplinas:disciplina_id(nome_disciplina), escolas:escola_id(nivel_ensino)`
+          )
+          .eq("curso_id", cursoId)
+          .eq("periodo_id", periodoId)
+          .eq("ano_lectivo", anoLectivo.ano_lectivo)
+          .eq("escola_id", escolaId)
+          .eq("turma_id", turmaId)
+          .eq("classe_id", classeId)
+          .eq("disciplina_id", disciplinaId);
+        if (npp3Error) throw npp3Error;
+        const dataNpp3 = npp3Data.length > 0 ? npp3Data : null;
+
+        const { data: npt3Data, error: npt3Error } = await supabase
+          .from(npt3)
+          .select(
+            `npt3, alunos:aluno_id(nome, genero), disciplinas:disciplina_id(nome_disciplina), escolas:escola_id(nivel_ensino)`
+          )
+          .eq("curso_id", cursoId)
+          .eq("periodo_id", periodoId)
+          .eq("ano_lectivo", anoLectivo.ano_lectivo)
+          .eq("escola_id", escolaId)
+          .eq("turma_id", turmaId)
+          .eq("classe_id", classeId)
+          .eq("disciplina_id", disciplinaId);
+        if (npt3Error) throw npt3Error;
+        const dataNpt3 = npt3Data.length > 0 ? npt3Data : null;
+
+        const { data: mt3Data, error: mt3Error } = await supabase
+          .from(mt3)
+          .select(
+            `mt3, alunos:aluno_id(nome, genero), disciplinas:disciplina_id(nome_disciplina), escolas:escola_id(nivel_ensino)`
+          )
+          .eq("curso_id", cursoId)
+          .eq("periodo_id", periodoId)
+          .eq("ano_lectivo", anoLectivo.ano_lectivo)
+          .eq("escola_id", escolaId)
+          .eq("turma_id", turmaId)
+          .eq("classe_id", classeId)
+          .eq("disciplina_id", disciplinaId);
+        if (mt3Error) throw mt3Error;
+        const dataMt3 = mt3Data.length > 0 ? mt3Data : null;
+
+        const { data: mfdData, error: mfdError } = await supabase
+          .from(mfd)
+          .select(
+            `mfd, alunos:aluno_id(nome, genero), disciplinas:disciplina_id(nome_disciplina), escolas:escola_id(nivel_ensino)`
+          )
+          .eq("curso_id", cursoId)
+          .eq("periodo_id", periodoId)
+          .eq("ano_lectivo", anoLectivo.ano_lectivo)
+          .eq("escola_id", escolaId)
+          .eq("turma_id", turmaId)
+          .eq("classe_id", classeId)
+          .eq("disciplina_id", disciplinaId);
+        if (mfdError) throw mfdError;
+        const dataMfd = mfdData.length > 0 ? mfdData : null;
+
+        const { data: neData, error: neError } = await supabase
+          .from(ne)
+          .select(
+            `ne, alunos:aluno_id(nome, genero), disciplinas:disciplina_id(nome_disciplina), escolas:escola_id(nivel_ensino)`
+          )
+          .eq("curso_id", cursoId)
+          .eq("periodo_id", periodoId)
+          .eq("ano_lectivo", anoLectivo.ano_lectivo)
+          .eq("escola_id", escolaId)
+          .eq("turma_id", turmaId)
+          .eq("classe_id", classeId)
+          .eq("disciplina_id", disciplinaId);
+        if (neError) throw neError;
+        const dataNe = neData.length > 0 ? neData : null;
+
+        const { data: neeData, error: neeError } = await supabase
+          .from(nee)
+          .select(
+            `nee, alunos:aluno_id(nome, genero), disciplinas:disciplina_id(nome_disciplina), escolas:escola_id(nivel_ensino)`
+          )
+          .eq("curso_id", cursoId)
+          .eq("periodo_id", periodoId)
+          .eq("ano_lectivo", anoLectivo.ano_lectivo)
+          .eq("escola_id", escolaId)
+          .eq("turma_id", turmaId)
+          .eq("classe_id", classeId)
+          .eq("disciplina_id", disciplinaId);
+        if (neeError) throw neeError;
+        const dataNee = neeData.length > 0 ? neeData : null;
+
+        const { data: neoData, error: neoError } = await supabase
+          .from(neo)
+          .select(
+            `neo, alunos:aluno_id(nome, genero), disciplinas:disciplina_id(nome_disciplina), escolas:escola_id(nivel_ensino)`
+          )
+          .eq("curso_id", cursoId)
+          .eq("periodo_id", periodoId)
+          .eq("ano_lectivo", anoLectivo.ano_lectivo)
+          .eq("escola_id", escolaId)
+          .eq("turma_id", turmaId)
+          .eq("classe_id", classeId)
+          .eq("disciplina_id", disciplinaId);
+        if (neoError) throw neoError;
+        const dataNeo = neoData.length > 0 ? neoData : null;
+
+        const { data: mecData, error: mecError } = await supabase
+          .from(mec)
+          .select(
+            `mec, alunos:aluno_id(nome, genero), disciplinas:disciplina_id(nome_disciplina), escolas:escola_id(nivel_ensino)`
+          )
+          .eq("curso_id", cursoId)
+          .eq("periodo_id", periodoId)
+          .eq("ano_lectivo", anoLectivo.ano_lectivo)
+          .eq("escola_id", escolaId)
+          .eq("turma_id", turmaId)
+          .eq("classe_id", classeId)
+          .eq("disciplina_id", disciplinaId);
+        if (mecError) throw mecError;
+        const dataMec = mecData.length > 0 ? mecData : null;
+
+        const { data: mfData, error: mfError } = await supabase
+          .from(mf)
+          .select(
+            `mf, alunos:aluno_id(nome, genero), disciplinas:disciplina_id(nome_disciplina), escolas:escola_id(nivel_ensino)`
+          )
+          .eq("curso_id", cursoId)
+          .eq("periodo_id", periodoId)
+          .eq("ano_lectivo", anoLectivo.ano_lectivo)
+          .eq("escola_id", escolaId)
+          .eq("turma_id", turmaId)
+          .eq("classe_id", classeId)
+          .eq("disciplina_id", disciplinaId);
+        if (mfError) throw mfError;
+        const dataMf = mfData.length > 0 ? mfData : null;
+
+        return {
+          dataMac1,
+          dataNpp1,
+          dataNpt1,
+          dataMt1,
+          dataMac2,
+          dataNpp2,
+          dataNpt2,
+          dataMt2,
+          dataMac3,
+          dataNpp3,
+          dataNpt3,
+          dataMt3,
+          dataMfd,
+          dataNe,
+          dataNee,
+          dataNeo,
+          dataMec,
+          dataMf,
+        };
+      } catch (error) {}
     },
   },
 });

@@ -31,14 +31,12 @@
           </p>
         </div>
       </q-card-section>
-      <div class="row">
-        <div class="col-12 text-center text-h6">
-          Inserindo nota do "<b class="text-red-10">{{ trimestre }}</b
-          >"
-        </div>
-      </div>
+
       <q-separator />
+
       <q-card-section>
+        [ <b class="text-red-10">{{ nome_disciplina }}</b> ] [
+        <b class="text-red-9">{{ trimestre }}</b> ]
         <table class="table green-border">
           <thead>
             <tr>
@@ -371,12 +369,22 @@ export default {
     const getColorMac = () => {
       if (props.curso == "Ensino primário" && form.value.mac1 < 4.44) {
         return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.mac1 < 9.45)
+      ) {
+        return "red";
       } else {
         return "blue";
       }
     };
     const getColorNpp = () => {
       if (props.curso == "Ensino primário" && form.value.npp1 < 4.44) {
+        return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.npp1 < 9.45)
+      ) {
         return "red";
       } else {
         return "blue";
@@ -385,6 +393,11 @@ export default {
     const getColorNpt = () => {
       if (props.curso == "Ensino primário" && form.value.npt1 < 4.44) {
         return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.npt1 < 9.45)
+      ) {
+        return "red";
       } else {
         return "blue";
       }
@@ -392,6 +405,11 @@ export default {
 
     const getColorMt1 = () => {
       if (props.curso == "Ensino primário" && form.value.mt1 < 4.44) {
+        return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.mt1 < 9.45)
+      ) {
         return "red";
       } else {
         return "blue";
@@ -402,12 +420,22 @@ export default {
     const getColorMac2 = () => {
       if (props.curso == "Ensino primário" && form.value.mac2 < 4.44) {
         return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.mac2 < 9.45)
+      ) {
+        return "red";
       } else {
         return "blue";
       }
     };
     const getColorNpp2 = () => {
       if (props.curso == "Ensino primário" && form.value.npp2 < 4.44) {
+        return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.npp2 < 9.45)
+      ) {
         return "red";
       } else {
         return "blue";
@@ -416,6 +444,11 @@ export default {
     const getColorNpt2 = () => {
       if (props.curso == "Ensino primário" && form.value.npt2 < 4.44) {
         return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.npt2 < 9.45)
+      ) {
+        return "red";
       } else {
         return "blue";
       }
@@ -423,6 +456,11 @@ export default {
 
     const getColorMt2 = () => {
       if (props.curso == "Ensino primário" && form.value.mt2 < 4.44) {
+        return "red";
+      } else if (
+        props.curso == "I Ciclo" ||
+        (props.curso == "II Ciclo" && form.value.mt2 < 9.45)
+      ) {
         return "red";
       } else {
         return "blue";
