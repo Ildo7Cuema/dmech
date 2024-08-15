@@ -336,7 +336,7 @@ export default {
               const imageFooterY = pdf.internal.pageSize.height - 0.6; // Posição Y da imagem no rodapé (altura da página - altura da imagem - margem inferior)
 
               pdf.addImage(
-                "../../../../../../public/Simbolo-da-Republica.png",
+                "../../../public/Simbolo-da-Republica.png",
                 "PNG",
                 //imageX,
                 // 0.25,
