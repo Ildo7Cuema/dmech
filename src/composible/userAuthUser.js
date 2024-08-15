@@ -43,7 +43,7 @@ export default function userAuthUser() {
       email,
       password,
     });
-    if (error) throw error;
+    if (error) throw error.message;
     return user;
   };
 

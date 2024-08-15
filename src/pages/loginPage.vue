@@ -100,7 +100,8 @@ export default {
     const userLogin = async () => {
       try {
         Loading.show({ message: "Porfavor aguarde..." });
-        await login(form.value);
+        const user = await login(form.value);
+        router.push({ name: "admin" });
       } catch (error) {
         notifyError(error.message);
       } finally {
