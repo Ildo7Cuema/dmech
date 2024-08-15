@@ -226,7 +226,7 @@ export default {
             );*/
 
               pdf.addImage(
-                "../../../../../../../public/icons/RodapeIMG.png",
+                `${baseUrl}icons/RodapeIMG.png`,
                 "PNG",
                 imageFooterX,
                 imageFooterY,
