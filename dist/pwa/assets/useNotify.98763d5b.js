@@ -1,0 +1,1 @@
+import{aY as o}from"./index.bc90a1a6.js";function n(){return{notifySuccess:async t=>{o.create({position:"top-right",type:"positive",message:t||"Tudo certo"})},notifyError:async t=>{o.create({position:"top-right",type:"negative",message:t||"Falha na execu\xE7\xE3o"})}}}export{n as u};
