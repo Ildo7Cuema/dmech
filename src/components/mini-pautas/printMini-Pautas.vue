@@ -16,7 +16,7 @@
               {{ provincia }}
             </div>
             <div class="col-12 text-center">
-              Administração Municipal do
+              Administração Municipal {{ artigoMunicipio }}
               {{ municipio }}
             </div>
             <div class="col-12 text-center">
