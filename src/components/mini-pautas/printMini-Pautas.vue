@@ -355,7 +355,7 @@ export default {
               pdf.internal.pageSize.height - 0.5
             );*/
               pdf.addImage(
-                "../../../../../../public/icons/RodapeIMG.png",
+                "../../../public/icons/RodapeIMG.png",
                 "PNG",
                 imageFooterX,
                 imageFooterY,
