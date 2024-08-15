@@ -204,10 +204,7 @@ export default {
               const imageFooterX = pageWidth - imageFooterWidth - 0.1; // Posição X da imagem no rodapé (alinhada à direita)
               const imageFooterY = pdf.internal.pageSize.height - 0.6; // Posição Y da imagem no rodapé (altura da página - altura da imagem - margem inferior)
 
-              const baseUrl =
-                process.env.NODE_ENV === "production"
-                  ? "https://dme-edu.com/public/"
-                  : "/public/";
+              const baseUrl = process.env.NODE_ENV === "production" ? "/" : "/";
               pdf.addImage(
                 `${baseUrl}Simbolo-da-Republica.png`,
                 "PNG",
