@@ -209,7 +209,7 @@ export default {
                   ? "https://dme-edu.com/public/"
                   : "/public/";
               pdf.addImage(
-                "../../../../../../../public/icons/ensigna.jpg",
+                `${baseUrl}Simbolo-da-Republica.png`,
                 "PNG",
                 //imageX,
                 // 0.25,
