@@ -153,12 +153,12 @@ export default {
     const terminaEmSeE = /(\b\w+E\b|\b\w+S\b|\b\w+e\b|\b\w+s\b)$/;
 
     //Codigo para imprimir documneto no formato PDF
-    const gerarPDF = () => {
+    const gerarPDF = async () => {
       try {
         $q.loading.show();
         const element = window.document.getElementById("elemento-para-pdf");
         //const element = document.getElementById("elemento-para-pdf");
-        html2pdf()
+        await html2pdf()
           .from(element)
           .set({
             margin: 0.89,
