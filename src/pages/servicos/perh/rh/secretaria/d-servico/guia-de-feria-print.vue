@@ -178,8 +178,9 @@ export default {
               const imageFooterX = pageWidth - imageFooterWidth - 0.1; // Posição X da imagem no rodapé (alinhada à direita)
               const imageFooterY = pdf.internal.pageSize.height - 0.6; // Posição Y da imagem no rodapé (altura da página - altura da imagem - margem inferior)
 
+              const baseUrl = process.env.NODE_ENV === "production" ? "/" : "/";
               pdf.addImage(
-                "../../../../../../public/Simbolo-da-Republica.png",
+                `${baseUrl}Simbolo-da-Republica.png`,
                 "PNG",
                 //imageX,
                 // 0.25,
@@ -197,8 +198,9 @@ export default {
               1,
               pdf.internal.pageSize.height - 0.5
             );*/
+
               pdf.addImage(
-                "../../../../../../public/icons/RodapeIMG.png",
+                `${baseUrl}icons/RodapeIMG.png`,
                 "PNG",
                 imageFooterX,
                 imageFooterY,
