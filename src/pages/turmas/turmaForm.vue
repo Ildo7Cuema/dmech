@@ -14,6 +14,7 @@
 
       <q-form @submit.prevent="emitForm">
         <q-card-section class="row q-col-gutter-sm">
+          {{ escolaId }}
           <q-input
             v-model="form.nome_turma"
             label="Nome da Turma"
@@ -81,6 +82,7 @@
 <script>
 import { ref, watch, onMounted } from "vue";
 import { useCursoStore } from "src/stores/cursos";
+import { useFuncionarioStore } from "src/stores/funcionarios";
 
 export default {
   props: {
@@ -90,12 +92,15 @@ export default {
     Turma: {
       type: Object,
     },
+    escolaId: { type: Number, required: true },
     showModal: Boolean,
     loading: Boolean,
     isEditForm: Boolean,
   },
   emits: ["save"],
   setup(props, { emit }) {
+    const funcionarios = ref([]);
+    const { getFuncionarios } = useFuncionarioStore();
     const form = ref({
       nome_turma: "",
       curso_id: "",
@@ -104,6 +109,19 @@ export default {
       ano: "",
     });
     const statusForm = ref(false);
+
+    onMounted(() => {
+      getFuncList();
+    });
+
+    const getFuncList = async () => {
+      try {
+        await getFuncionarios("funcionarios", props.escolaId).then((item) => {
+          funcionarios.value = item;
+          console.log(funcionarios.value);
+        });
+      } catch (error) {}
+    };
 
     const emitForm = () => {
       // Emit the form data using the 'emit' method
@@ -163,6 +181,7 @@ export default {
       show: ref(props.showModal),
       statusForm: ref(props.isEditForm),
       closeForm,
+      funcionarios,
     };
   },
 };

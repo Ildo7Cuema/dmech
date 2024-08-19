@@ -339,6 +339,7 @@
               label="Selecione a escola a que pertence"
               :rules="[(val) => !!val || 'Porfavor a escola a que pertence']"
               v-bind="{ ...inputConfig }"
+              v-if="perfil !== 'Admin-Escola'"
             />
             <div class="col-12 q-pa-md">
               <span><b>É docente em frente do aluno?</b></span>
@@ -431,7 +432,7 @@
                 :rules="[(val) => !!val || 'Porfavor uma palavra passe']"
                 v-bind="{ ...inputConfig }"
               />
-              <admin-access-other v-model="form.role" />
+              <admin-access-other v-model="form.role" :perfil="perfil" />
             </div>
 
             <q-btn
@@ -487,6 +488,7 @@ import { formatCurrency } from "src/utils/formatCurrency";
 import userAuthUser from "src/composible/userAuthUser";
 import adminAccessOther from "src/components/adminAccessOp/adminAccessOther.vue";
 import { disciplinas } from "./disciplinas";
+import { useEscolaStore } from "src/stores/escolas";
 export default {
   name: "form-categoria",
   components: { adminAccessOther },
@@ -501,6 +503,7 @@ export default {
       uploadImage,
       fileName,
     } = userApi();
+    const { getEscolaByEmail } = useEscolaStore();
     const { notifyError, notifySuccess } = usenotification();
     const table = "funcionarios";
     const router = useRouter();
@@ -534,6 +537,7 @@ export default {
     const categorias = ref([]);
     const escolas = ref([]);
     const image = ref([]);
+    const perfil = ref("");
 
     const form = ref({
       name: "",
@@ -575,6 +579,7 @@ export default {
       balcao_domicilio_municipio: "",
       role: "",
       password: "",
+      perfil: "",
     });
 
     const isUpdate = computed(() => {
@@ -586,7 +591,12 @@ export default {
     };
 
     const listarEscolas = async () => {
-      escolas.value = await list("escolas", isDiferentID.value);
+      if (user.value.user_metadata.role == "Admin-Escola") {
+        const id = await getEscolaByEmail("escolas", user.value.email);
+        form.value.escola_id = id;
+      } else {
+        escolas.value = await list("escolas", isDiferentID.value);
+      }
     };
 
     const deletarItem = async (item) => {
@@ -614,6 +624,9 @@ export default {
       if (isUpdate.value) {
         getItem(table, isUpdate.value);
       }
+
+      perfil.value = user.value.user_metadata.role;
+      form.value.perfil = user.value.user_metadata.role;
     });
 
     const getItem = async (table, id) => {
@@ -645,10 +658,15 @@ export default {
           notifySuccess("Funcionário cadastrada com sucesso");
         }
       } catch (error) {
+        console.log(form.value);
         notifyError(error.message);
       } finally {
         Loading.hide();
-        router.push({ name: "funcionarios" });
+        if (user.value.user_metadata.role == "Admin-Escola") {
+          router.push({ name: "pageFuncionarios" });
+        } else {
+          router.push({ name: "funcionarios" });
+        }
       }
     };
 
@@ -687,6 +705,7 @@ export default {
       estado_nomeacao,
       isDiferentID,
       disciplinas,
+      perfil,
     };
   },
 };

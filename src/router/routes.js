@@ -207,6 +207,21 @@ const routes = [
         component: () => import("pages/alunos/alunosPage.vue"),
       },
       {
+        path: "/page-funcionarios",
+        name: "pageFuncionarios",
+        component: () => import("pages/funcionarios/listPage.vue"),
+      },
+      {
+        path: "/page-form/:id?",
+        name: "page-form-funcionario",
+        component: () => import("src/pages/funcionarios/FormItem.vue"),
+      },
+      {
+        path: "/form/:id?",
+        name: "form-funcionario-edit-Escola-admin",
+        component: () => import("src/pages/funcionarios/FormItem.vue"),
+      },
+      {
         path: "/page-notas",
         name: "pageNotas",
         component: () => import("pages/alunos/alunosNotas.vue"),

@@ -11,13 +11,13 @@ const inputConfig = {
 
 const btnConfig = {
   color: getCssVar("primary"),
-  dense: true,
+  dense: false,
   flat: true,
   outlined: true,
   rounded: false,
   push: false,
   "no-caps": true,
-  glossy: true,
+  glossy: false,
 };
 
 export { inputConfig, btnConfig };

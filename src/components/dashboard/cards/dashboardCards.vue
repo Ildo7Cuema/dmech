@@ -5,7 +5,7 @@
         <q-btn class="col-6 q-ma-md text-h6" :color="colorIcon" :icon="icon" />
       </q-card-actions>
       <q-space />
-      <q-card-action vertical class="justify-around items-center">
+      <q-card-actions vertical class="justify-around items-center">
         <q-btn
           dense
           flat
@@ -13,7 +13,7 @@
           class="col-6 text-right q-ma-md text-h6"
           :label="total"
         />
-      </q-card-action>
+      </q-card-actions>
     </q-card-section>
     <br />
     <div

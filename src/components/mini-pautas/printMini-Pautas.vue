@@ -9,7 +9,7 @@
       ></iframe>
       <div style="display: none">
         <div id="elemento-para-pdf" class="StyleFontDocument alignTextJustify">
-          <div class="row" style="line-height: 1.5">
+          <div class="row q-mt-sm" style="line-height: 1.5">
             <div class="col-12 text-center">República de Angola</div>
             <div class="col-12 text-center">
               Governo Provincial {{ artigoQueAntecedeDonomeDaProvincia }}
@@ -22,21 +22,41 @@
             <div class="col-12 text-center">
               <b>Direcção Municipal da Educação</b>
             </div>
+            <div class="col-12 text-center">
+              <b class="text-red-10">{{ nome_escola }}</b>
+            </div>
           </div>
 
           <div class="row">
             <div class="col-12 text-center">
               <br />
-              <br />
-              <b>MINI-PAUTA</b>
+              <b class="text-red-9">Mini-Pauta</b>
             </div>
           </div>
 
           <!-- Mini-Pauta-->
-          <table class="table green-border" id="dataTable">
+          <div class="row q-mb-sm">
+            <div class="col-12 text-caption text-center">
+              [ <b class="text-red-6">{{ nome_disciplina }}</b> ] - [ Curso:
+              <b>{{ curso }}</b> ] - [ Ano lectivo: <b>{{ anoLectivo }}</b> ] [
+              <b>{{ classe }}</b> ] [ Turma: <b>{{ turma }}</b> ] [ Período:
+              <b>{{ periodo }}</b> ]
+            </div>
+          </div>
+          <table class="table green-border q-mt-sm" id="dataTable">
             <tr class="bg-grey-4">
-              <td class="bg-grey-4" rowspan="2">Nº</td>
-              <td class="bg-grey-4" rowspan="2" style="width: 200px !important">
+              <td
+                class="bg-grey-4"
+                rowspan="2"
+                style="text-align: center; vertical-align: middle"
+              >
+                Nº
+              </td>
+              <td
+                class="bg-grey-4"
+                rowspan="2"
+                style="width: 200px !important; vertical-align: middle"
+              >
                 Nome de alunos
               </td>
               <td class="bg-grey-4" colspan="4" style="text-align: center">
@@ -48,12 +68,16 @@
               <td class="bg-grey-4" colspan="4" style="text-align: center">
                 III Trimestres
               </td>
-              <td class="bg-grey-4" rowspan="2" style="text-align: center">
+              <td
+                class="bg-grey-4"
+                rowspan="2"
+                style="text-align: center; vertical-align: middle"
+              >
                 MFD
               </td>
               <td
                 class="bg-grey-4"
-                style="text-align: center"
+                style="text-align: center; vertical-align: middle"
                 rowspan="2"
                 v-if="
                   !isLinguaPortuguesaOrEstrangeira.includes(nome_disciplina)
@@ -69,7 +93,11 @@
               >
                 EXAME O/E
               </td>
-              <td class="bg-grey-4" rowspan="2" style="text-align: center">
+              <td
+                class="bg-grey-4"
+                rowspan="2"
+                style="text-align: center; vertical-align: middle"
+              >
                 NF
               </td>
             </tr>
@@ -208,9 +236,24 @@
             </tr>
           </table>
           <br />
-          O Coordenador: _________________________________________
-          <br />
-          O Professor: ____________________________________________
+          <div class="row">
+            <div class="col-12">
+              <table class="table green-border">
+                <tr>
+                  <td style="width: 25%">O(A) Coordenador(a) do curso</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>O(A) Director(a) de Turma</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>O(A) Professor(a)</td>
+                  <td></td>
+                </tr>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -230,6 +273,7 @@ import { useMiniPautaStore } from "src/stores/mini-pautas";
 import { useDisciplinaStore } from "src/stores/disciplinas";
 import { useEscolaStore } from "src/stores/escolas";
 import { useClasseStore } from "src/stores/classes";
+import { useCursoStore } from "src/stores/cursos";
 import { useTurmaStore } from "src/stores/turmas";
 import { usePeriodoStore } from "src/stores/periodos";
 import loadingComponent3 from "../loading/loadingComponent3.vue";
@@ -245,12 +289,14 @@ export default {
     const { getClasseById } = useClasseStore();
     const { getTurmaById } = useTurmaStore();
     const { getPeriodoById } = usePeriodoStore();
+    const { getCursoById } = useCursoStore();
     const nome_disciplina = ref("");
     const nivel_ensino = ref("");
     const anoLectivo = ref("");
     const nome_escola = ref("");
     const classe = ref("");
     const turma = ref("");
+    const curso = ref("");
     const carregar = ref(false);
     const periodo = ref("");
     const joinedData = ref([]);
@@ -314,10 +360,10 @@ export default {
         await html2pdf()
           .from(element)
           .set({
-            margin: 0.89,
+            margin: 0.3937,
             filename: "Mini-Pauta.pdf",
             html2canvas: { scale: 2 },
-            jsPDF: { unit: "in", format: "letter", orientation: "landscape" },
+            jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
           })
           .toPdf()
           .get("pdf")
@@ -329,11 +375,11 @@ export default {
               const imageTopWidth = 0.55; // Largura da imagem no topo
               const imageTopHeight = 0.55; // Altura da imagem no topo
               const imageTopX = (pageWidth - imageTopWidth) / 2; // Posição X da imagem no topo (centralizada)
-              const imageTopY = 0.3; // Posição Y da imagem no topo
+              const imageTopY = 0; // Posição Y da imagem no topo
               const imageFooterWidth = 8; // Largura da imagem no rodapé
               const imageFooterHeight = 0.51; // Altura da imagem no rodapé
-              const imageFooterX = pageWidth - imageFooterWidth - 0.1; // Posição X da imagem no rodapé (alinhada à direita)
-              const imageFooterY = pdf.internal.pageSize.height - 0.6; // Posição Y da imagem no rodapé (altura da página - altura da imagem - margem inferior)
+              const imageFooterX = pageWidth - imageFooterWidth - 0.3937; // Posição X da imagem no rodapé (alinhada à direita)
+              const imageFooterY = pdf.internal.pageSize.height - 0.3937; // Posição Y da imagem no rodapé (altura da página - altura da imagem - margem inferior)
 
               const baseUrl = process.env.NODE_ENV === "production" ? "/" : "/";
               pdf.addImage(
@@ -419,6 +465,10 @@ export default {
 
       await getPeriodoById(props.dataMiniPautas[0].periodoid).then((item) => {
         periodo.value = item.nome_periodo;
+      });
+
+      await getCursoById(props.dataMiniPautas[0].cursoid).then((item) => {
+        curso.value = item.nome_curso;
       });
 
       dataMiniPautas.value = props.dataMiniPautas;
@@ -902,6 +952,13 @@ export default {
       carregar,
       provincia,
       municipio,
+      nome_escola,
+      nivel_ensino,
+      anoLectivo,
+      classe,
+      turma,
+      periodo,
+      curso,
     };
   },
 };

@@ -1,8 +1,6 @@
 <!-- Listar turmas com o q-table com um input de pesquisa no topo esquerdo e um botao de cadastro no topo direito -->
 <template>
   <div>
-    <br />
-    <br />
     <q-table
       flat
       dense
@@ -88,6 +86,7 @@
       :loading="loading"
       :isEditForm="formStatus"
       :cursos="cursos"
+      :escolaId="escolaId"
     />
 
     <showInformation
@@ -130,7 +129,7 @@ export default {
     } = useTurmaStore();
 
     const { getAllCursos } = useCursoStore();
-    const escolaId = ref("");
+    const escolaId = ref(0);
     const showModal = ref(false);
     const search = ref("");
     const filter = ref("");

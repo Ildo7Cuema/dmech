@@ -1,7 +1,7 @@
 <template>
   <q-layout>
     <q-page-container>
-      <q-page padding>
+      <q-page>
         <div class="row" v-if="$q.platform.is.desktop">
           <q-table
             :rows="funcionarioCategoriasAndEscolas"
@@ -24,10 +24,17 @@
               ></q-input>
               <q-space />
               <q-btn
-                v-if="$q.platform.is.desktop"
+                v-if="$q.platform.is.desktop && perfil !== 'Admin-Escola'"
                 icon="mdi-plus"
                 label="Cadastrar novo funcionario"
                 :to="{ name: 'form-funcionario' }"
+                v-bind="{ ...btnConfig }"
+              />
+              <q-btn
+                v-if="$q.platform.is.desktop && perfil === 'Admin-Escola'"
+                icon="mdi-plus"
+                label="Cadastrar novo funcionario"
+                :to="{ name: 'page-form-funcionario' }"
                 v-bind="{ ...btnConfig }"
               />
               <download-excel
@@ -240,13 +247,27 @@
           class="margin-bottom"
           position="bottom-right"
           :offset="[18, 18]"
-          v-if="$q.platform.is.mobile"
+          v-if="$q.platform.is.mobile && perfil !== 'Admin-Escola'"
         >
           <q-btn
             fab
             icon="mdi-plus"
             color="primary"
             :to="{ name: 'form-funcionario' }"
+          />
+        </q-page-sticky>
+
+        <q-page-sticky
+          class="margin-bottom"
+          position="bottom-right"
+          :offset="[18, 18]"
+          v-if="$q.platform.is.mobile && perfil === 'Admin-Escola'"
+        >
+          <q-btn
+            fab
+            icon="mdi-plus"
+            color="primary"
+            :to="{ name: 'page-form-funcionario' }"
           />
         </q-page-sticky>
 
@@ -294,6 +315,7 @@ export default defineComponent({
     const handleShowDetail = ref(false);
     const handleShowAddDoc = ref(false);
     const $q = useQuasar();
+    const perfil = ref("");
     const itens = ref([]);
     const card = ref(false);
     const filter = ref("");
@@ -337,17 +359,26 @@ export default defineComponent({
     };
 
     const alterarItem = (item) => {
-      router.push({ name: "form-funcionario", params: { id: item.id } });
+      if (user.value.user_metadata.role == "Admin-Escola") {
+        router.push({
+          name: "form-funcionario-edit-Escola-admin",
+          params: { id: item.id }
+        });
+      }else{
+        router.push({ name: "form-funcionario", params: { id: item.id } });
+      }
+
     };
 
     onMounted(() => {
       listarFuncionariosComCategoria();
+      perfil.value = user.value.user_metadata.role;
     });
 
     const listarFuncionariosComCategoria = async () => {
       try {
         funcionarioCategoriasAndEscolas.value =
-          await getFuncionariosWithCategoriasAndEscolas(table, isDiferentID);
+          await getFuncionariosWithCategoriasAndEscolas(table, user.value);
       } catch (error) {
         console.log(error);
       } finally {
@@ -356,10 +387,8 @@ export default defineComponent({
 
     const isDiferentID = computed(() => {
       if (user.value.id != user.value.user_metadata.organization_id) {
-        console.log(user.value.user_metadata.organization_id);
         return user.value.user_metadata.organization_id;
       } else {
-        console.log(user.value.id);
         return user.value.id;
       }
     });
@@ -386,6 +415,7 @@ export default defineComponent({
       filter,
       closeModal,
       isDiferentID,
+      perfil,
     };
   },
 });

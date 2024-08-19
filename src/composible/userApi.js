@@ -28,15 +28,47 @@ export default function userApi() {
     return data;
   };
 
-  const getFuncionariosWithCategoriasAndEscolas = async (tabela) => {
-    const { data, error } = await supabase.from(tabela).select(`
+  const getFuncionariosWithCategoriasAndEscolas = async (tabela, perfil) => {
+    if (perfil.user_metadata.role != "Admin-Escola") {
+      const { data, error } = await supabase
+        .from(tabela)
+        .select(
+          `
       id,
       *,
       escolas (id, name), categorias (id, categoria)
-    `);
-    if (error) throw error;
-    return data;
+    `
+        )
+        .eq("user_id", perfil.id);
+      if (error) throw error;
+      return data;
+    } else {
+      //buscar o id da escola atraves do email para pegar todos os funcionarios da escola
+      const { data: escolaData, error: escolaError } = await supabase
+        .from("escolas")
+        .select("id")
+        .eq("email", perfil.email);
+      if (escolaError) throw escolaError.message;
+      const escolaId = escolaData[0].id;
+
+      console.log(escolaId);
+
+      const { data, error } = await supabase
+        .from(tabela)
+        .select(
+          `
+        id,
+        *,
+        escolas (id, name), categorias (id, categoria)
+      `
+        )
+        .eq("escola_id", escolaId);
+
+      if (error) throw error;
+      return data;
+    }
   };
+
   const getFuncionarioWithCategoriasAndEscolas = async (
     tabela,
     idFuncionario
@@ -81,6 +113,13 @@ export default function userApi() {
     return data;
   };
   const postFuncionario = async (table, form) => {
+    console.log(form);
+    //faz a verificação se caso o utilizador que pretende cadastrar um funcionario é do perfil escola
+    const userID =
+      form.perfil === "Admin-Escola"
+        ? user.value.user_metadata.organization_id
+        : user.value.id;
+
     const { data, error } = await supabase.from(table).insert({
       name: form.name,
       nome_pai: form.nome_pai,
@@ -117,7 +156,7 @@ export default function userApi() {
       balcao_domicilio: form.balcao_domicilio,
       balcao_domicilio_provincia: form.balcao_domicilio_provincia,
       balcao_domicilio_municipio: form.balcao_domicilio_municipio,
-      user_id: user.value.id,
+      user_id: userID,
     });
     creatCountUser(form);
     if (error) throw error;
@@ -208,21 +247,26 @@ export default function userApi() {
   };
 
   const getBrand = async () => {
-    const id = user?.value?.id;
-    if (id) {
-      $q.loading.show();
-      const { data, error } = await supabase
-        .from("config")
-        .select("*")
-        .eq("user_id", id);
+    try {
+      const id = user?.value?.id;
+      if (id) {
+        $q.loading.show();
+        const { data, error } = await supabase
+          .from("config")
+          .select("*")
+          .eq("user_id", id);
 
-      if (error) throw error;
-      if (data.length > 0) {
-        (brand.value = data[0]),
-          setBrand(brand.value.primary, brand.value.secondary);
+        if (error) throw error;
+        if (data.length > 0) {
+          (brand.value = data[0]),
+            setBrand(brand.value.primary, brand.value.secondary);
+        }
+        $q.loading.hide();
+        return brand;
       }
-      $q.loading.hide();
-      return brand;
+    } catch (error) {
+      console.log(error);
+    } finally {
     }
   };
 

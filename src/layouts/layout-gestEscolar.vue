@@ -181,6 +181,22 @@
 
         <q-item
           clickable
+          class="GPLAY__drawer-link GPLAY__drawer-link--music"
+          @click="hendleFuncionarios()"
+        >
+          <q-item-section
+            avatar
+            class="music-icon bg-orange-7 text-grey-1 text-center"
+          >
+            <q-icon name="mdi-account-tie" />
+          </q-item-section>
+          <q-item-section class="music-text">
+            <q-item-label>Professores</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-item
+          clickable
           class="GPLAY__drawer-link GPLAY__drawer-link--books"
           @click="handleNotas()"
         >
@@ -247,18 +263,6 @@
           </q-item-section>
         </q-item>
 
-        <q-item clickable class="GPLAY__drawer-link GPLAY__drawer-link--music">
-          <q-item-section
-            avatar
-            class="music-icon bg-orange-7 text-grey-1 text-center"
-          >
-            <q-icon name="mdi-account-tie" />
-          </q-item-section>
-          <q-item-section class="music-text">
-            <q-item-label>Professores</q-item-label>
-          </q-item-section>
-        </q-item>
-
         <q-item
           clickable
           class="GPLAY__drawer-link GPLAY__drawer-link--devices"
@@ -294,7 +298,8 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <br />
+      <router-view class="q-mt-md" />
 
       <q-page-sticky expand position="top">
         <q-toolbar class="GPLAY__sticky bg-white q-px-xl">
@@ -374,6 +379,10 @@ export default {
       router.push({ name: "mini-pautas" });
     };
 
+    const hendleFuncionarios = () => {
+      router.push({ name: "pageFuncionarios" });
+    };
+
     const logoutUser = async () => {
       await Dialog.create({
         title: "Sair",
@@ -404,6 +413,7 @@ export default {
       logoutUser,
       handlePeriodo,
       hendleDisciplina,
+      hendleFuncionarios,
       handleClasses,
       handleNotas,
       hendleMiniPauta,

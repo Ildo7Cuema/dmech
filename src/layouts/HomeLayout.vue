@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-toolbar-title>
           <q-avatar>
-            <img src="../../public/icons/ensigna.jpg" />
+            <img src="../../public/Simbolo-da-Republica.png" />
           </q-avatar>
           D. M. E
         </q-toolbar-title>

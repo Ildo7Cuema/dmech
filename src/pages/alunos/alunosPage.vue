@@ -1,8 +1,6 @@
 <!-- Listar Alunos com o q-table com um input de pesquisa no topo esquerdo e um botao de cadastro no topo direito -->
 <template>
   <div>
-    <br />
-    <br />
     <q-table
       flat
       dense
