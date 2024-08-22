@@ -65,6 +65,19 @@
                 />
               </q-td>
             </template>
+            <template v-slot:body-cell-add_turma="props">
+              <q-td :props="props" class="q-gutter-x-sm item-center">
+                <q-btn
+                  icon="mdi-google-classroom"
+                  color="positive"
+                  dense
+                  flat
+                  size="sm"
+                  @click="addTurmas(props.row)"
+                  ><q-tooltip>Atribuir turmas ao docente</q-tooltip></q-btn
+                >
+              </q-td>
+            </template>
             <template v-slot:body-cell-actions="props">
               <q-td :props="props" class="q-gutter-x-sm text-center">
                 <q-btn
@@ -284,6 +297,14 @@
           :itens="itens"
           @closeModal="closeModal"
         />
+
+        <!--Atribuir turma-->
+        <add-turma
+          v-if="itens"
+          :show="handleShowAddTurmas"
+          :itens="itens"
+          @closeModal="closeModal"
+        />
       </q-page>
     </q-page-container>
   </q-layout>
@@ -299,11 +320,12 @@ import { useQuasar } from "quasar";
 import { columns } from "./table";
 import detalhesComponent from "src/components/detalhesComponent.vue";
 import addDoc from "src/components/addDocument.vue";
+import addTurma from "src/components/addTurmas.vue";
 import { btnConfig, inputConfig } from "src/utils/inputVisual";
 import { fields } from "./fieldsExport";
 import JsonExcel from "vue-json-excel3";
 export default defineComponent({
-  components: { detalhesComponent, DownloadExcel: JsonExcel, addDoc },
+  components: { detalhesComponent, DownloadExcel: JsonExcel, addDoc, addTurma },
   setup() {
     const funcionarios = ref([]);
     const itensDetails = ref("");
@@ -314,9 +336,10 @@ export default defineComponent({
     const storage = "sgdme";
     const handleShowDetail = ref(false);
     const handleShowAddDoc = ref(false);
+    const handleShowAddTurmas = ref(false);
     const $q = useQuasar();
     const perfil = ref("");
-    const itens = ref([]);
+    const itens = ref({});
     const card = ref(false);
     const filter = ref("");
     const table = "funcionarios";
@@ -331,6 +354,7 @@ export default defineComponent({
     const closeModal = () => {
       handleShowDetail.value = false;
       handleShowAddDoc.value = false;
+      handleShowAddTurmas.value = false;
     };
 
     const addDoc = (data) => {
@@ -338,11 +362,16 @@ export default defineComponent({
       handleShowAddDoc.value = true;
     };
 
+    const addTurmas = (data) => {
+      itens.value = data;
+      handleShowAddTurmas.value = true;
+    };
+
     const deletarItem = async (item) => {
       try {
         $q.dialog({
           title: "Confirmação",
-          message: `tens a certeza que pretendes eliminar ${item.nome} ?`,
+          message: `tens a certeza que pretendes eliminar ${item.name} ?`,
           cancel: true,
           persistent: true,
         }).onOk(async () => {
@@ -362,12 +391,11 @@ export default defineComponent({
       if (user.value.user_metadata.role == "Admin-Escola") {
         router.push({
           name: "form-funcionario-edit-Escola-admin",
-          params: { id: item.id }
+          params: { id: item.id },
         });
-      }else{
+      } else {
         router.push({ name: "form-funcionario", params: { id: item.id } });
       }
-
     };
 
     onMounted(() => {
@@ -406,6 +434,7 @@ export default defineComponent({
       itens,
       handleShowDetail,
       handleShowAddDoc,
+      handleShowAddTurmas,
       addDoc,
       btnConfig,
       inputConfig,
@@ -416,6 +445,7 @@ export default defineComponent({
       closeModal,
       isDiferentID,
       perfil,
+      addTurmas,
     };
   },
 });

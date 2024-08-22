@@ -59,7 +59,6 @@ export const useDisciplinaStore = defineStore("disciplinas", {
     async addDisciplinaCurso(disciplinaID, formData) {
       try {
         // Verifica se curso_id é um array e cria um array de objetos a serem inseridos
-
         if (Array.isArray(formData.curso_id)) {
           const disciplinaCursos = formData.curso_id.map((cursoId) => ({
             disciplina_id: disciplinaID,
@@ -67,13 +66,13 @@ export const useDisciplinaStore = defineStore("disciplinas", {
             escola_id: formData.escola_id,
           }));
           const { data, error } = await supabase
-            .from("disciplinas_curso")
+            .from("cursos_disciplina")
             .insert(disciplinaCursos);
 
           if (error) throw error.message;
         } else {
           const { data, error } = await supabase
-            .from("disciplinas_curso")
+            .from("cursos_disciplina")
             .insert({
               disciplina_id: disciplinaID,
               curso_id: formData.curso_id,
@@ -165,7 +164,7 @@ export const useDisciplinaStore = defineStore("disciplinas", {
     async disciplinaCursos(id) {
       try {
         const { data, error } = await supabase
-          .from("disciplinas_curso")
+          .from("cursos_disciplina")
           .select(`curso_id, cursos:curso_id(*)`)
           .eq("disciplina_id", id);
         if (error) throw error.message;

@@ -364,25 +364,118 @@
                     form.tipo_funcionario
                   }}</strong>
                 </div>
+                <div v-if="perfil !== 'Admin-Escola'">
+                  <q-select
+                    v-if="form.tipo_funcionario == 'Docente'"
+                    v-model="form.disciplinas_ministrada"
+                    :options="disciplinas"
+                    option-value="id"
+                    option-label="name"
+                    map-options
+                    emit-value
+                    label="Disciplinas ministradas"
+                    multiple
+                    filled
+                    v-bind="{ ...inputConfig }"
+                    :rules="[
+                      (val) =>
+                        !!val ||
+                        'Selecione as disciplinas que o docente ministra',
+                    ]"
+                  />
+                </div>
+                <div v-else>
+                  <q-select
+                    v-if="form.tipo_funcionario == 'Docente'"
+                    v-model="form.disciplinas_ministrada"
+                    :options="disciplinasEscola"
+                    option-value="id"
+                    option-label="nome_disciplina"
+                    map-options
+                    emit-value
+                    label="Disciplinas ministradas"
+                    multiple
+                    filled
+                    v-bind="{ ...inputConfig }"
+                    :rules="[
+                      (val) =>
+                        !!val ||
+                        'Selecione as disciplinas que o docente ministra',
+                    ]"
+                  />
 
-                <q-select
-                  v-if="form.tipo_funcionario == 'Docente'"
-                  v-model="form.disciplinas_ministrada"
-                  :options="disciplinas"
-                  option-value="id"
-                  option-label="name"
-                  map-options
-                  emit-value
-                  label="Disciplinas ministradas"
-                  multiple
-                  filled
-                  v-bind="{ ...inputConfig }"
-                  :rules="[
-                    (val) =>
-                      !!val ||
-                      'Selecione as disciplinas que o docente ministra',
-                  ]"
-                />
+                  <q-select
+                    v-if="form.tipo_funcionario == 'Docente'"
+                    v-model="form.classes_prof"
+                    :options="classes_prof"
+                    option-value="id"
+                    option-label="nome_classe"
+                    map-options
+                    emit-value
+                    label="Selecione as classes que o docente ministra"
+                    multiple
+                    filled
+                    v-bind="{ ...inputConfig }"
+                    :rules="[
+                      (val) =>
+                        !!val || 'Selecione as classes que o docente ministra',
+                    ]"
+                  />
+
+                  <q-select
+                    v-if="form.tipo_funcionario == 'Docente'"
+                    v-model="form.cursos_prof"
+                    :options="cursos_prof"
+                    option-value="id"
+                    option-label="nome_curso"
+                    map-options
+                    emit-value
+                    label="Selecione os cursos onde o docente ministra"
+                    multiple
+                    filled
+                    v-bind="{ ...inputConfig }"
+                    :rules="[
+                      (val) =>
+                        !!val || 'Selecione os cursos onde o docente ministra',
+                    ]"
+                  />
+
+                  <q-select
+                    v-if="form.tipo_funcionario == 'Docente'"
+                    v-model="form.turmas_prof"
+                    :options="turmas_prof"
+                    option-value="id"
+                    option-label="nome_turma"
+                    map-options
+                    emit-value
+                    label="Selecione as turmas onde o docente ministra"
+                    multiple
+                    filled
+                    v-bind="{ ...inputConfig }"
+                    :rules="[
+                      (val) =>
+                        !!val || 'Selecione as turmas onde o docente ministra',
+                    ]"
+                  />
+
+                  <q-select
+                    v-if="form.tipo_funcionario == 'Docente'"
+                    v-model="form.periodos_prof"
+                    :options="periodos_prof"
+                    option-value="id"
+                    option-label="nome_periodo"
+                    map-options
+                    emit-value
+                    label="Selecione o período onde o docente ministra"
+                    multiple
+                    filled
+                    v-bind="{ ...inputConfig }"
+                    :rules="[
+                      (val) =>
+                        !!val || 'Selecione o período onde o docente ministra',
+                    ]"
+                  />
+                </div>
               </div>
             </div>
             <q-input
@@ -488,7 +581,12 @@ import { formatCurrency } from "src/utils/formatCurrency";
 import userAuthUser from "src/composible/userAuthUser";
 import adminAccessOther from "src/components/adminAccessOp/adminAccessOther.vue";
 import { disciplinas } from "./disciplinas";
+import { useDisciplinaStore } from "src/stores/disciplinas";
 import { useEscolaStore } from "src/stores/escolas";
+import { useCursoStore } from "src/stores/cursos";
+import { useTurmaStore } from "src/stores/turmas";
+import { usePeriodoStore } from "src/stores/periodos";
+import { useClasseStore } from "src/stores/classes";
 export default {
   name: "form-categoria",
   components: { adminAccessOther },
@@ -505,6 +603,12 @@ export default {
     } = userApi();
     const { getEscolaByEmail } = useEscolaStore();
     const { notifyError, notifySuccess } = usenotification();
+    const { getAllDisciplinas } = useDisciplinaStore();
+    const { getAllClasses } = useClasseStore();
+    const { getAllCursos } = useCursoStore();
+    const { getAllTurmas } = useTurmaStore();
+    const { getAllPeriodos } = usePeriodoStore();
+
     const table = "funcionarios";
     const router = useRouter();
     const { user } = userAuthUser();
@@ -538,6 +642,12 @@ export default {
     const escolas = ref([]);
     const image = ref([]);
     const perfil = ref("");
+
+    const disciplinasEscola = ref([]);
+    const classes_prof = ref([]);
+    const turmas_prof = ref([]);
+    const cursos_prof = ref([]);
+    const periodos_prof = ref([]);
 
     const form = ref({
       name: "",
@@ -580,6 +690,10 @@ export default {
       role: "",
       password: "",
       perfil: "",
+      classes_prof: [],
+      cursos_prof: [],
+      turmas_prof: [],
+      periodos_prof: [],
     });
 
     const isUpdate = computed(() => {
@@ -620,6 +734,11 @@ export default {
     };
     onMounted(() => {
       listarCategorias();
+      listDisciplinasEscola();
+      listClassesEscola();
+      listTurmasEscola();
+      listCursosEscola();
+      listPeriodoEscola();
       listarEscolas();
       if (isUpdate.value) {
         getItem(table, isUpdate.value);
@@ -628,6 +747,58 @@ export default {
       perfil.value = user.value.user_metadata.role;
       form.value.perfil = user.value.user_metadata.role;
     });
+
+    const listDisciplinasEscola = async () => {
+      //verifica se o perfil é de uma escola
+      if (user.value.user_metadata.role == "Admin-Escola") {
+        // se o perfil for de acesso de escola então pega o id da escola e busca todas as disciplinas desta escola
+        const id = await getEscolaByEmail("escolas", user.value.email);
+        disciplinasEscola.value = await getAllDisciplinas(id);
+      }
+    };
+
+    const listClassesEscola = async () => {
+      //verifica se o perfil é de uma escola
+      if (user.value.user_metadata.role == "Admin-Escola") {
+        // se o perfil for de acesso de escola então pega o id da escola e busca todas as disciplinas desta escola
+        const id = await getEscolaByEmail("escolas", user.value.email);
+        classes_prof.value = await getAllClasses(id);
+        console.log("classes:", classes_prof.value);
+      }
+    };
+
+    const listTurmasEscola = async () => {
+      //verifica se o perfil é de uma escola
+      if (user.value.user_metadata.role == "Admin-Escola") {
+        // se o perfil for de acesso de escola então pega o id da escola e busca todas as disciplinas desta escola
+        const id = await getEscolaByEmail("escolas", user.value.email);
+        turmas_prof.value = await getAllTurmas(id);
+
+        console.log("turmas:", turmas_prof.value);
+      }
+    };
+
+    const listCursosEscola = async () => {
+      //verifica se o perfil é de uma escola
+      if (user.value.user_metadata.role == "Admin-Escola") {
+        // se o perfil for de acesso de escola então pega o id da escola e busca todas as disciplinas desta escola
+        const id = await getEscolaByEmail("escolas", user.value.email);
+        cursos_prof.value = await getAllCursos(id);
+
+        console.log("cursos:", cursos_prof.value);
+      }
+    };
+
+    const listPeriodoEscola = async () => {
+      //verifica se o perfil é de uma escola
+      if (user.value.user_metadata.role == "Admin-Escola") {
+        // se o perfil for de acesso de escola então pega o id da escola e busca todas as disciplinas desta escola
+        const id = await getEscolaByEmail("escolas", user.value.email);
+        periodos_prof.value = await getAllPeriodos(id);
+
+        console.log("periodos:", periodos_prof.value);
+      }
+    };
 
     const getItem = async (table, id) => {
       try {
@@ -705,7 +876,12 @@ export default {
       estado_nomeacao,
       isDiferentID,
       disciplinas,
+      disciplinasEscola,
       perfil,
+      classes_prof,
+      turmas_prof,
+      cursos_prof,
+      periodos_prof,
     };
   },
 };

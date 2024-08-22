@@ -36,6 +36,12 @@ const columns = [
   },
 
   {
+    name: "add_turma",
+    label: "Atribuir turmas",
+    align: "left",
+    field: "add_turma",
+  },
+  {
     name: "actions",
     label: "Opções",
     align: "left",

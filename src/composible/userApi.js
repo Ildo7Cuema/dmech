@@ -163,6 +163,36 @@ export default function userApi() {
     return data;
   };
 
+  //cadastrar disciplinas do docente
+  const addDisciplinaCurso = async (disciplinaID, formData) => {
+    try {
+      // Verifica se curso_id é um array e cria um array de objetos a serem inseridos
+      if (Array.isArray(formData.curso_id)) {
+        const disciplinaCursos = formData.curso_id.map((cursoId) => ({
+          dme_id: disciplinaID,
+          escola_id: cursoId,
+          docente_id: formData.escola_id,
+          disciplina: "",
+        }));
+        const { data, error } = await supabase
+          .from("cursos_disciplina")
+          .insert(disciplinaCursos);
+
+        if (error) throw error.message;
+      } else {
+        const { data, error } = await supabase
+          .from("cursos_disciplina")
+          .insert({
+            disciplina_id: disciplinaID,
+            curso_id: formData.curso_id,
+            escola_id: formData.escola_id,
+          });
+
+        if (error) throw error.message;
+      }
+    } catch (error) {}
+  };
+
   const postEscola = async (table, form) => {
     const { data, error } = await supabase.from(table).insert({
       name: form.name,
