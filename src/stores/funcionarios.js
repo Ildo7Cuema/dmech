@@ -15,11 +15,22 @@ export const useFuncionarioStore = defineStore("funcionarios", {
   },
 
   actions: {
+    //funcionarios ao nivel da dme
     async getFuncionarios(tabela, organization_id) {
       const { data, error } = await supabase
         .from(tabela)
         .select("*")
         .eq("user_id", organization_id);
+      if (error) throw error;
+      return (this.$state.funcionarios = data);
+    },
+    //funcionarios ao nivel da escola
+    async getFuncionariosEscola(tabela, organization_id, escola_id) {
+      const { data, error } = await supabase
+        .from(tabela)
+        .select("*")
+        .eq("user_id", organization_id)
+        .eq("escola_id", escola_id);
       if (error) throw error;
       return (this.$state.funcionarios = data);
     },

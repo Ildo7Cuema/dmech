@@ -60,21 +60,35 @@
           dark
         />
       </div>
+
       <div class="col-3">
-        <div class="col-3">
-          <q-select
-            flat
-            dense
-            label="Seleciona uma disciplina"
-            v-model="form.disciplina_id"
-            :options="selectDisciplinas"
-            option-value="id"
-            option-label="nome"
-            emit-value
-            map-options
-            dark
-          />
-        </div>
+        <q-select
+          flat
+          dense
+          label="Seleciona o docente"
+          v-model="form.docente_id"
+          :options="selectDocentes"
+          option-value="id"
+          option-label="nome"
+          emit-value
+          map-options
+          dark
+        />
+      </div>
+
+      <div class="col-3">
+        <q-select
+          flat
+          dense
+          label="Seleciona uma disciplina"
+          v-model="form.disciplina_id"
+          :options="selectDisciplinas"
+          option-value="id"
+          option-label="nome"
+          emit-value
+          map-options
+          dark
+        />
       </div>
     </div>
 
@@ -124,22 +138,28 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useClasseStore } from "src/stores/classes";
 
 import primeiroTrimestre from "./primeira_classe/pagePrimeiroTrimestre.vue";
 import segundoTrimestre from "./primeira_classe/pageSegundoTrimestre.vue";
 import terceiroTrimestre from "./primeira_classe/pageTerceiroTrimestre.vue";
+import { useFuncionarioStore } from "src/stores/funcionarios";
+import { useTurmasProf } from "src/stores/add_turmas_profs";
 
 export default {
   components: { primeiroTrimestre, segundoTrimestre, terceiroTrimestre },
   setup(props) {
     const route = useRoute();
     const { getClassesDisciplinas } = useClasseStore();
+    const { getFuncionarios, getFuncionariosEscola } = useFuncionarioStore();
+    const { getDocente_disciplinas } = useTurmasProf();
     const selectDisciplinas = ref([]);
+    const selectDocentes = ref([]);
     const form = ref({
       trimestre: "",
+      docente_id: "",
       disciplina_id: 0,
     });
 
@@ -150,12 +170,14 @@ export default {
     ]);
 
     onMounted(() => {
-      getDisciplinas();
+      listProf_escola();
     });
 
     const infoAluno = computed(() => {
       return JSON.parse(route.params.info);
     });
+    /*
+//Busca discipinas no geral
 
     const getDisciplinas = async () => {
       try {
@@ -170,13 +192,46 @@ export default {
         console.error("Falha ao buscar disciplinas:", error);
       }
     };
+*/
+    // Listar professores da escola
+    const listProf_escola = async () => {
+      const prof = await getFuncionariosEscola(
+        "funcionarios",
+        infoAluno.value.escola.user_id,
+        infoAluno.value.escola_id
+      );
+      selectDocentes.value = prof.map((d) => ({
+        id: d.id,
+        nome: d.name,
+      }));
+    };
+
+    //listar disciplina do docente
+    //watch
+    watch(
+      () => form.value.docente_id,
+      async (newValue) => {
+        if (newValue) {
+          const disciplinas = await getDocente_disciplinas(
+            infoAluno.value.escola.user_id,
+            infoAluno.value.escola_id,
+            newValue
+          );
+          console.log(disciplinas);
+          selectDisciplinas.value = disciplinas.map((d) => ({
+            id: d.disciplinas.id,
+            nome: d.disciplinas.nome_disciplina,
+          }));
+        }
+      }
+    );
     return {
       route,
       infoAluno,
       selectTrimestre,
       form,
       selectDisciplinas,
-      getDisciplinas,
+      selectDocentes,
     };
   },
 };

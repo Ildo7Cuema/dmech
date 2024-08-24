@@ -25,9 +25,10 @@
               <b class="text-white">{{ itens.name }}</b></span
             >
           </q-card-section>
+          {{ form.disciplinas }}
           <q-card-section class="q-gutter-sm">
             <q-select
-              v-model="form.disciplinas"
+              v-model="form.disciplina_id"
               :options="disciplinas_prof"
               option-value="id"
               option-label="nome_disciplina"
@@ -44,7 +45,7 @@
             />
 
             <q-select
-              v-model="form.classes"
+              v-model="form.classes_id"
               :options="classes_prof"
               option-value="id"
               option-label="nome_classe"
@@ -60,7 +61,7 @@
             />
 
             <q-select
-              v-model="form.cursos"
+              v-model="form.cursos_id"
               :options="cursos_prof"
               option-value="id"
               option-label="nome_curso"
@@ -76,7 +77,7 @@
             />
 
             <q-select
-              v-model="form.turmas"
+              v-model="form.turmas_id"
               :options="turmas_prof"
               option-value="id"
               option-label="nome_turma"
@@ -92,7 +93,7 @@
             />
 
             <q-select
-              v-model="form.periodos"
+              v-model="form.periodos_id"
               :options="periodos_prof"
               option-value="id"
               option-label="nome_periodo"
@@ -140,6 +141,7 @@ import { useTurmaStore } from "src/stores/turmas";
 import { usePeriodoStore } from "src/stores/periodos";
 import { useClasseStore } from "src/stores/classes";
 import loadingComponent2 from "./loading/loadingComponent2.vue";
+import { useTurmasProf } from "src/stores/add_turmas_profs";
 export default {
   name: "modalAddTurmas",
   components: { loadingComponent2 },
@@ -162,6 +164,7 @@ export default {
     const { getAllTurmas } = useTurmaStore();
     const { getAllPeriodos } = usePeriodoStore();
     const escolaID = ref(0);
+    const { add_turmas_prof } = useTurmasProf();
 
     const { post, fileName, uploadImage } = userApi();
     const disciplinas_prof = ref([]);
@@ -173,11 +176,11 @@ export default {
       dme_id: 0,
       escola_id: 0,
       docente_id: 0,
-      disciplinas: [],
-      cursos: [],
-      classes: [],
-      turmas: [],
-      periodos: [],
+      disciplina_id: [],
+      cursos_id: [],
+      classes_id: [],
+      turmas_id: [],
+      periodos_id: [],
     });
 
     watch(
@@ -246,12 +249,11 @@ export default {
     const onSubmit = async () => {
       $q.loading.show("Salvando documento...");
       try {
-        const {} = form.value;
-        console.log(form.value);
+        await add_turmas_prof(form.value);
         $q.notify({
           color: "positive",
           position: "top",
-          message: "Documento arquivado com sucesso",
+          message: "O Docente foi atribuida com sucesso as turmas",
           icon: "mdi-check",
         });
         handClose();

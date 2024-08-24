@@ -2,7 +2,16 @@
   <q-layout>
     <q-page-container>
       <q-page>
-        <div class="row" v-if="$q.platform.is.desktop">
+        <loading-component :show="loading" />
+
+        <div
+          class="row"
+          v-if="
+            $q.platform.is.desktop &&
+            loading == false &&
+            funcionarioCategoriasAndEscolas != ''
+          "
+        >
           <q-table
             :rows="funcionarioCategoriasAndEscolas"
             flat
@@ -126,7 +135,11 @@
         <!-- List for mobile -->
         <q-list
           bordered
-          v-if="$q.platform.is.mobile && funcionarioCategoriasAndEscolas != ''"
+          v-if="
+            $q.platform.is.mobile &&
+            loading == false &&
+            funcionarioCategoriasAndEscolas != ''
+          "
         >
           <div
             class="row text-body3 text-h5 flex-center q-pa-lg bg-secondary text-white"
@@ -324,8 +337,15 @@ import addTurma from "src/components/addTurmas.vue";
 import { btnConfig, inputConfig } from "src/utils/inputVisual";
 import { fields } from "./fieldsExport";
 import JsonExcel from "vue-json-excel3";
+import loadingComponent from "src/components/loading/loadingComponent.vue";
 export default defineComponent({
-  components: { detalhesComponent, DownloadExcel: JsonExcel, addDoc, addTurma },
+  components: {
+    detalhesComponent,
+    DownloadExcel: JsonExcel,
+    addDoc,
+    addTurma,
+    loadingComponent,
+  },
   setup() {
     const funcionarios = ref([]);
     const itensDetails = ref("");
@@ -345,6 +365,7 @@ export default defineComponent({
     const table = "funcionarios";
     const { notifyError, notifySuccess } = usenotification();
     const funcionarioCategoriasAndEscolas = ref([]);
+    const loading = ref(false);
 
     const detalhes = (data) => {
       itens.value = data;
@@ -405,11 +426,13 @@ export default defineComponent({
 
     const listarFuncionariosComCategoria = async () => {
       try {
+        loading.value = true;
         funcionarioCategoriasAndEscolas.value =
           await getFuncionariosWithCategoriasAndEscolas(table, user.value);
       } catch (error) {
         console.log(error);
       } finally {
+        loading.value = false;
       }
     };
 
@@ -446,6 +469,7 @@ export default defineComponent({
       isDiferentID,
       perfil,
       addTurmas,
+      loading,
     };
   },
 });
