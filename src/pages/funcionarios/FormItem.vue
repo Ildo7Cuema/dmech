@@ -478,6 +478,7 @@
                 </div>
               </div>
             </div>
+
             <q-input
               v-model="form.habilitacao"
               label="Habilitação"
@@ -667,6 +668,7 @@ export default {
       provincia: "",
       municipio: "",
       tipo_funcionario: "",
+      cargo_funcionario: "",
       comuna: "",
       localidade: "",
       status_nomeacao: "",
@@ -882,6 +884,7 @@ export default {
       turmas_prof,
       cursos_prof,
       periodos_prof,
+      areas_de_chefia,
     };
   },
 };

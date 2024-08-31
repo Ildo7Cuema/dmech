@@ -183,6 +183,8 @@
         <print-mini-pautas
           :loading="showMiniPautaPrint"
           :dataMiniPautas="dataMiniPautas"
+          :nome_docente="nome_docente"
+          :genero="genero"
           v-else
         />
       </q-card-section>
@@ -202,7 +204,11 @@ import printMiniPautas from "./printMini-Pautas.vue";
 export default {
   name: "Mini-Pautas-component",
   // configuração do componente
-  props: { dataMiniPautas: { type: Object, required: true } },
+  props: {
+    dataMiniPautas: { type: Object, required: true },
+    nome_docente: { type: String, required: true },
+    genero: { type: String, required: true },
+  },
   components: {
     printMiniPautas,
   },

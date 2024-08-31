@@ -405,6 +405,7 @@ export default {
     ano_lectivo: { type: String, required: true },
     curso: { type: String, required: true },
     nome_aluno: { type: String, required: true },
+    docenteId: { type: Number, required: true },
     idCurso: { type: Number, required: true },
     disciplina: { type: Number, required: true },
     trimestre: { type: String, required: true },
@@ -453,6 +454,7 @@ export default {
       curso_id: props.infoAluno.curso_id,
       disciplina_id: 0,
       aluno_id: props.infoAluno.id,
+      docente_id: props.docenteId,
       escola_id: props.infoAluno.escola_id,
       ano_lectivo: props.ano_lectivo,
       trimestre: props.trimestre,
@@ -470,7 +472,8 @@ export default {
         props.infoAluno.classe_id,
         props.infoAluno.turma_id,
         props.infoAluno.periodo_id,
-        props.infoAluno.curso_id
+        props.infoAluno.curso_id,
+        props.docenteId
       );
       listNotasSegundoTrimestre(
         props.infoAluno.id,
@@ -482,7 +485,8 @@ export default {
         props.infoAluno.classe_id,
         props.infoAluno.turma_id,
         props.infoAluno.periodo_id,
-        props.infoAluno.curso_id
+        props.infoAluno.curso_id,
+        props.docenteId
       );
       listNotasTerceiroTrimestre(
         props.infoAluno.id,
@@ -494,7 +498,8 @@ export default {
         props.infoAluno.classe_id,
         props.infoAluno.turma_id,
         props.infoAluno.periodo_id,
-        props.infoAluno.curso_id
+        props.infoAluno.curso_id,
+        props.docenteId
       );
     });
     const notaFinal = computed(() => {
@@ -512,9 +517,9 @@ export default {
       classeId,
       turmaId,
       periodoId,
-      cursoId
+      cursoId,
+      docenteId
     ) => {
-      console.log(idAluno, anoLectivo, escolaId, disciplina, trimestre);
       loadingNota.value = true;
       await getNotaPrimeiroTrimestre(
         idAluno,
@@ -525,7 +530,8 @@ export default {
         classeId,
         turmaId,
         periodoId,
-        cursoId
+        cursoId,
+        docenteId
       ).then((item) => {
         console.log(item.mac1Data);
         form.value.mac1 = item.mac1Data.mac1 || 0;
@@ -546,7 +552,8 @@ export default {
       classeId,
       turmaId,
       periodoId,
-      cursoId
+      cursoId,
+      docenteId
     ) => {
       loadingNota.value = true;
       await getNotaSegundoTrimestre(
@@ -558,7 +565,8 @@ export default {
         classeId,
         turmaId,
         periodoId,
-        cursoId
+        cursoId,
+        docenteId
       ).then((item) => {
         console.log(item.mac2Data);
         form.value.mac2 = item.mac2Data.mac2 || 0;
@@ -578,7 +586,8 @@ export default {
       classeId,
       turmaId,
       periodoId,
-      cursoId
+      cursoId,
+      docenteId
     ) => {
       console.log(idAluno, anoLectivo, escolaId, disciplina, trimestre);
       loadingNota.value = true;
@@ -593,7 +602,8 @@ export default {
           classeId,
           turmaId,
           periodoId,
-          cursoId
+          cursoId,
+          docenteId
         );
 
         console.log(item.mfd3Data);
@@ -630,7 +640,8 @@ export default {
           props.infoAluno.classe_id,
           props.infoAluno.turma_id,
           props.infoAluno.periodo_id,
-          props.infoAluno.curso_id
+          props.infoAluno.curso_id,
+          props.docenteId
         );
         listNotasSegundoTrimestre(
           props.infoAluno.id,
@@ -641,7 +652,8 @@ export default {
           props.infoAluno.classe_id,
           props.infoAluno.turma_id,
           props.infoAluno.periodo_id,
-          props.infoAluno.curso_id
+          props.infoAluno.curso_id,
+          props.docenteId
         );
         listNotasTerceiroTrimestre(
           props.infoAluno.id,
@@ -652,7 +664,8 @@ export default {
           props.infoAluno.classe_id,
           props.infoAluno.turma_id,
           props.infoAluno.periodo_id,
-          props.infoAluno.curso_id
+          props.infoAluno.curso_id,
+          props.docenteId
         );
         await getDisciplinaById(newValue).then((item) => {
           form.value.disciplina_id = item.id;
@@ -1144,7 +1157,8 @@ export default {
             props.infoAluno.classe_id,
             props.infoAluno.turma_id,
             props.infoAluno.periodo_id,
-            props.infoAluno.curso_id
+            props.infoAluno.curso_id,
+            props.docenteId
           );
           loadingSaveBtn.value = false;
         }

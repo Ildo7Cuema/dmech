@@ -52,9 +52,11 @@
         <q-select
           flat
           dense
-          label="Seleciona um trimestre"
-          v-model="form.trimestre"
-          :options="selectTrimestre"
+          label="Seleciona o docente"
+          v-model="form.docente_id"
+          :options="selectDocentes"
+          option-value="id"
+          option-label="nome"
           emit-value
           map-options
           dark
@@ -65,11 +67,9 @@
         <q-select
           flat
           dense
-          label="Seleciona o docente"
-          v-model="form.docente_id"
-          :options="selectDocentes"
-          option-value="id"
-          option-label="nome"
+          label="Seleciona um trimestre"
+          v-model="form.trimestre"
+          :options="selectTrimestre"
           emit-value
           map-options
           dark
@@ -99,6 +99,7 @@
       :periodo="infoAluno.periodo.nome_periodo"
       :ano_lectivo="infoAluno.ano_lectivo"
       :curso="infoAluno.cursos.nome_curso"
+      :docenteId="form.docente_id"
       :nome_aluno="infoAluno.nome"
       :idCurso="infoAluno.classes.id"
       :disciplina="form.disciplina_id"
@@ -113,6 +114,7 @@
       :periodo="infoAluno.periodo.nome_periodo"
       :ano_lectivo="infoAluno.ano_lectivo"
       :curso="infoAluno.cursos.nome_curso"
+      :docenteId="form.docente_id"
       :nome_aluno="infoAluno.nome"
       :idCurso="infoAluno.classes.id"
       :disciplina="form.disciplina_id"
@@ -127,6 +129,7 @@
       :periodo="infoAluno.periodo.nome_periodo"
       :ano_lectivo="infoAluno.ano_lectivo"
       :curso="infoAluno.cursos.nome_curso"
+      :docenteId="form.docente_id"
       :nome_aluno="infoAluno.nome"
       :idCurso="infoAluno.classes.id"
       :disciplina="form.disciplina_id"
@@ -159,7 +162,7 @@ export default {
     const selectDocentes = ref([]);
     const form = ref({
       trimestre: "",
-      docente_id: "",
+      docente_id: 0,
       disciplina_id: 0,
     });
 

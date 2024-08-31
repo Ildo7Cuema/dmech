@@ -14,13 +14,6 @@ const columns = [
     sortable: true,
   },
   {
-    name: "num_bilhete",
-    label: "Nº do bilhete",
-    align: "left",
-    field: "num_bilhete",
-    sortable: true,
-  },
-  {
     name: "num_agente",
     label: "Nº de agente",
     align: "left",
@@ -40,6 +33,13 @@ const columns = [
     label: "Atribuir turmas",
     align: "left",
     field: "add_turma",
+  },
+  {
+    name: "add_cargo",
+    label: "Atribuir cargo",
+    align: "left",
+    field: "add_cargo",
+    sortable: true,
   },
   {
     name: "actions",

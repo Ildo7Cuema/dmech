@@ -34,5 +34,15 @@ export const useFuncionarioStore = defineStore("funcionarios", {
       if (error) throw error;
       return (this.$state.funcionarios = data);
     },
+
+    // Buscar funcionarios pelo id
+    async getFuncionarioNameById(tabela, idFuncionarios) {
+      const { data, error } = await supabase
+        .from(tabela)
+        .select("name, genero")
+        .eq("id", idFuncionarios);
+      if (error) throw error.message;
+      return data;
+    },
   },
 });

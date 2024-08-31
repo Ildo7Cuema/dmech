@@ -45,7 +45,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("aluno_id", infoAluno.aluno_id)
           .eq("ano_lectivo", infoAluno.ano_lectivo)
           .eq("disciplina_id", infoAluno.disciplina_id)
-          .eq("trimestre", infoAluno.trimestre);
+          .eq("trimestre", infoAluno.trimestre)
+          .eq("docente_id", infoAluno.docente_id);
 
         if (error) {
           throw new Error(error.message);
@@ -68,6 +69,7 @@ export const useNotasStore = defineStore("notas", {
                 classe_id: infoAluno.classe_id,
                 aluno_id: infoAluno.aluno_id,
                 ano_lectivo: infoAluno.ano_lectivo,
+                docente_id: infoAluno.docente_id,
               },
             ])
             .eq("id", id);
@@ -85,6 +87,7 @@ export const useNotasStore = defineStore("notas", {
               classe_id: infoAluno.classe_id,
               aluno_id: infoAluno.aluno_id,
               ano_lectivo: infoAluno.ano_lectivo,
+              docente_id: infoAluno.docente_id,
             },
           ]);
         }
@@ -122,6 +125,7 @@ export const useNotasStore = defineStore("notas", {
                 classe_id: infoAluno.classe_id,
                 aluno_id: infoAluno.aluno_id,
                 ano_lectivo: infoAluno.ano_lectivo,
+                docente_id: infoAluno.docente_id,
               },
             ])
             .eq("id", id);
@@ -139,6 +143,7 @@ export const useNotasStore = defineStore("notas", {
               classe_id: infoAluno.classe_id,
               aluno_id: infoAluno.aluno_id,
               ano_lectivo: infoAluno.ano_lectivo,
+              docente_id: infoAluno.docente_id,
             },
           ]);
         }
@@ -176,6 +181,7 @@ export const useNotasStore = defineStore("notas", {
                 classe_id: infoAluno.classe_id,
                 aluno_id: infoAluno.aluno_id,
                 ano_lectivo: infoAluno.ano_lectivo,
+                docente_id: infoAluno.docente_id,
               },
             ])
             .eq("id", id);
@@ -193,6 +199,7 @@ export const useNotasStore = defineStore("notas", {
               classe_id: infoAluno.classe_id,
               aluno_id: infoAluno.aluno_id,
               ano_lectivo: infoAluno.ano_lectivo,
+              docente_id: infoAluno.docente_id,
             },
           ]);
         }
@@ -230,6 +237,7 @@ export const useNotasStore = defineStore("notas", {
                 classe_id: infoAluno.classe_id,
                 aluno_id: infoAluno.aluno_id,
                 ano_lectivo: infoAluno.ano_lectivo,
+                docente_id: infoAluno.docente_id,
               },
             ])
             .eq("id", id);
@@ -250,6 +258,7 @@ export const useNotasStore = defineStore("notas", {
               classe_id: infoAluno.classe_id,
               aluno_id: infoAluno.aluno_id,
               ano_lectivo: infoAluno.ano_lectivo,
+              docente_id: infoAluno.docente_id,
             },
           ]);
           notifySuccess("Notas inseridas com sucesso");
@@ -291,6 +300,7 @@ export const useNotasStore = defineStore("notas", {
                 classe_id: infoAluno.classe_id,
                 aluno_id: infoAluno.aluno_id,
                 ano_lectivo: infoAluno.ano_lectivo,
+                docente_id: infoAluno.docente_id,
               },
             ])
             .eq("id", id);
@@ -308,6 +318,7 @@ export const useNotasStore = defineStore("notas", {
               classe_id: infoAluno.classe_id,
               aluno_id: infoAluno.aluno_id,
               ano_lectivo: infoAluno.ano_lectivo,
+              docente_id: infoAluno.docente_id,
             },
           ]);
         }
@@ -345,6 +356,7 @@ export const useNotasStore = defineStore("notas", {
                 classe_id: infoAluno.classe_id,
                 aluno_id: infoAluno.aluno_id,
                 ano_lectivo: infoAluno.ano_lectivo,
+                docente_id: infoAluno.docente_id,
               },
             ])
             .eq("id", id);
@@ -362,6 +374,7 @@ export const useNotasStore = defineStore("notas", {
               classe_id: infoAluno.classe_id,
               aluno_id: infoAluno.aluno_id,
               ano_lectivo: infoAluno.ano_lectivo,
+              docente_id: infoAluno.docente_id,
             },
           ]);
         }
@@ -399,6 +412,7 @@ export const useNotasStore = defineStore("notas", {
                 classe_id: infoAluno.classe_id,
                 aluno_id: infoAluno.aluno_id,
                 ano_lectivo: infoAluno.ano_lectivo,
+                docente_id: infoAluno.docente_id,
               },
             ])
             .eq("id", id);
@@ -416,6 +430,7 @@ export const useNotasStore = defineStore("notas", {
               classe_id: infoAluno.classe_id,
               aluno_id: infoAluno.aluno_id,
               ano_lectivo: infoAluno.ano_lectivo,
+              docente_id: infoAluno.docente_id,
             },
           ]);
         }
@@ -453,6 +468,7 @@ export const useNotasStore = defineStore("notas", {
                 classe_id: infoAluno.classe_id,
                 aluno_id: infoAluno.aluno_id,
                 ano_lectivo: infoAluno.ano_lectivo,
+                docente_id: infoAluno.docente_id,
               },
             ])
             .eq("id", id);
@@ -473,6 +489,7 @@ export const useNotasStore = defineStore("notas", {
               classe_id: infoAluno.classe_id,
               aluno_id: infoAluno.aluno_id,
               ano_lectivo: infoAluno.ano_lectivo,
+              docente_id: infoAluno.docente_id,
             },
           ]);
           notifySuccess("Notas inseridas com sucesso");
@@ -515,6 +532,7 @@ export const useNotasStore = defineStore("notas", {
                 classe_id: infoAluno.classe_id,
                 aluno_id: infoAluno.aluno_id,
                 ano_lectivo: infoAluno.ano_lectivo,
+                docente_id: infoAluno.docente_id,
               },
             ])
             .eq("id", id);
@@ -537,6 +555,7 @@ export const useNotasStore = defineStore("notas", {
               classe_id: infoAluno.classe_id,
               aluno_id: infoAluno.aluno_id,
               ano_lectivo: infoAluno.ano_lectivo,
+              docente_id: infoAluno.docente_id,
             },
           ]);
 
@@ -580,6 +599,7 @@ export const useNotasStore = defineStore("notas", {
                 classe_id: infoAluno.classe_id,
                 aluno_id: infoAluno.aluno_id,
                 ano_lectivo: infoAluno.ano_lectivo,
+                docente_id: infoAluno.docente_id,
               },
             ])
             .eq("id", id);
@@ -602,6 +622,7 @@ export const useNotasStore = defineStore("notas", {
               classe_id: infoAluno.classe_id,
               aluno_id: infoAluno.aluno_id,
               ano_lectivo: infoAluno.ano_lectivo,
+              docente_id: infoAluno.docente_id,
             },
           ]);
 
@@ -645,6 +666,7 @@ export const useNotasStore = defineStore("notas", {
                 classe_id: infoAluno.classe_id,
                 aluno_id: infoAluno.aluno_id,
                 ano_lectivo: infoAluno.ano_lectivo,
+                docente_id: infoAluno.docente_id,
               },
             ])
             .eq("id", id);
@@ -667,6 +689,7 @@ export const useNotasStore = defineStore("notas", {
               classe_id: infoAluno.classe_id,
               aluno_id: infoAluno.aluno_id,
               ano_lectivo: infoAluno.ano_lectivo,
+              docente_id: infoAluno.docente_id,
             },
           ]);
           notifySuccess(
@@ -709,6 +732,7 @@ export const useNotasStore = defineStore("notas", {
                 classe_id: infoAluno.classe_id,
                 aluno_id: infoAluno.aluno_id,
                 ano_lectivo: infoAluno.ano_lectivo,
+                docente_id: infoAluno.docente_id,
               },
             ])
             .eq("id", id);
@@ -728,6 +752,7 @@ export const useNotasStore = defineStore("notas", {
               classe_id: infoAluno.classe_id,
               aluno_id: infoAluno.aluno_id,
               ano_lectivo: infoAluno.ano_lectivo,
+              docente_id: infoAluno.docente_id,
             },
           ]);
         }
@@ -765,6 +790,7 @@ export const useNotasStore = defineStore("notas", {
                 classe_id: infoAluno.classe_id,
                 aluno_id: infoAluno.aluno_id,
                 ano_lectivo: infoAluno.ano_lectivo,
+                docente_id: infoAluno.docente_id,
               },
             ])
             .eq("id", id);
@@ -784,6 +810,7 @@ export const useNotasStore = defineStore("notas", {
               classe_id: infoAluno.classe_id,
               aluno_id: infoAluno.aluno_id,
               ano_lectivo: infoAluno.ano_lectivo,
+              docente_id: infoAluno.docente_id,
             },
           ]);
           notifySuccess("Notas inseridas com sucesso");
@@ -824,6 +851,7 @@ export const useNotasStore = defineStore("notas", {
                 classe_id: infoAluno.classe_id,
                 aluno_id: infoAluno.aluno_id,
                 ano_lectivo: infoAluno.ano_lectivo,
+                docente_id: infoAluno.docente_id,
               },
             ])
             .eq("id", id);
@@ -844,6 +872,7 @@ export const useNotasStore = defineStore("notas", {
               classe_id: infoAluno.classe_id,
               aluno_id: infoAluno.aluno_id,
               ano_lectivo: infoAluno.ano_lectivo,
+              docente_id: infoAluno.docente_id,
             },
           ]);
           notifySuccess("Notas do MF inserido com sucesso");
@@ -892,6 +921,7 @@ export const useNotasStore = defineStore("notas", {
                   classe_id: infoAluno.classe_id,
                   aluno_id: infoAluno.aluno_id,
                   ano_lectivo: infoAluno.ano_lectivo,
+                  docente_id: infoAluno.docente_id,
                 },
               ])
               .eq("id", id);
@@ -912,6 +942,7 @@ export const useNotasStore = defineStore("notas", {
                 classe_id: infoAluno.classe_id,
                 aluno_id: infoAluno.aluno_id,
                 ano_lectivo: infoAluno.ano_lectivo,
+                docente_id: infoAluno.docente_id,
               },
             ]);
             notifySuccess("Notas inseridas com sucesso");
@@ -950,6 +981,7 @@ export const useNotasStore = defineStore("notas", {
                   classe_id: infoAluno.classe_id,
                   aluno_id: infoAluno.aluno_id,
                   ano_lectivo: infoAluno.ano_lectivo,
+                  docente_id: infoAluno.docente_id,
                 },
               ])
               .eq("id", id);
@@ -970,6 +1002,7 @@ export const useNotasStore = defineStore("notas", {
                 classe_id: infoAluno.classe_id,
                 aluno_id: infoAluno.aluno_id,
                 ano_lectivo: infoAluno.ano_lectivo,
+                docente_id: infoAluno.docente_id,
               },
             ]);
             notifySuccess("Notas inseridas com sucesso");
@@ -1008,6 +1041,7 @@ export const useNotasStore = defineStore("notas", {
                   classe_id: infoAluno.classe_id,
                   aluno_id: infoAluno.aluno_id,
                   ano_lectivo: infoAluno.ano_lectivo,
+                  docente_id: infoAluno.docente_id,
                 },
               ])
               .eq("id", id);
@@ -1028,6 +1062,7 @@ export const useNotasStore = defineStore("notas", {
                 classe_id: infoAluno.classe_id,
                 aluno_id: infoAluno.aluno_id,
                 ano_lectivo: infoAluno.ano_lectivo,
+                docente_id: infoAluno.docente_id,
               },
             ]);
             notifySuccess("Notas inseridas com sucesso");
@@ -1047,7 +1082,8 @@ export const useNotasStore = defineStore("notas", {
       classeId,
       turmaId,
       periodoId,
-      cursoId
+      cursoId,
+      docenteId
     ) {
       try {
         console.log(
@@ -1059,7 +1095,8 @@ export const useNotasStore = defineStore("notas", {
           classeId,
           turmaId,
           periodoId,
-          cursoId
+          cursoId,
+          docenteId
         );
         const { data, error } = await supabase
           .from(mac1)
@@ -1072,7 +1109,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("classe_id", classeId)
           .eq("turma_id", turmaId)
           .eq("periodo_id", periodoId)
-          .eq("curso_id", cursoId);
+          .eq("curso_id", cursoId)
+          .eq("docente_id", docenteId);
 
         if (error) {
           throw new Error(error.message);
@@ -1091,7 +1129,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("classe_id", classeId)
           .eq("turma_id", turmaId)
           .eq("periodo_id", periodoId)
-          .eq("curso_id", cursoId);
+          .eq("curso_id", cursoId)
+          .eq("docente_id", docenteId);
 
         if (nppError) {
           throw new Error(nppError.message);
@@ -1110,7 +1149,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("classe_id", classeId)
           .eq("turma_id", turmaId)
           .eq("periodo_id", periodoId)
-          .eq("curso_id", cursoId);
+          .eq("curso_id", cursoId)
+          .eq("docente_id", docenteId);
 
         if (nptError) {
           throw new Error(nptError.message);
@@ -1129,7 +1169,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("classe_id", classeId)
           .eq("turma_id", turmaId)
           .eq("periodo_id", periodoId)
-          .eq("curso_id", cursoId);
+          .eq("curso_id", cursoId)
+          .eq("docente_id", docenteId);
 
         if (mtError) {
           throw new Error(mtError.message);
@@ -1158,7 +1199,8 @@ export const useNotasStore = defineStore("notas", {
       classeId,
       turmaId,
       periodoId,
-      cursoId
+      cursoId,
+      docenteId
     ) {
       try {
         console.log(
@@ -1170,7 +1212,8 @@ export const useNotasStore = defineStore("notas", {
           classeId,
           turmaId,
           periodoId,
-          cursoId
+          cursoId,
+          docenteId
         );
         const { data, error } = await supabase
           .from(mac2)
@@ -1183,7 +1226,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("classe_id", classeId)
           .eq("turma_id", turmaId)
           .eq("periodo_id", periodoId)
-          .eq("curso_id", cursoId);
+          .eq("curso_id", cursoId)
+          .eq("docente_id", docenteId);
 
         if (error) {
           throw new Error(error.message);
@@ -1202,7 +1246,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("classe_id", classeId)
           .eq("turma_id", turmaId)
           .eq("periodo_id", periodoId)
-          .eq("curso_id", cursoId);
+          .eq("curso_id", cursoId)
+          .eq("docente_id", docenteId);
 
         if (nppError) {
           throw new Error(nppError.message);
@@ -1221,7 +1266,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("classe_id", classeId)
           .eq("turma_id", turmaId)
           .eq("periodo_id", periodoId)
-          .eq("curso_id", cursoId);
+          .eq("curso_id", cursoId)
+          .eq("docente_id", docenteId);
 
         if (nptError) {
           throw new Error(nptError.message);
@@ -1240,7 +1286,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("classe_id", classeId)
           .eq("turma_id", turmaId)
           .eq("periodo_id", periodoId)
-          .eq("curso_id", cursoId);
+          .eq("curso_id", cursoId)
+          .eq("docente_id", docenteId);
 
         if (mtError) {
           throw new Error(mtError.message);
@@ -1269,7 +1316,8 @@ export const useNotasStore = defineStore("notas", {
       classeId,
       turmaId,
       periodoId,
-      cursoId
+      cursoId,
+      docenteId
     ) {
       try {
         const { data, error } = await supabase
@@ -1283,7 +1331,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("classe_id", classeId)
           .eq("turma_id", turmaId)
           .eq("periodo_id", periodoId)
-          .eq("curso_id", cursoId);
+          .eq("curso_id", cursoId)
+          .eq("docente_id", docenteId);
 
         if (error) {
           throw new Error(error.message);
@@ -1302,7 +1351,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("classe_id", classeId)
           .eq("turma_id", turmaId)
           .eq("periodo_id", periodoId)
-          .eq("curso_id", cursoId);
+          .eq("curso_id", cursoId)
+          .eq("docente_id", docenteId);
 
         if (nppError) {
           throw new Error(nppError.message);
@@ -1321,7 +1371,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("classe_id", classeId)
           .eq("turma_id", turmaId)
           .eq("periodo_id", periodoId)
-          .eq("curso_id", cursoId);
+          .eq("curso_id", cursoId)
+          .eq("docente_id", docenteId);
 
         if (nptError) {
           throw new Error(nptError.message);
@@ -1340,7 +1391,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("classe_id", classeId)
           .eq("turma_id", turmaId)
           .eq("periodo_id", periodoId)
-          .eq("curso_id", cursoId);
+          .eq("curso_id", cursoId)
+          .eq("docente_id", docenteId);
 
         if (mtError) {
           throw new Error(mtError.message);
@@ -1359,7 +1411,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("classe_id", classeId)
           .eq("turma_id", turmaId)
           .eq("periodo_id", periodoId)
-          .eq("curso_id", cursoId);
+          .eq("curso_id", cursoId)
+          .eq("docente_id", docenteId);
 
         if (mfdError) {
           throw new Error(mfdError.message);
@@ -1377,7 +1430,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("classe_id", classeId)
           .eq("turma_id", turmaId)
           .eq("periodo_id", periodoId)
-          .eq("curso_id", cursoId);
+          .eq("curso_id", cursoId)
+          .eq("docente_id", docenteId);
 
         if (neeError) {
           throw new Error(neeError.message);
@@ -1395,7 +1449,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("classe_id", classeId)
           .eq("turma_id", turmaId)
           .eq("periodo_id", periodoId)
-          .eq("curso_id", cursoId);
+          .eq("curso_id", cursoId)
+          .eq("docente_id", docenteId);
 
         if (neoError) {
           throw new Error(neoError.message);
@@ -1413,7 +1468,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("classe_id", classeId)
           .eq("turma_id", turmaId)
           .eq("periodo_id", periodoId)
-          .eq("curso_id", cursoId);
+          .eq("curso_id", cursoId)
+          .eq("docente_id", docenteId);
 
         if (mecError) {
           throw new Error(mecError.message);
@@ -1431,7 +1487,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("classe_id", classeId)
           .eq("turma_id", turmaId)
           .eq("periodo_id", periodoId)
-          .eq("curso_id", cursoId);
+          .eq("curso_id", cursoId)
+          .eq("docente_id", docenteId);
 
         if (neError) {
           throw new Error(neError.message);
@@ -1449,7 +1506,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("classe_id", classeId)
           .eq("turma_id", turmaId)
           .eq("periodo_id", periodoId)
-          .eq("curso_id", cursoId);
+          .eq("curso_id", cursoId)
+          .eq("docente_id", docenteId);
 
         if (mfError) {
           throw new Error(mfError.message);
@@ -1481,7 +1539,8 @@ export const useNotasStore = defineStore("notas", {
       turmaId,
       periodoId,
       anoLectivo,
-      disciplinaId
+      disciplinaId,
+      docenteId
     ) {
       console.log(escolaId, classeId, cursoId);
       try {
@@ -1497,7 +1556,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("escola_id", escolaId)
           .eq("turma_id", turmaId)
           .eq("classe_id", classeId)
-          .eq("disciplina_id", disciplinaId);
+          .eq("disciplina_id", disciplinaId)
+          .eq("docente_id", docenteId);
         if (mac1Error) throw mac1Error;
         const dataMac1 = mac1Data.length > 0 ? mac1Data : null;
 
@@ -1512,7 +1572,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("escola_id", escolaId)
           .eq("turma_id", turmaId)
           .eq("classe_id", classeId)
-          .eq("disciplina_id", disciplinaId);
+          .eq("disciplina_id", disciplinaId)
+          .eq("docente_id", docenteId);
         if (mac1Error) throw npp1Error;
         const dataNpp1 = npp1Data.length > 0 ? npp1Data : null;
 
@@ -1527,7 +1588,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("escola_id", escolaId)
           .eq("turma_id", turmaId)
           .eq("classe_id", classeId)
-          .eq("disciplina_id", disciplinaId);
+          .eq("disciplina_id", disciplinaId)
+          .eq("docente_id", docenteId);
         if (npt1Error) throw npt1Error;
         const dataNpt1 = npt1Data.length > 0 ? npt1Data : null;
 
@@ -1542,7 +1604,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("escola_id", escolaId)
           .eq("turma_id", turmaId)
           .eq("classe_id", classeId)
-          .eq("disciplina_id", disciplinaId);
+          .eq("disciplina_id", disciplinaId)
+          .eq("docente_id", docenteId);
         if (mt1Error) throw mt1Error;
         const dataMt1 = mt1Data.length > 0 ? mt1Data : null;
 
@@ -1558,7 +1621,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("escola_id", escolaId)
           .eq("turma_id", turmaId)
           .eq("classe_id", classeId)
-          .eq("disciplina_id", disciplinaId);
+          .eq("disciplina_id", disciplinaId)
+          .eq("docente_id", docenteId);
         if (mac2Error) throw mac2Error;
         const dataMac2 = mac2Data.length > 0 ? mac2Data : null;
 
@@ -1573,7 +1637,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("escola_id", escolaId)
           .eq("turma_id", turmaId)
           .eq("classe_id", classeId)
-          .eq("disciplina_id", disciplinaId);
+          .eq("disciplina_id", disciplinaId)
+          .eq("docente_id", docenteId);
         if (npp2Error) throw npp2Error;
         const dataNpp2 = npp2Data.length > 0 ? npp2Data : null;
 
@@ -1588,7 +1653,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("escola_id", escolaId)
           .eq("turma_id", turmaId)
           .eq("classe_id", classeId)
-          .eq("disciplina_id", disciplinaId);
+          .eq("disciplina_id", disciplinaId)
+          .eq("docente_id", docenteId);
         if (npt2Error) throw npt2Error;
         const dataNpt2 = npt2Data.length > 0 ? npt2Data : null;
 
@@ -1603,7 +1669,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("escola_id", escolaId)
           .eq("turma_id", turmaId)
           .eq("classe_id", classeId)
-          .eq("disciplina_id", disciplinaId);
+          .eq("disciplina_id", disciplinaId)
+          .eq("docente_id", docenteId);
         if (mt2Error) throw mt2Error;
         const dataMt2 = mt2Data.length > 0 ? mt2Data : null;
 
@@ -1619,7 +1686,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("escola_id", escolaId)
           .eq("turma_id", turmaId)
           .eq("classe_id", classeId)
-          .eq("disciplina_id", disciplinaId);
+          .eq("disciplina_id", disciplinaId)
+          .eq("docente_id", docenteId);
         if (mac3Error) throw mac3Error;
         const dataMac3 = mac3Data.length > 0 ? mac3Data : null;
 
@@ -1634,7 +1702,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("escola_id", escolaId)
           .eq("turma_id", turmaId)
           .eq("classe_id", classeId)
-          .eq("disciplina_id", disciplinaId);
+          .eq("disciplina_id", disciplinaId)
+          .eq("docente_id", docenteId);
         if (npp3Error) throw npp3Error;
         const dataNpp3 = npp3Data.length > 0 ? npp3Data : null;
 
@@ -1649,7 +1718,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("escola_id", escolaId)
           .eq("turma_id", turmaId)
           .eq("classe_id", classeId)
-          .eq("disciplina_id", disciplinaId);
+          .eq("disciplina_id", disciplinaId)
+          .eq("docente_id", docenteId);
         if (npt3Error) throw npt3Error;
         const dataNpt3 = npt3Data.length > 0 ? npt3Data : null;
 
@@ -1664,7 +1734,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("escola_id", escolaId)
           .eq("turma_id", turmaId)
           .eq("classe_id", classeId)
-          .eq("disciplina_id", disciplinaId);
+          .eq("disciplina_id", disciplinaId)
+          .eq("docente_id", docenteId);
         if (mt3Error) throw mt3Error;
         const dataMt3 = mt3Data.length > 0 ? mt3Data : null;
 
@@ -1679,7 +1750,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("escola_id", escolaId)
           .eq("turma_id", turmaId)
           .eq("classe_id", classeId)
-          .eq("disciplina_id", disciplinaId);
+          .eq("disciplina_id", disciplinaId)
+          .eq("docente_id", docenteId);
         if (mfdError) throw mfdError;
         const dataMfd = mfdData.length > 0 ? mfdData : null;
 
@@ -1694,7 +1766,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("escola_id", escolaId)
           .eq("turma_id", turmaId)
           .eq("classe_id", classeId)
-          .eq("disciplina_id", disciplinaId);
+          .eq("disciplina_id", disciplinaId)
+          .eq("docente_id", docenteId);
         if (neError) throw neError;
         const dataNe = neData.length > 0 ? neData : null;
 
@@ -1709,7 +1782,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("escola_id", escolaId)
           .eq("turma_id", turmaId)
           .eq("classe_id", classeId)
-          .eq("disciplina_id", disciplinaId);
+          .eq("disciplina_id", disciplinaId)
+          .eq("docente_id", docenteId);
         if (neeError) throw neeError;
         const dataNee = neeData.length > 0 ? neeData : null;
 
@@ -1724,7 +1798,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("escola_id", escolaId)
           .eq("turma_id", turmaId)
           .eq("classe_id", classeId)
-          .eq("disciplina_id", disciplinaId);
+          .eq("disciplina_id", disciplinaId)
+          .eq("docente_id", docenteId);
         if (neoError) throw neoError;
         const dataNeo = neoData.length > 0 ? neoData : null;
 
@@ -1739,7 +1814,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("escola_id", escolaId)
           .eq("turma_id", turmaId)
           .eq("classe_id", classeId)
-          .eq("disciplina_id", disciplinaId);
+          .eq("disciplina_id", disciplinaId)
+          .eq("docente_id", docenteId);
         if (mecError) throw mecError;
         const dataMec = mecData.length > 0 ? mecData : null;
 
@@ -1754,7 +1830,8 @@ export const useNotasStore = defineStore("notas", {
           .eq("escola_id", escolaId)
           .eq("turma_id", turmaId)
           .eq("classe_id", classeId)
-          .eq("disciplina_id", disciplinaId);
+          .eq("disciplina_id", disciplinaId)
+          .eq("docente_id", docenteId);
         if (mfError) throw mfError;
         const dataMf = mfData.length > 0 ? mfData : null;
 

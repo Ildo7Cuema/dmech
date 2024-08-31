@@ -240,16 +240,26 @@
             <div class="col-12">
               <table class="table green-border">
                 <tr>
-                  <td style="width: 25%">O(A) Coordenador(a) do curso</td>
-                  <td></td>
+                  <td
+                    style="width: 25%"
+                    v-if="genero_coordenador_curso === 'Masculino'"
+                  >
+                    O Coordenador do curso
+                  </td>
+                  <td style="width: 25%" v-else>A Coordenadora do curso</td>
+                  <td>{{ nome_coordenador_curso }}</td>
                 </tr>
                 <tr>
-                  <td>O(A) Director(a) de Turma</td>
-                  <td></td>
+                  <td v-if="genero_director_turma == 'Masculino'">
+                    O Director de Turma
+                  </td>
+                  <td v-else>A Directora de Turma</td>
+                  <td>{{ nome_director_turma }}</td>
                 </tr>
                 <tr>
-                  <td>O(A) Professor(a)</td>
-                  <td></td>
+                  <td v-if="genero == 'Masculino'">O Professor</td>
+                  <td v-else>A Professora</td>
+                  <td class="text-blue-10">{{ nome_docente }}</td>
                 </tr>
               </table>
             </div>
@@ -277,10 +287,13 @@ import { useCursoStore } from "src/stores/cursos";
 import { useTurmaStore } from "src/stores/turmas";
 import { usePeriodoStore } from "src/stores/periodos";
 import loadingComponent3 from "../loading/loadingComponent3.vue";
+import { useCargoStore } from "src/stores/cargos";
 export default {
   components: { loadingComponent3 },
   props: {
     dataMiniPautas: { type: Object, required: true },
+    nome_docente: { type: String, required: true },
+    genero: { type: String, required: true },
     loading: { type: Boolean, required: true },
   },
   setup(props) {
@@ -290,6 +303,7 @@ export default {
     const { getTurmaById } = useTurmaStore();
     const { getPeriodoById } = usePeriodoStore();
     const { getCursoById } = useCursoStore();
+    const { getDirectorDeTurma, getCoordenadorCurso } = useCargoStore();
     const nome_disciplina = ref("");
     const nivel_ensino = ref("");
     const anoLectivo = ref("");
@@ -297,6 +311,7 @@ export default {
     const classe = ref("");
     const turma = ref("");
     const curso = ref("");
+
     const carregar = ref(false);
     const periodo = ref("");
     const joinedData = ref([]);
@@ -350,6 +365,13 @@ export default {
 
     //Expressão regular para verificar de a ultima palavra termina em "s"
     const terminaEmSeE = /(\b\w+E\b|\b\w+S\b|\b\w+e\b|\b\w+s\b)$/;
+
+    const id_turma = ref(null);
+    const cargo_curso_id = ref(null);
+    const genero_director_turma = ref("");
+    const genero_coordenador_curso = ref("");
+    const nome_director_turma = ref("");
+    const nome_coordenador_curso = ref("");
 
     //Codigo para imprimir documneto no formato PDF
     const gerarPDF = async () => {
@@ -441,7 +463,6 @@ export default {
       anoLectivo.value = props.dataMiniPautas[0].ano_lectivo;
       await getDisciplinaById(props.dataMiniPautas[0].disciplinaid).then(
         (item) => {
-          console.log(item);
           nome_disciplina.value = item.nome_disciplina;
         }
       );
@@ -450,16 +471,14 @@ export default {
         nivel_ensino.value = item[0].nivel_ensino;
         provincia.value = item[0].provincia;
         municipio.value = item[0].municipio;
-
-        console.log(item);
       });
 
       await getClasseById(props.dataMiniPautas[0].classeid).then((item) => {
-        console.log(item);
         classe.value = item.nome_classe;
       });
 
       await getTurmaById(props.dataMiniPautas[0].turmaid).then((item) => {
+        id_turma.value = item.id;
         turma.value = item.nome_turma;
       });
 
@@ -467,8 +486,17 @@ export default {
         periodo.value = item.nome_periodo;
       });
 
-      await getCursoById(props.dataMiniPautas[0].cursoid).then((item) => {
+      await getCursoById(props.dataMiniPautas[0].cursoid).then(async (item) => {
+        cargo_curso_id.value = item.id;
         curso.value = item.nome_curso;
+
+        await getCoordenadorCurso(cargo_curso_id.value).then((item) => {
+          if (item.length > 0) {
+            nome_coordenador_curso.value = item[0].funcionarios.name;
+            genero_coordenador_curso.value = item[0].funcionarios.genero;
+            console.log(nome_coordenador_curso.value);
+          }
+        });
       });
 
       dataMiniPautas.value = props.dataMiniPautas;
@@ -588,6 +616,32 @@ export default {
       }
         */
     });
+
+    watch(
+      () => cargo_curso_id.value,
+      (newValue) => {
+        getCoordenadorCurso(newValue).then((item) => {
+          if (item.length > 0) {
+            nome_coordenador_curso.value = item[0].funcionarios.name;
+            genero_coordenador_curso.value = item[0].funcionarios.genero;
+            console.log(nome_coordenador_curso.value);
+          }
+        });
+      }
+    );
+
+    watch(
+      () => id_turma.value,
+      (newValue) => {
+        getDirectorDeTurma(newValue).then((item) => {
+          console.log(item);
+          if (item.length > 0) {
+            nome_director_turma.value = item[0].funcionarios.name;
+            genero_director_turma.value = item[0].funcionarios.genero;
+          }
+        });
+      }
+    );
 
     const getColorMac1 = () => {
       if (
@@ -959,6 +1013,10 @@ export default {
       turma,
       periodo,
       curso,
+      genero_director_turma,
+      genero_coordenador_curso,
+      nome_director_turma,
+      nome_coordenador_curso,
     };
   },
 };

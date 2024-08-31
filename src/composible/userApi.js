@@ -163,6 +163,22 @@ export default function userApi() {
     return data;
   };
 
+  // inserir cargo do funcionario caso exista
+  const addCargo = async (form) => {
+    const { data, error } = await supabase.from("cargos").insert({
+      funcionario_id: form.docente_id,
+      dme_id: form.dme_id,
+      escola_id: form.escola_id,
+      cargo: form.cargo,
+      cargo_director_turma_id: form.cargo_director_turma_id,
+      cargo_coordenador_classe_id: form.cargo_coordenador_classe_id,
+      cargo_coordenador_curso_id: form.cargo_coordenador_curso_id,
+      cargo_coordenador_disciplina_id: form.cargo_coordenador_disciplina_id,
+    });
+    if (error) throw error.message;
+    return data;
+  };
+
   //cadastrar disciplinas do docente
   const addDisciplinaCurso = async (disciplinaID, formData) => {
     try {
@@ -371,5 +387,6 @@ export default function userApi() {
     totalFuncionatioPornivel,
     postEscola,
     postFuncionario,
+    addCargo,
   };
 }

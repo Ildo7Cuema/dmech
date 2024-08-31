@@ -87,6 +87,19 @@
                 >
               </q-td>
             </template>
+            <template v-slot:body-cell-add_cargo="props">
+              <q-td :props="props" class="q-gutter-x-sm item-center">
+                <q-btn
+                  icon="mdi-cog-outline"
+                  color="positive"
+                  dense
+                  flat
+                  size="sm"
+                  @click="addCargo(props.row)"
+                  ><q-tooltip>Atribuir cargo ao docente</q-tooltip></q-btn
+                >
+              </q-td>
+            </template>
             <template v-slot:body-cell-actions="props">
               <q-td :props="props" class="q-gutter-x-sm text-center">
                 <q-btn
@@ -318,6 +331,13 @@
           :itens="itens"
           @closeModal="closeModal"
         />
+        <!--Atribuir cargo-->
+        <add-cargo
+          v-if="itens"
+          :show="handleShowAddCargo"
+          :itens="itens"
+          @closeModal="closeModal"
+        />
       </q-page>
     </q-page-container>
   </q-layout>
@@ -334,6 +354,7 @@ import { columns } from "./table";
 import detalhesComponent from "src/components/detalhesComponent.vue";
 import addDoc from "src/components/addDocument.vue";
 import addTurma from "src/components/addTurmas.vue";
+import addCargo from "src/components/addCargo.vue";
 import { btnConfig, inputConfig } from "src/utils/inputVisual";
 import { fields } from "./fieldsExport";
 import JsonExcel from "vue-json-excel3";
@@ -344,6 +365,7 @@ export default defineComponent({
     DownloadExcel: JsonExcel,
     addDoc,
     addTurma,
+    addCargo,
     loadingComponent,
   },
   setup() {
@@ -357,6 +379,7 @@ export default defineComponent({
     const handleShowDetail = ref(false);
     const handleShowAddDoc = ref(false);
     const handleShowAddTurmas = ref(false);
+    const handleShowAddCargo = ref(false);
     const $q = useQuasar();
     const perfil = ref("");
     const itens = ref({});
@@ -386,6 +409,10 @@ export default defineComponent({
     const addTurmas = (data) => {
       itens.value = data;
       handleShowAddTurmas.value = true;
+    };
+    const addCargo = (data) => {
+      itens.value = data;
+      handleShowAddCargo.value = true;
     };
 
     const deletarItem = async (item) => {
@@ -469,7 +496,9 @@ export default defineComponent({
       isDiferentID,
       perfil,
       addTurmas,
+      addCargo,
       loading,
+      handleShowAddCargo,
     };
   },
 });

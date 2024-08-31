@@ -174,11 +174,74 @@ export const useTurmasProf = defineStore("add_turmas_profs", {
     },
 
     async getDocente_disciplinas(dme_id, escola_id, docente_id) {
-      console.log(dme_id, escola_id, docente_id);
       try {
         const { data, error } = await supabase
           .from(disciplinas_profs_table)
           .select(`*, disciplinas:disciplina_id(id, nome_disciplina)`)
+          .eq("dme_id", dme_id)
+          .eq("escola_id", escola_id)
+          .eq("docente_id", docente_id);
+
+        if (error) throw error.message;
+        return data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async getDocente_cursos(dme_id, escola_id, docente_id) {
+      try {
+        const { data, error } = await supabase
+          .from(cursos_profs_table)
+          .select(`*, cursos:cursos_id(id, nome_curso)`)
+          .eq("dme_id", dme_id)
+          .eq("escola_id", escola_id)
+          .eq("docente_id", docente_id);
+
+        if (error) throw error.message;
+        return data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async getDocente_turmas(dme_id, escola_id, docente_id) {
+      try {
+        const { data, error } = await supabase
+          .from(turmas_profs_table)
+          .select(`*, turmas:turmas_id(id, nome_turma)`)
+          .eq("dme_id", dme_id)
+          .eq("escola_id", escola_id)
+          .eq("docente_id", docente_id);
+
+        if (error) throw error.message;
+        return data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async getDocente_periodos(dme_id, escola_id, docente_id) {
+      try {
+        const { data, error } = await supabase
+          .from(periodos_profs_table)
+          .select(`*, periodos:periodos_id(id, nome_periodo)`)
+          .eq("dme_id", dme_id)
+          .eq("escola_id", escola_id)
+          .eq("docente_id", docente_id);
+
+        if (error) throw error.message;
+        return data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async getDocente_classes(dme_id, escola_id, docente_id) {
+      try {
+        const { data, error } = await supabase
+          .from(classes_profs_table)
+          .select(`*, classes:classes_id(id, nome_classe)`)
           .eq("dme_id", dme_id)
           .eq("escola_id", escola_id)
           .eq("docente_id", docente_id);
