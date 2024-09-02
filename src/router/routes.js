@@ -261,6 +261,11 @@ const routes = [
         name: "mini-pautas",
         component: () => import("pages/mini-pautas/mini-pauta.vue"),
       },
+      {
+        path: "pautas",
+        name: "pauta-geral",
+        component: () => import("pages/pauta/pautaComponente.vue"),
+      },
     ],
     meta: { requiresAuth: true },
   },

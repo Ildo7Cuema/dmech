@@ -1,7 +1,5 @@
 <template>
   <q-page>
-    <br />
-    <br />
     <!-- <br />
     <br />
     <q-card
@@ -47,7 +45,7 @@
       </q-card-section>
     </q-card>-->
 
-    <div class="row q-gutter-sm q-mt-sm bg-green-10 text-white">
+    <div class="row q-gutter-sm q-mt-sm bg-green-10 text-white q-pt-md">
       <div class="col-3">
         <q-select
           flat

@@ -227,7 +227,11 @@
           </q-item-section>
         </q-item>
 
-        <q-item clickable class="GPLAY__drawer-link GPLAY__drawer-link--books">
+        <q-item
+          clickable
+          class="GPLAY__drawer-link GPLAY__drawer-link--books"
+          @click="hendlePauta()"
+        >
           <q-item-section
             avatar
             class="books-icon bg-blue-7 text-grey-1 text-center"
@@ -379,6 +383,10 @@ export default {
       router.push({ name: "mini-pautas" });
     };
 
+    const hendlePauta = () => {
+      router.push({ name: "pauta-geral" });
+    };
+
     const hendleFuncionarios = () => {
       router.push({ name: "pageFuncionarios" });
     };
@@ -417,6 +425,7 @@ export default {
       handleClasses,
       handleNotas,
       hendleMiniPauta,
+      hendlePauta,
 
       links1: [
         { text: "Minha conta", icon: "mdi-account" },

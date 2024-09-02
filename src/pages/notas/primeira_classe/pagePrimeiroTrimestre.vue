@@ -117,7 +117,6 @@
                   :loading="loadingSaveBtn"
                   :disable="loadingSaveBtn"
                 />
-                {{ form.docente_id }}
               </td>
             </tr>
           </tbody>

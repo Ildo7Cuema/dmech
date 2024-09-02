@@ -23,6 +23,7 @@ const nee = "nee";
 const neo = "neo";
 const mec = "mec";
 const mf = "mf";
+const pauta = "pauta";
 const disciplina_table = "disciplinas";
 
 export const useNotasStore = defineStore("notas", {
@@ -266,6 +267,64 @@ export const useNotasStore = defineStore("notas", {
       } catch (error) {
         console.error(error);
       }
+
+      //Inserir nota para pauta na tabela pauta do mt1
+      try {
+        const { data, error } = await supabase
+          .from(pauta)
+          .select("*")
+          .eq("aluno_id", infoAluno.aluno_id)
+          .eq("ano_lectivo", infoAluno.ano_lectivo)
+          .eq("disciplina_id", infoAluno.disciplina_id);
+
+        if (error) {
+          throw new Error(error.message);
+        }
+
+        if (data.length > 0) {
+          // Update existing record
+          const { id } = data[0];
+          const { error } = await supabase
+            .from(pauta)
+            .update([
+              {
+                mt1: infoAluno.mt1,
+                disciplina_id: infoAluno.disciplina_id,
+                curso_id: infoAluno.curso_id,
+                turma_id: infoAluno.turma_id,
+                periodo_id: infoAluno.periodo_id,
+                escola_id: infoAluno.escola_id,
+                classe_id: infoAluno.classe_id,
+                aluno_id: infoAluno.aluno_id,
+                ano_lectivo: infoAluno.ano_lectivo,
+              },
+            ])
+            .eq("id", id);
+          if (error)
+            throw notifyError("Erro ao inserir a nota ", error.message);
+          else notifySuccess("Nota actualizada com sucesso!");
+        } else {
+          // Insert new record
+          const { data, error } = await supabase.from(pauta).insert([
+            {
+              mt1: infoAluno.mt1,
+              disciplina_id: infoAluno.disciplina_id,
+              curso_id: infoAluno.curso_id,
+              turma_id: infoAluno.turma_id,
+              periodo_id: infoAluno.periodo_id,
+              escola_id: infoAluno.escola_id,
+              classe_id: infoAluno.classe_id,
+              aluno_id: infoAluno.aluno_id,
+              ano_lectivo: infoAluno.ano_lectivo,
+            },
+          ]);
+          if (error) throw error.message;
+          notifySuccess("Notas inseridas com sucesso");
+          return data;
+        }
+      } catch (error) {
+        console.error(error);
+      }
     },
     // ==============================================================================================================
     async addNota_segundoTrimestre(infoAluno) {
@@ -493,6 +552,64 @@ export const useNotasStore = defineStore("notas", {
             },
           ]);
           notifySuccess("Notas inseridas com sucesso");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+
+      //Inserindo nota na pauta mt2
+      try {
+        const { data, error } = await supabase
+          .from(pauta)
+          .select("*")
+          .eq("aluno_id", infoAluno.aluno_id)
+          .eq("ano_lectivo", infoAluno.ano_lectivo)
+          .eq("disciplina_id", infoAluno.disciplina_id);
+
+        if (error) {
+          throw new Error(error.message);
+        }
+
+        if (data.length > 0) {
+          // Update existing record
+          const { id } = data[0];
+          const { error } = await supabase
+            .from(pauta)
+            .update([
+              {
+                mt2: infoAluno.mt2,
+                disciplina_id: infoAluno.disciplina_id,
+                curso_id: infoAluno.curso_id,
+                turma_id: infoAluno.turma_id,
+                periodo_id: infoAluno.periodo_id,
+                escola_id: infoAluno.escola_id,
+                classe_id: infoAluno.classe_id,
+                aluno_id: infoAluno.aluno_id,
+                ano_lectivo: infoAluno.ano_lectivo,
+              },
+            ])
+            .eq("id", id);
+          if (error)
+            throw notifyError("Erro ao inserir a nota ", error.message);
+          else notifySuccess("Nota actualizada com sucesso!");
+        } else {
+          // Insert new record
+          const { data, error } = await supabase.from(pauta).insert([
+            {
+              mt2: infoAluno.mt2,
+              disciplina_id: infoAluno.disciplina_id,
+              curso_id: infoAluno.curso_id,
+              turma_id: infoAluno.turma_id,
+              periodo_id: infoAluno.periodo_id,
+              escola_id: infoAluno.escola_id,
+              classe_id: infoAluno.classe_id,
+              aluno_id: infoAluno.aluno_id,
+              ano_lectivo: infoAluno.ano_lectivo,
+            },
+          ]);
+          if (error) throw error.message;
+          notifySuccess("Notas inseridas com sucesso");
+          return data;
         }
       } catch (error) {
         console.error(error);
@@ -880,6 +997,67 @@ export const useNotasStore = defineStore("notas", {
       } catch (error) {
         console.error(error);
       }
+      //Inserindo nota na pauta valor do III trimestre mt3
+      try {
+        const { data, error } = await supabase
+          .from(pauta)
+          .select("*")
+          .eq("aluno_id", infoAluno.aluno_id)
+          .eq("ano_lectivo", infoAluno.ano_lectivo)
+          .eq("disciplina_id", infoAluno.disciplina_id);
+
+        if (error) {
+          throw new Error(error.message);
+        }
+
+        if (data.length > 0) {
+          // Update existing record
+          const { id } = data[0];
+          const { error } = await supabase
+            .from(pauta)
+            .update([
+              {
+                mt3: infoAluno.mt3,
+                mfd: infoAluno.mfd,
+                mf: infoAluno.mf,
+                disciplina_id: infoAluno.disciplina_id,
+                curso_id: infoAluno.curso_id,
+                turma_id: infoAluno.turma_id,
+                periodo_id: infoAluno.periodo_id,
+                escola_id: infoAluno.escola_id,
+                classe_id: infoAluno.classe_id,
+                aluno_id: infoAluno.aluno_id,
+                ano_lectivo: infoAluno.ano_lectivo,
+              },
+            ])
+            .eq("id", id);
+          if (error)
+            throw notifyError("Erro ao inserir a nota ", error.message);
+          else notifySuccess("Nota actualizada com sucesso!");
+        } else {
+          // Insert new record
+          const { data, error } = await supabase.from(pauta).insert([
+            {
+              mt3: infoAluno.mt3,
+              mfd: infoAluno.mfd,
+              mf: infoAluno.mf,
+              disciplina_id: infoAluno.disciplina_id,
+              curso_id: infoAluno.curso_id,
+              turma_id: infoAluno.turma_id,
+              periodo_id: infoAluno.periodo_id,
+              escola_id: infoAluno.escola_id,
+              classe_id: infoAluno.classe_id,
+              aluno_id: infoAluno.aluno_id,
+              ano_lectivo: infoAluno.ano_lectivo,
+            },
+          ]);
+          if (error) throw error.message;
+          notifySuccess("Notas inseridas com sucesso");
+          return data;
+        }
+      } catch (error) {
+        console.error(error);
+      }
       // confirmar ou verifica se o usuario selecionou o III Trimestre e as disciplinas de L. port para inserir os dados nas tabelas nee, neo, mec, mf
       if (
         (infoAluno.trimestre == "III Trimestre" &&
@@ -1066,6 +1244,63 @@ export const useNotasStore = defineStore("notas", {
               },
             ]);
             notifySuccess("Notas inseridas com sucesso");
+          }
+        } catch (error) {
+          console.error(error);
+        }
+
+        try {
+          const { data, error } = await supabase
+            .from(pauta)
+            .select("*")
+            .eq("aluno_id", infoAluno.aluno_id)
+            .eq("ano_lectivo", infoAluno.ano_lectivo)
+            .eq("disciplina_id", infoAluno.disciplina_id);
+
+          if (error) {
+            throw new Error(error.message);
+          }
+
+          if (data.length > 0) {
+            // Update existing record
+            const { id } = data[0];
+            const { error } = await supabase
+              .from(pauta)
+              .update([
+                {
+                  mec: infoAluno.mec,
+                  disciplina_id: infoAluno.disciplina_id,
+                  curso_id: infoAluno.curso_id,
+                  turma_id: infoAluno.turma_id,
+                  periodo_id: infoAluno.periodo_id,
+                  escola_id: infoAluno.escola_id,
+                  classe_id: infoAluno.classe_id,
+                  aluno_id: infoAluno.aluno_id,
+                  ano_lectivo: infoAluno.ano_lectivo,
+                },
+              ])
+              .eq("id", id);
+            if (error)
+              throw notifyError("Erro ao inserir a nota ", error.message);
+            else notifySuccess("Nota actualizada com sucesso!");
+          } else {
+            // Insert new record
+            const { data, error } = await supabase.from(pauta).insert([
+              {
+                mec: infoAluno.mec,
+                disciplina_id: infoAluno.disciplina_id,
+                curso_id: infoAluno.curso_id,
+                turma_id: infoAluno.turma_id,
+                periodo_id: infoAluno.periodo_id,
+                escola_id: infoAluno.escola_id,
+                classe_id: infoAluno.classe_id,
+                aluno_id: infoAluno.aluno_id,
+                ano_lectivo: infoAluno.ano_lectivo,
+              },
+            ]);
+            if (error) throw error.message;
+            notifySuccess("Notas inseridas com sucesso");
+            return data;
           }
         } catch (error) {
           console.error(error);
