@@ -168,6 +168,7 @@ import { usePeriodoStore } from "src/stores/periodos";
 import { useCursoStore } from "src/stores/cursos";
 import { useAnoLectivoStore } from "src/stores/ano_lectivo";
 import loadingComponent2 from "src/components/loading/loadingComponent2.vue";
+import usenotification from "src/composible/useNotify";
 
 export default {
   name: "Pauta-Componente",
@@ -183,6 +184,7 @@ export default {
     const optionsCurso = ref([]);
     const optionsPeriodo = ref([]);
     const optionsAnoLectivo = ref([]);
+    const { notifyError } = usenotification();
 
     const { getAllClasses } = useClasseStore();
     const { getAllTurmas } = useTurmaStore();
@@ -238,6 +240,14 @@ export default {
 
         const pauta = {};
         const disciplines = new Set();
+
+        if (data.length == 0) {
+          notifyError(
+            "Não há dados para exibir na pauta com o filtro selecionado"
+          );
+          show.value = false;
+          return;
+        }
 
         data.forEach(
           ({ alunos, disciplinas, mt1, mt2, mt3, mfd, mf, ne, mec }) => {

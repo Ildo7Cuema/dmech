@@ -75,7 +75,11 @@
               </q-td>
             </template>
             <template v-slot:body-cell-add_turma="props">
-              <q-td :props="props" class="q-gutter-x-sm item-center">
+              <q-td
+                :props="props"
+                class="q-gutter-x-sm item-center"
+                v-if="user.user_metadata.role == 'Admin-Escola'"
+              >
                 <q-btn
                   icon="mdi-google-classroom"
                   color="positive"
@@ -86,9 +90,14 @@
                   ><q-tooltip>Atribuir turmas ao docente</q-tooltip></q-btn
                 >
               </q-td>
+              <q-td v-else>R/Escola</q-td>
             </template>
             <template v-slot:body-cell-add_cargo="props">
-              <q-td :props="props" class="q-gutter-x-sm item-center">
+              <q-td
+                :props="props"
+                class="q-gutter-x-sm item-center"
+                v-if="user.user_metadata.role == 'Admin-Escola'"
+              >
                 <q-btn
                   icon="mdi-cog-outline"
                   color="positive"
@@ -99,6 +108,7 @@
                   ><q-tooltip>Atribuir cargo ao docente</q-tooltip></q-btn
                 >
               </q-td>
+              <q-td v-else>R/Escola</q-td>
             </template>
             <template v-slot:body-cell-actions="props">
               <q-td :props="props" class="q-gutter-x-sm text-center">
@@ -326,7 +336,7 @@
 
         <!--Atribuir turma-->
         <add-turma
-          v-if="itens"
+          v-if="itens && user.user_metadata.role == 'Admin-Escola'"
           :show="handleShowAddTurmas"
           :itens="itens"
           @closeModal="closeModal"
@@ -449,6 +459,7 @@ export default defineComponent({
     onMounted(() => {
       listarFuncionariosComCategoria();
       perfil.value = user.value.user_metadata.role;
+      console.log(user.value);
     });
 
     const listarFuncionariosComCategoria = async () => {
@@ -499,6 +510,7 @@ export default defineComponent({
       addCargo,
       loading,
       handleShowAddCargo,
+      user,
     };
   },
 });

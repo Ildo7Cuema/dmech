@@ -1,9 +1,11 @@
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import useSupabase from "boot/supabase";
 import sendSMS from "src/utils/sendSMS";
 
 const user = ref(null);
 const token = ref(null);
+const router = useRouter();
 
 // Suponha que você tenha um arquivo onde gerencia o estado de autenticação, como userAuthUser.js
 // Você pode chamar a função renewTokenIfNeeded lá
@@ -39,12 +41,43 @@ export default function userAuthUser() {
     return user.value;
   };
   const login = async ({ email, password }) => {
-    const { user, error } = await supabase.auth.signInWithPassword({
+    const { user, error, data } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
     if (error) throw error.message;
+
+    localStorage.setItem("accessToken", data.session.access_token);
+    localStorage.setItem("refreshToken", data.session.refresh_token);
     return user;
+  };
+
+  const refreshToken = localStorage.getItem("refreshToken");
+
+  const refreshAccessToken = async () => {
+    try {
+      const { data, error } = await supabase.auth.refreshSession({
+        refresh_token: refreshToken,
+      });
+
+      if (error) {
+        console.error("Error refreshing token:", error.message);
+        // Redirecione o usuário para a página de login
+        //window.location.href = "/login";
+        logout();
+        router.push({ name: "loginPage" });
+        return;
+      }
+
+      // Atualize os tokens no armazenamento local
+      localStorage.setItem("accessToken", data.session.access_token);
+      localStorage.setItem("refreshToken", data.session.refresh_token);
+    } catch (err) {
+      console.error("Error during token refresh:", err.message);
+      // Redirecione o usuário para a página de login
+      logout();
+      router.push({ name: "loginPage" });
+    }
   };
 
   const resetPassword = async (accessToken, newPassword) => {
@@ -61,7 +94,7 @@ export default function userAuthUser() {
     if (error) throw error;
   };
   const register = async ({ email, password, ...meta }) => {
-    const { user, error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -77,7 +110,25 @@ export default function userAuthUser() {
     });
 
     if (error) throw error;
-    return user;
+    return data;
+  };
+  const register1 = async ({ email, password, ...meta }) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          name: meta.name,
+          phone: meta.phone,
+          photoURL: meta.photoURL,
+          role: meta.role,
+          redirectTo: `${window.location.origin}/me?fromEmail=registrationConfirmation`,
+        },
+      },
+    });
+
+    if (error) throw error;
+    return data;
   };
 
   const createNewUser = async (newUser) => {
@@ -199,6 +250,7 @@ export default function userAuthUser() {
     getUser,
     logout,
     register,
+    register1,
     sendEmailResetPassword,
     loginWithSocialProvider,
     updateUser,
@@ -209,5 +261,6 @@ export default function userAuthUser() {
     deleteUser,
     updateSingleUser,
     createNewUser,
+    refreshAccessToken,
   };
 }

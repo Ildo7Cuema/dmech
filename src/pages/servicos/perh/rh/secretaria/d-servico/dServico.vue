@@ -1793,7 +1793,11 @@ export default {
     const carregarFuncionarios = async () => {
       try {
         $q.loading.show("Carregando funcionários...");
-        rows.value = await getFuncionariosWithCategoriasAndEscolas(tabela);
+        const perfil = user.value;
+        rows.value = await getFuncionariosWithCategoriasAndEscolas(
+          tabela,
+          perfil
+        );
       } catch (error) {
         console.log(error.message);
       } finally {

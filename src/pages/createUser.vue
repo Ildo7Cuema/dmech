@@ -112,7 +112,7 @@ import { inputConfig } from "src/utils/inputVisual";
 export default {
   name: "form-login",
   setup() {
-    const { register } = userAuth();
+    const { register1 } = userAuth();
     const { notifyError, notifySuccess } = useNotification();
     const router = useRouter();
     const form = ref({
@@ -128,13 +128,14 @@ export default {
     const createUser = async () => {
       try {
         Loading.show({ message: "Criando conta" });
-        await register(form.value);
+        await register1(form.value);
         router.push({
           name: "email-confirmation",
           query: { email: form.value.email },
         });
         notifySuccess("conta criada com sucesso");
       } catch (error) {
+        console.log(error.message);
         notifyError(error.message);
       } finally {
         Loading.hide();

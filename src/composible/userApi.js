@@ -13,7 +13,7 @@ const brand = ref({
   secondary: "",
 });
 export default function userApi() {
-  const { user, getToken } = userAuthUser();
+  const { user, refreshAccessToken } = userAuthUser();
   const $q = useQuasar();
   const fileName = uuid();
   const { supabase, supabaseAdmin } = userSupabase();
@@ -311,11 +311,54 @@ export default function userApi() {
         return brand;
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
+      if (error.message == "JWT expired") {
+        refreshAccessToken();
+      }
     } finally {
     }
   };
 
+  /*  const getBrand = async () => {
+    try {
+      const id = user?.value?.id;
+      if (!id) {
+        console.warn("User ID is not available");
+        return;
+      }
+
+      $q.loading.show();
+
+      const { data, error } = await supabase
+        .from("config")
+        .select("*")
+        .eq("user_id", id);
+
+      if (error) {
+        // Verifica se o erro é de expiração do token JWT
+        if (error.message.includes("JWT expired")) {
+          console.error("JWT expired. Please reauthenticate.");
+          // Lógica para reautenticação ou renovação do token
+          // Por exemplo, redirecionar o usuário para a página de login
+        } else {
+          throw error;
+        }
+        return;
+      }
+
+      if (data.length > 0) {
+        brand.value = data[0];
+        setBrand(brand.value.primary, brand.value.secondary);
+      }
+
+      return brand;
+    } catch (error) {
+      console.error("An error occurred:", error);
+    } finally {
+      $q.loading.hide();
+    }
+  };
+*/
   const totalFuncionatioPorGenero = async (tabela) => {
     const { data, error } = await supabase.from(tabela).select("genero");
 
