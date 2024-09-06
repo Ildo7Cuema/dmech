@@ -123,6 +123,7 @@
           >
             {{ col.label }}
           </q-th>
+          <q-th colspan="2">OBSERVAÇÃO</q-th>
         </q-tr>
         <q-tr style="background-color: #f5f5f5">
           <!-- Second Row for Field Names -->
@@ -136,6 +137,7 @@
           >
             {{ col.label }}
           </q-th>
+          <q-th></q-th>
         </q-tr>
       </template>
 
@@ -405,12 +407,30 @@ export default {
         });
 
         // Adiciona o número de ordem
-        const rows = Object.values(pauta).map((row, index) => ({
+        //adicionar compo observação com resultado de transita não transita caso os campos mt1 seja todos igual a 9.45 ou maior
+        /*const rows = Object.values(pauta).map((row, index) => ({
           order: index + 1,
           ...row,
         }));
+*/
+        const rows = Object.values(pauta).map((row, index) => {
+          // Verifica se todos os campos que terminam com _MT1 são >= 9.45
+          const allMT1FieldsGreaterOrEqualThan945 = Object.keys(row)
+            .filter((key) => key.endsWith("_MT1"))
+            .every((key) => row[key] >= 9.45);
+
+          return {
+            order: index + 1,
+            ...row,
+            observacao: allMT1FieldsGreaterOrEqualThan945
+              ? "Transita"
+              : "Não transita",
+          };
+        });
 
         tableData.value = { columns, rows };
+
+        console.log(tableData.value.rows);
         showPauta.value = true;
       } catch (error) {
         console.log(error);
