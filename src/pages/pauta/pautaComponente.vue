@@ -112,9 +112,9 @@
       <template v-slot:header>
         <q-tr>
           <!-- First Row for Discipline Names -->
-          <q-th></q-th>
-          <q-th></q-th>
-          <q-th></q-th>
+          <q-th rowspan="2">Nº</q-th>
+          <q-th rowspan="2">NOME DE ALUNOS</q-th>
+          <q-th rowspan="2">GÊN.</q-th>
           <q-th
             v-for="col in disciplineHeaderColumns"
             :key="'discipline_' + col.name"
@@ -123,13 +123,10 @@
           >
             {{ col.label }}
           </q-th>
-          <q-th colspan="2">OBSERVAÇÃO</q-th>
+          <q-th rowspan="2">OBSERVAÇÃO</q-th>
         </q-tr>
         <q-tr style="background-color: #f5f5f5">
           <!-- Second Row for Field Names -->
-          <q-th>Nº</q-th>
-          <q-th>Nome de alunos</q-th>
-          <q-th>Gên.</q-th>
           <q-th
             v-for="col in fieldHeaderColumns"
             :key="'fields_' + col.name"
@@ -137,7 +134,6 @@
           >
             {{ col.label }}
           </q-th>
-          <q-th></q-th>
         </q-tr>
       </template>
 
@@ -413,18 +409,70 @@ export default {
           ...row,
         }));
 */
-        const rows = Object.values(pauta).map((row, index) => {
+        /*  const rows = Object.values(pauta).map((row, index) => {
           // Verifica se todos os campos que terminam com _MT1 são >= 9.45
-          const allMT1FieldsGreaterOrEqualThan945 = Object.keys(row)
-            .filter((key) => key.endsWith("_MT1"))
+          const all_MF_FieldsGreaterOrEqualThan945 = Object.keys(row)
+            .filter((key) => key.endsWith("_MF"))
             .every((key) => row[key] >= 9.45);
 
           return {
             order: index + 1,
             ...row,
-            observacao: allMT1FieldsGreaterOrEqualThan945
-              ? "Transita"
-              : "Não transita",
+            observacao: all_MF_FieldsGreaterOrEqualThan945
+              ? "TRANSITA"
+              : "NÃO TRANSITA",
+          };
+        });
+*/
+        const rows = Object.values(pauta).map((row, index) => {
+          // Obtém todas as chaves que terminam com _MF
+          const mfKeys = Object.keys(row).filter((key) => key.endsWith("_MF"));
+
+          // Verifica se todos os campos _MF são >= 9.45
+          const all_MF_FieldsGreaterOrEqualThan945 = mfKeys.every(
+            (key) => row[key] >= 9.45
+          );
+
+          // Verifica se todos os campos _MF são < 9.45
+          const all_MF_FieldsLessThan945 = mfKeys.every(
+            (key) => row[key] < 9.45
+          );
+
+          // Conta quantos campos _MF são <= 9.44
+          const count_MF_FieldsLessOrEqualThan944 = mfKeys.filter(
+            (key) => row[key] <= 9.44
+          ).length;
+
+          // Conta quantos campos _MF são < 9.45
+          const count_MF_FieldsLessThan945 = mfKeys.filter(
+            (key) => row[key] < 9.45
+          ).length;
+
+          // Verifica se existe algum campo _MF <= 7.44
+          const any_MF_FieldsLessOrEqualThan744 = mfKeys.some(
+            (key) => row[key] <= 7.44
+          );
+
+          // Determina a observação com base nas condições
+          let observacao = "NÃO TRANSITA"; // Default
+
+          if (all_MF_FieldsGreaterOrEqualThan945) {
+            observacao = "TRANSITA";
+          } else if (all_MF_FieldsLessThan945) {
+            observacao = "NÃO TRANSITA";
+          } else if (count_MF_FieldsLessOrEqualThan944 > 3) {
+            observacao = "NÃO TRANSITA";
+          } else if (
+            count_MF_FieldsLessThan945 >= 3 &&
+            any_MF_FieldsLessOrEqualThan744
+          ) {
+            observacao = "NÃO TRANSITA";
+          }
+
+          return {
+            order: index + 1,
+            ...row,
+            observacao,
           };
         });
 
