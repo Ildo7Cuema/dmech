@@ -15,6 +15,52 @@ export const useAdd_Nota_Miniauta_Store = defineStore("add_notas", {
   },
 
   actions: {
+    async getMiniPauta(
+      escolaId,
+      cursoID,
+      classeID,
+      turmaID,
+      periodoID,
+      anoLectivo,
+      disciplinaID
+    ) {
+      console.log(
+        "escolaId: ",
+        escolaId,
+        "cursoID: ",
+        cursoID,
+        "classeID: ",
+        classeID,
+        "turmaID: ",
+        turmaID,
+        "periodoID: ",
+        periodoID,
+        "anoLectivo: ",
+        anoLectivo,
+        "disciplinaID: ",
+        disciplinaID
+      );
+      const { data, error } = await supabase
+        .from(tableDB)
+        .select(
+          `*, alunos:aluno_id(*), disciplinas:disciplina_id(*), docentes:docente_id(*)`
+        )
+        .eq("ano_lectivo", anoLectivo.ano_lectivo)
+        .eq("escola_id", escolaId)
+        .eq("curso_id", cursoID)
+        .eq("classe_id", classeID)
+        .eq("turma_id", turmaID)
+        .eq("periodo_id", periodoID)
+        .eq("disciplina_id", disciplinaID);
+      if (error) {
+        console.error("Error fetching data from database:", error);
+        return;
+      }
+      if (error) throw error;
+      console.log(data);
+      return data;
+    },
+
     async add_mini_pauta(form) {
       //verifique se ja existe dados com os campos do form
       console.log(form);

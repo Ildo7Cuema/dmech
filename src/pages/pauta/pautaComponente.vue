@@ -317,6 +317,7 @@ export default {
             "Inglês",
             "Francês",
           ].includes(discipline);
+
           const colspan = isLanguageSubject ? 6 : 6;
 
           // Adiciona cabeçalho da disciplina

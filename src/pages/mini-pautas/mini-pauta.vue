@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <loading-component :show="loading" />
-    <loading-component2 :load="carrearMiniPauta" />
+    <loading-component2 :load="show" />
     <div class="row q-mt-md">
       <div class="col-12">
         <q-card>
@@ -143,12 +143,86 @@
       </div>
     </q-form>
     <br />
+    <!--
     <mini-pauta-component
       :dataMiniPautas="miniPauta"
       :nome_docente="nome_docente"
       :genero="genero"
       v-if="showMiniPauta"
     />
+    -->
+
+    <q-table
+      :rows="tableData.rows"
+      dense
+      row-key="nome"
+      :filter="filter"
+      bordered
+      :separator="Cell"
+      style="border-radius: 0"
+      v-if="showMiniPauta && show == false"
+    >
+      <template v-slot:top-right>
+        <q-input
+          color="primary"
+          v-model="filter"
+          lable="Pesquisar"
+          placeholder="Pesquisar"
+          dense
+          outlined
+          class="q-mr-sm"
+        >
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+      </template>
+      <template v-slot:top-left>
+        <span class="text-h5 text-red-10">MINI-PAUTA</span>
+      </template>
+
+      <!-- Custom Header Slot with Multi-line Header -->
+      <template v-slot:header>
+        <q-tr>
+          <!-- First Row for Discipline Names -->
+          <q-th rowspan="2">Nº</q-th>
+          <q-th rowspan="2">NOME DE ALUNOS</q-th>
+          <q-th rowspan="2">GÊN.</q-th>
+          <q-th
+            v-for="col in trimestreHeaderColumns"
+            :key="'discipline_' + col.name"
+            :colspan="col.colspan"
+            align="center"
+          >
+            {{ col.label }}
+          </q-th>
+        </q-tr>
+        <q-tr style="background-color: #f5f5f5">
+          <!-- Second Row for Field Names -->
+          <q-th
+            v-for="col in fieldHeaderColumns"
+            :key="'fields_' + col.name"
+            align="center"
+          >
+            {{ col.label }}
+          </q-th>
+        </q-tr>
+      </template>
+
+      <template v-slot:body-cell="props">
+        <q-td :props="props" :style="[getTextAlignment(props), bgColor(props)]">
+          <span v-if="isMF(props.col.field)" :style="corValor(props)">
+            <q-span v-if="props.row[props.col.field] !== '-'">
+              {{ props.row[props.col.field] || "-" }}
+            </q-span>
+            <span v-else>-</span>
+          </span>
+          <span v-else :style="corValor(props)">
+            {{ props.row[props.col.field] || "-" }}
+          </span>
+        </q-td>
+      </template>
+    </q-table>
   </q-page>
 </template>
 <script>
@@ -166,14 +240,15 @@ import loadingComponent from "src/components/loading/loadingComponent.vue";
 import loadingComponent2 from "src/components/loading/loadingComponent2.vue";
 import { useNotasStore } from "src/stores/notas";
 import usenotification from "src/composible/useNotify";
-import miniPautaComponent from "src/components/mini-pautas/mini-pautasComponent.vue";
+//import miniPautaComponent from "src/components/mini-pautas/mini-pautasComponent.vue";
 import { useMiniPautaStore } from "src/stores/mini-pautas";
 import { useFuncionarioStore } from "src/stores/funcionarios";
 import { useTurmasProf } from "src/stores/add_turmas_profs";
+import { useAdd_Nota_Miniauta_Store } from "src/stores/add_notas";
 
 export default {
   name: "MiniPauta",
-  components: { loadingComponent, loadingComponent2, miniPautaComponent },
+  components: { loadingComponent, loadingComponent2 /*miniPautaComponent*/ },
   setup() {
     const { user } = userAuthUser();
     const { getEscolaByEmail } = useEscolaStore();
@@ -196,10 +271,16 @@ export default {
       getDocente_periodos,
     } = useTurmasProf();
 
+    const filter = ref("");
+
+    const { getMiniPauta } = useAdd_Nota_Miniauta_Store();
+
     const loading = ref(false);
     const carrearMiniPauta = ref(false);
     const showMiniPauta = ref(false);
     const showFilter = ref(false);
+    const tableData = ref({ columns: [], rows: [] });
+    const show = ref(false);
 
     const cursos = ref([]);
     const docentes = ref([]);
@@ -218,6 +299,14 @@ export default {
       periodoID: "",
       anoLectivo: "",
       disciplinaID: "",
+    });
+
+    const trimestreHeaderColumns = computed(() => {
+      return tableData.value.columns.filter((col) => col.isTrimestreHeader);
+    });
+
+    const fieldHeaderColumns = computed(() => {
+      return tableData.value.columns.filter((col) => col.isFieldHeader);
     });
 
     const nome_docente = ref("");
@@ -335,6 +424,8 @@ export default {
       }
     );
 
+    const Cell = "cell";
+    const TrimestresDBT = ref([]);
     const hendleMiniPaulta = async () => {
       try {
         carrearMiniPauta.value = true;
@@ -347,7 +438,247 @@ export default {
           anoLectivo,
           disciplinaID,
         } = searchForm.value;
-        await getNotas(
+        const data = await getMiniPauta(
+          escolaId,
+          cursoID,
+          classeID,
+          turmaID,
+          periodoID,
+          anoLectivo,
+          disciplinaID
+        );
+        console.log(miniPauta.value);
+        const mini_pauta = {};
+        const trimestres = new Set();
+        const disciplinasDB = new Set();
+        data.forEach(
+          ({
+            alunos,
+            trimestre,
+            disciplinas,
+            mac,
+            npp,
+            npt,
+            mt,
+            nee,
+            neo,
+            mec,
+            mfd,
+            ne,
+            mf,
+          }) => {
+            const key = alunos.nome;
+            if (!mini_pauta[key]) {
+              mini_pauta[key] = {
+                nome: alunos.nome,
+                genero: alunos.genero === "masculino" ? "M" : "F",
+              };
+            }
+
+            const trimestreName = trimestre;
+            const disciplinaName = disciplinas.nome_disciplina;
+            TrimestresDBT.value.push(trimestreName);
+            if (
+              ["III Trimestre"].includes(trimestreName) &&
+              ["Língua Portuguesa", "Inglês", "Francês"].includes(
+                disciplinaName
+              )
+            ) {
+              mini_pauta[key][`${trimestreName}_MAC`] = mac;
+              mini_pauta[key][`${trimestreName}_NPP`] = npp;
+              mini_pauta[key][`${trimestreName}_MT`] = mt;
+              mini_pauta[key][`${trimestreName}_MFD`] = mfd;
+              mini_pauta[key][`${trimestreName}_NEE`] = nee;
+              mini_pauta[key][`${trimestreName}_NEO`] = neo;
+              mini_pauta[key][`${trimestreName}_MEC`] = mec;
+              mini_pauta[key][`${trimestreName}_MF`] = mf;
+            } else if (["III Trimestre"].includes(trimestreName)) {
+              mini_pauta[key][`${trimestreName}_MAC`] = mac;
+              mini_pauta[key][`${trimestreName}_NPP`] = npp;
+              mini_pauta[key][`${trimestreName}_MT`] = mt;
+              mini_pauta[key][`${trimestreName}_MFD`] = mfd;
+              mini_pauta[key][`${trimestreName}_NE`] = ne;
+              mini_pauta[key][`${trimestreName}_MF`] = mf;
+            } else {
+              mini_pauta[key][`${trimestreName}_MAC`] = mac;
+              mini_pauta[key][`${trimestreName}_NPP`] = npp;
+              mini_pauta[key][`${trimestreName}_NPT`] = npt;
+              mini_pauta[key][`${trimestreName}_MT`] = mt;
+            }
+
+            trimestres.add(trimestreName);
+            disciplinasDB.add(disciplinaName);
+          }
+        );
+
+        const columns = [
+          {
+            name: "order",
+            label: "Nº",
+            align: "center",
+            field: "order",
+            sortable: false,
+            colspan: 1,
+          },
+          {
+            name: "genero",
+            label: "Gênero",
+            align: "center",
+            field: "genero",
+            sortable: true,
+            colspan: 1,
+          },
+          {
+            name: "nome",
+            label: "Nome do Aluno",
+            align: "left",
+            field: "nome",
+            sortable: true,
+            colspan: 1,
+          },
+        ];
+
+        // Adiciona cabeçalho da disciplina
+        trimestres.forEach((trimestre) => {
+          const isTrimestreSubjet = ["III Trimestre"].includes(trimestre);
+          disciplinasDB.forEach((disciplinas) => {
+            const isDisciplinaSubject = [
+              "Língua Portuguesa",
+              "Inglês",
+              "Francês",
+            ].includes(disciplinas);
+            const colspan = 4;
+            columns.push({
+              name: `${trimestre}_header`,
+              label: trimestre,
+              align: "center",
+              field: () => "", // Campo fictício para cabeçalho
+              colspan,
+              isTrimestreHeader: true,
+              isFieldHeader: false,
+              sortable: false,
+            });
+
+            // Adiciona colunas para MT1, MT2, MT3, MFD, MEC (se aplicável) e MF
+            columns.push({
+              name: `${trimestre}_MAC`,
+              label: "MAC",
+              align: "center",
+              field: (row) => row[`${trimestre}_MAC`] || "-",
+              sortable: true,
+              isTrimestreHeader: false,
+              isFieldHeader: true,
+            });
+            columns.push({
+              name: `${trimestre}_NPP`,
+              label: "NPP",
+              align: "center",
+              field: (row) => row[`${trimestre}_NPP`] || "-",
+              sortable: true,
+              isTrimestreHeader: false,
+              isFieldHeader: true,
+            });
+            if (!isTrimestreSubjet) {
+              columns.push({
+                name: `${trimestre}_NPT`,
+                label: "NPT",
+                align: "center",
+                field: (row) => row[`${trimestre}_NPT`] || "-",
+                sortable: true,
+                isTrimestreHeader: false,
+                isFieldHeader: true,
+              });
+            }
+            columns.push({
+              name: `${trimestre}_MT`,
+              label: "MT",
+              align: "center",
+              field: (row) => row[`${trimestre}_MT`] || "-",
+              sortable: true,
+              isTrimestreHeader: false,
+              isFieldHeader: true,
+            });
+
+            if (isTrimestreSubjet && isDisciplinaSubject) {
+              columns.push({
+                name: `${trimestre}_MFD`,
+                label: "MFD",
+                align: "center",
+                field: (row) => row[`${trimestre}_MFD`] || "-",
+                sortable: true,
+                isTrimestreHeader: false,
+                isFieldHeader: true,
+              });
+              columns.push({
+                name: `${trimestre}_NEE`,
+                label: "NEE",
+                align: "center",
+                field: (row) => row[`${trimestre}_NEE`] || "-",
+                sortable: true,
+                isTrimestreHeader: false,
+                isFieldHeader: true,
+              });
+              columns.push({
+                name: `${trimestre}_NEO`,
+                label: "NEO",
+                align: "center",
+                field: (row) => row[`${trimestre}_NEO`] || "-",
+                sortable: true,
+                isTrimestreHeader: false,
+                isFieldHeader: true,
+              });
+              columns.push({
+                name: `${trimestre}_MEC`,
+                label: "MEC",
+                align: "center",
+                field: (row) => row[`${trimestre}_MEC`] || "-",
+                sortable: true,
+                isTrimestreHeader: false,
+                isFieldHeader: true,
+              });
+              columns.push({
+                name: `${trimestre}_MF`,
+                label: "MF",
+                align: "center",
+                field: (row) => row[`${trimestre}_MF`] || "-",
+                sortable: true,
+                isTrimestreHeader: false,
+                isFieldHeader: true,
+              });
+            } else if (isTrimestreSubjet) {
+              console.log(isTrimestreSubjet);
+              columns.push({
+                name: `${trimestre}_MFD`,
+                label: "MFD",
+                align: "center",
+                field: (row) => row[`${trimestre}_MFD`] || "-",
+                sortable: true,
+                isTrimestreHeader: false,
+                isFieldHeader: true,
+              });
+              columns.push({
+                name: `${trimestre}_NE`,
+                label: "NE",
+                align: "center",
+                field: (row) => row[`${trimestre}_NE`] || "-",
+                sortable: true,
+                isTrimestreHeader: false,
+                isFieldHeader: true,
+              });
+              columns.push({
+                name: `${trimestre}_MF`,
+                label: "MF",
+                align: "center",
+                field: (row) => row[`${trimestre}_MF`] || "-",
+                sortable: true,
+                isTrimestreHeader: false,
+                isFieldHeader: true,
+              });
+            }
+          });
+        });
+
+        /*await getNotas(
           escolaId,
           cursoID,
           classeID,
@@ -359,6 +690,17 @@ export default {
           console.log(res);
           miniPauta.value = res;
         });
+        showMiniPauta.value = true;*/
+
+        const rows = Object.values(mini_pauta).map((row, index) => {
+          return {
+            order: index + 1,
+            ...row,
+          };
+        });
+
+        tableData.value = { columns, rows };
+        console.log(tableData.value);
         showMiniPauta.value = true;
       } catch (error) {
         console.log(error.message);
@@ -367,7 +709,47 @@ export default {
       }
     };
 
+    const isMF = (field) => {
+      return typeof field === "string" && field.includes("MF");
+    };
+
+    const getTextAlignment = (props) => {
+      const value = props.row[props.col.field];
+      // Alinha ao centro se o valor da célula for número ou "-". Alinha à esquerda para textos.
+      const isNumberOrDash =
+        !isNaN(value) || value === "-" || value === "M" || value === "F";
+      return isNumberOrDash ? "text-align: center" : "text-align: left";
+    };
+
+    //Atribuir cor nas notas de acordo se valor é maior ou não com 9.45
+    const corValor = (props) => {
+      const value = props.row[props.col.field];
+      if (value >= 9.45) {
+        return "color: blue";
+      } else if (value <= 9.44 && props.col.name !== "order") {
+        return "color:red";
+      }
+    };
+
+    const bgColor = (props) => {
+      //console.log(disciplinasDB.value);
+      const fieldName = props.col.name;
+      // Lista de sufixos desejados
+      const suffixes = ["_MT", "_MFD", "_MEC", "_NE", "MF"];
+      // Adiciona cada sufixo a cada disciplina para formar os nomes das colunas
+      const columnNames = TrimestresDBT.value.flatMap((trimestre) =>
+        suffixes.map((suffix) => `${trimestre}${suffix}`)
+      );
+      if (columnNames.includes(fieldName)) {
+        return "background-color: #f5f5f5"; // Define a cor de fundo desejada
+      }
+    };
+
     return {
+      getTextAlignment,
+      corValor,
+      bgColor,
+      tableData,
       searchForm,
       cursos,
       classes,
@@ -384,6 +766,12 @@ export default {
       showFilter,
       nome_docente,
       genero,
+      trimestreHeaderColumns,
+      fieldHeaderColumns,
+      show,
+      isMF,
+      Cell,
+      filter,
     };
   },
 };
