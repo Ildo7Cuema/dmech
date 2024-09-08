@@ -393,6 +393,7 @@
 import { useDisciplinaStore } from "src/stores/disciplinas";
 import usenotification from "src/composible/useNotify";
 import { useNotasStore } from "src/stores/notas";
+import { useAdd_Nota_Miniauta_Store } from "src/stores/add_notas";
 
 import { ref, watch, onMounted, computed } from "vue";
 export default {
@@ -426,6 +427,7 @@ export default {
       getNotaSegundoTrimestre,
       getNotaTerceiroTrimestre,
     } = useNotasStore();
+    const { add_mini_pauta } = useAdd_Nota_Miniauta_Store();
     const infoNotas = ref([]);
     const loadingNota = ref(false);
 
@@ -459,6 +461,30 @@ export default {
       ano_lectivo: props.ano_lectivo,
       trimestre: props.trimestre,
       nome_disciplina: "",
+    });
+
+    const form2 = ref({
+      nome_aluno: props.nome_aluno,
+      mac: 0,
+      npp: 0,
+      npt: 0,
+      mt1: 0,
+      mfd: 0,
+      ne: 0,
+      nee: 0,
+      neo: 0,
+      mec: 0,
+      mf: 0,
+      classe_id: props.infoAluno.classe_id,
+      turma_id: props.infoAluno.turma_id,
+      periodo_id: props.infoAluno.periodo_id,
+      curso_id: props.infoAluno.curso_id,
+      disciplina_id: 0,
+      aluno_id: props.infoAluno.id,
+      docente_id: props.docenteId,
+      escola_id: props.infoAluno.escola_id,
+      ano_lectivo: props.ano_lectivo,
+      trimestre: props.trimestre,
     });
 
     onMounted(() => {
@@ -669,6 +695,7 @@ export default {
         );
         await getDisciplinaById(newValue).then((item) => {
           form.value.disciplina_id = item.id;
+          form2.value.disciplina_id = item.id;
           nome_disciplina.value = item.nome_disciplina;
           form.value.nome_disciplina = item.nome_disciplina;
         });
@@ -1147,6 +1174,18 @@ export default {
         } else {
           loadingSaveBtn.value = true;
           await addNota_terceiroTrimestre(form.value);
+          form2.value.mac = form.value.mac3;
+          form2.value.npp = form.value.npp3;
+          form2.value.npt = form.value.npt3;
+          form2.value.mt1 = form.value.mt3;
+          form2.value.mec = form.value.mec;
+          form2.value.mfd = form.value.mfd;
+          form2.value.ne = form.value.ne;
+          form2.value.nee = form.value.nee;
+          form2.value.neo = form.value.neo;
+          form2.value.mf = form.value.mf;
+
+          await add_mini_pauta(form2.value);
           listNotasTerceiroTrimestre(
             props.infoAluno.id,
             props.ano_lectivo,

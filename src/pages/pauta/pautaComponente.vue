@@ -424,6 +424,17 @@ export default {
           };
         });
 */
+
+        /**
+         * Pronpt do ChatGpt
+         *
+         * neste codigo, no resultado da observação pretendo que seja mais aprofundado,
+         * pretendo atribuir os seguintes resultados: se todos os campos que terminam em _MF
+         * forem maior ou igual 9.45 deve Transintar, se em todos os campos que terminam em _MF
+         * forem menor que 9.45 então não transita, se forem mais de  3 campos que terminam em _MF
+         * e terem menor ou igual 9.44 não Transita, se 3 campos que terminam com _MF tiverem menor que 9.45
+         * e um valor abaixo ou igual a 7.44, não transita
+         */
         const rows = Object.values(pauta).map((row, index) => {
           // Obtém todas as chaves que terminam com _MF
           const mfKeys = Object.keys(row).filter((key) => key.endsWith("_MF"));

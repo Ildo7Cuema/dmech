@@ -185,6 +185,7 @@
 import { useDisciplinaStore } from "src/stores/disciplinas";
 import usenotification from "src/composible/useNotify";
 import { useNotasStore } from "src/stores/notas";
+import { useAdd_Nota_Miniauta_Store } from "src/stores/add_notas";
 
 import { ref, watch, onMounted } from "vue";
 export default {
@@ -218,6 +219,7 @@ export default {
       getNotaPrimeiroTrimestre,
       getNotaSegundoTrimestre,
     } = useNotasStore();
+    const { add_mini_pauta } = useAdd_Nota_Miniauta_Store();
     const infoNotas = ref([]);
     const loadingNota = ref(false);
 
@@ -231,6 +233,24 @@ export default {
       npp2: 0,
       npt2: 0,
       mt2: 0,
+      classe_id: props.infoAluno.classe_id,
+      turma_id: props.infoAluno.turma_id,
+      periodo_id: props.infoAluno.periodo_id,
+      curso_id: props.infoAluno.curso_id,
+      disciplina_id: 0,
+      aluno_id: props.infoAluno.id,
+      docente_id: props.docenteId,
+      escola_id: props.infoAluno.escola_id,
+      ano_lectivo: props.ano_lectivo,
+      trimestre: props.trimestre,
+    });
+
+    const form2 = ref({
+      nome_aluno: props.nome_aluno,
+      mac: 0,
+      npp: 0,
+      npt: 0,
+      mt1: 0,
       classe_id: props.infoAluno.classe_id,
       turma_id: props.infoAluno.turma_id,
       periodo_id: props.infoAluno.periodo_id,
@@ -578,6 +598,7 @@ export default {
         loading.value = true;
         await getDisciplinaById(newVal).then((item) => {
           form.value.disciplina_id = item.id;
+          form2.value.disciplina_id = item.id;
           nome_disciplina.value = item.nome_disciplina;
         });
         loading.value = false;
@@ -592,6 +613,11 @@ export default {
         } else {
           loadingSaveBtn.value = true;
           await addNota_segundoTrimestre(form.value);
+          form2.value.mac = form.value.mac2;
+          form2.value.npp = form.value.npp2;
+          form2.value.npt = form.value.npt2;
+          form2.value.mt1 = form.value.mt2;
+          await add_mini_pauta(form2.value);
           listNotasSegundoTrimestre(
             props.infoAluno.id,
             props.ano_lectivo,

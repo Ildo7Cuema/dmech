@@ -129,6 +129,7 @@
 import { useDisciplinaStore } from "src/stores/disciplinas";
 import usenotification from "src/composible/useNotify";
 import { useNotasStore } from "src/stores/notas";
+import { useAdd_Nota_Miniauta_Store } from "src/stores/add_notas";
 
 import { ref, watch, onMounted } from "vue";
 export default {
@@ -157,6 +158,7 @@ export default {
     const loadingSaveBtn = ref(false);
     const { addNota_primeiroTrimestre, getNotas, getNotaPrimeiroTrimestre } =
       useNotasStore();
+    const { add_mini_pauta } = useAdd_Nota_Miniauta_Store();
     const infoNotas = ref([]);
     const loadingNota = ref(false);
 
@@ -395,6 +397,7 @@ export default {
         } else {
           loadingSaveBtn.value = true;
           await addNota_primeiroTrimestre(form.value);
+          await add_mini_pauta(form.value);
           listNotas(
             props.infoAluno.id,
             props.ano_lectivo,
