@@ -178,7 +178,9 @@
         </q-input>
       </template>
       <template v-slot:top-left>
-        <span class="text-h5 text-red-10">MINI-PAUTA</span>
+        <span class="text-h5 text-red-10"
+          >MINI-PAUTA {{ isDisciplinaEstrangeiras }}</span
+        >
       </template>
 
       <!-- Custom Header Slot with Multi-line Header -->
@@ -196,6 +198,12 @@
           >
             {{ col.label }}
           </q-th>
+          <q-th
+            :colspan="isDisciplinaEstrangeiras ? 3 : 8"
+            v-if="isDisciplinaEstrangeiras"
+            >Exame E/O</q-th
+          >
+          <q-th></q-th>
         </q-tr>
         <q-tr style="background-color: #f5f5f5">
           <!-- Second Row for Field Names -->
@@ -300,13 +308,24 @@ export default {
       anoLectivo: "",
       disciplinaID: "",
     });
-
+    const disciplinasTemplate = ref([]);
     const trimestreHeaderColumns = computed(() => {
       return tableData.value.columns.filter((col) => col.isTrimestreHeader);
     });
 
     const fieldHeaderColumns = computed(() => {
       return tableData.value.columns.filter((col) => col.isFieldHeader);
+    });
+
+    const isDisciplinaEstrangeiras = computed(() => {
+      const disciplinasEstrangeiras = [
+        "Língua Portuguesa",
+        "Inglês",
+        "Francês",
+      ];
+      return disciplinasTemplate.value.some((disciplina) =>
+        disciplinasEstrangeiras.includes(disciplina)
+      );
     });
 
     const nome_docente = ref("");
@@ -426,6 +445,7 @@ export default {
 
     const Cell = "cell";
     const TrimestresDBT = ref([]);
+
     const hendleMiniPaulta = async () => {
       try {
         carrearMiniPauta.value = true;
@@ -477,6 +497,7 @@ export default {
 
             const trimestreName = trimestre;
             const disciplinaName = disciplinas.nome_disciplina;
+            disciplinasTemplate.value.push(disciplinaName);
             TrimestresDBT.value.push(trimestreName);
             if (
               ["III Trimestre"].includes(trimestreName) &&
@@ -772,6 +793,8 @@ export default {
       isMF,
       Cell,
       filter,
+      disciplinasTemplate,
+      isDisciplinaEstrangeiras,
     };
   },
 };
