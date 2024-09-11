@@ -15,6 +15,63 @@ export const useAdd_Nota_Miniauta_Store = defineStore("add_notas", {
   },
 
   actions: {
+    async getPauta(form) {
+      const { data, error } = await supabase
+        .from("pauta") // Nome da tabela
+        .select(
+          `
+          *,
+          alunos:aluno_id(nome, genero),
+          disciplinas:disciplina_id(nome_disciplina),
+          mt1, mt2, mt3, mfd, mf, ne, mec
+        `
+        )
+        .eq("classe_id", form.classe_id)
+        .eq("turma_id", form.turma_id)
+        .eq("curso_id", form.curso_id)
+        .eq("periodo_id", form.periodo_id)
+        .eq("ano_lectivo", form.ano_lectivo.ano_lectivo);
+
+      if (error) {
+        console.error("Erro ao buscar dados:", error);
+        return;
+      }
+
+      // Função para ordenar os dados por trimestre
+      const ordemDisciplinas = [
+        "Língua Portuguesa",
+        "Inglês",
+        "Francês",
+        "Matemática",
+      ];
+
+      // Mapeia a disciplina para sua posição na lista de prioridade
+      const disciplinaPrioridade = ordemDisciplinas.reduce(
+        (acc, disciplina, index) => {
+          acc[disciplina] = index;
+          return acc;
+        },
+        {}
+      );
+
+      // Ordena os dados de acordo com a posição da disciplina
+      const dadosOrdenados = data.sort((a, b) => {
+        const disciplinaA = a.disciplinas.nome_disciplina;
+        const disciplinaB = b.disciplinas.nome_disciplina;
+        const posA =
+          disciplinaPrioridade[disciplinaA] !== undefined
+            ? disciplinaPrioridade[disciplinaA]
+            : Infinity;
+        const posB =
+          disciplinaPrioridade[disciplinaB] !== undefined
+            ? disciplinaPrioridade[disciplinaB]
+            : Infinity;
+        return posA - posB;
+      });
+      console.log(dadosOrdenados);
+      return dadosOrdenados;
+    },
+
     async getMiniPauta(
       escolaId,
       cursoID,
@@ -24,22 +81,6 @@ export const useAdd_Nota_Miniauta_Store = defineStore("add_notas", {
       anoLectivo,
       disciplinaID
     ) {
-      console.log(
-        "escolaId: ",
-        escolaId,
-        "cursoID: ",
-        cursoID,
-        "classeID: ",
-        classeID,
-        "turmaID: ",
-        turmaID,
-        "periodoID: ",
-        periodoID,
-        "anoLectivo: ",
-        anoLectivo,
-        "disciplinaID: ",
-        disciplinaID
-      );
       const { data, error } = await supabase
         .from(tableDB)
         .select(
@@ -56,9 +97,23 @@ export const useAdd_Nota_Miniauta_Store = defineStore("add_notas", {
         console.error("Error fetching data from database:", error);
         return;
       }
-      if (error) throw error;
-      console.log(data);
-      return data;
+      // Função para ordenar os dados por trimestre
+      function ordenarPorTrimestre(dados) {
+        const ordemTrimestres = [
+          "I Trimestre",
+          "II Trimestre",
+          "III Trimestre",
+        ];
+        return dados.sort((a, b) => {
+          const trimestreA = ordemTrimestres.indexOf(a.trimestre);
+          const trimestreB = ordemTrimestres.indexOf(b.trimestre);
+          return trimestreA - trimestreB;
+        });
+      }
+
+      const dadosOrdenados = ordenarPorTrimestre(data);
+      console.log(dadosOrdenados);
+      return dadosOrdenados;
     },
 
     async add_mini_pauta(form) {

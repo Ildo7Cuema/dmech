@@ -178,9 +178,7 @@
         </q-input>
       </template>
       <template v-slot:top-left>
-        <span class="text-h5 text-red-10"
-          >MINI-PAUTA {{ isDisciplinaEstrangeiras }}</span
-        >
+        <span class="text-h5 text-red-10">MINI-PAUTA</span>
       </template>
 
       <!-- Custom Header Slot with Multi-line Header -->
@@ -448,6 +446,7 @@ export default {
 
     const hendleMiniPaulta = async () => {
       try {
+        loading.value = true;
         carrearMiniPauta.value = true;
         const {
           escolaId,
@@ -727,6 +726,7 @@ export default {
         console.log(error.message);
       } finally {
         carrearMiniPauta.value = false;
+        loading.value = false;
       }
     };
 

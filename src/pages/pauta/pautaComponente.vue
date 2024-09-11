@@ -167,6 +167,7 @@ import { useCursoStore } from "src/stores/cursos";
 import { useAnoLectivoStore } from "src/stores/ano_lectivo";
 import loadingComponent2 from "src/components/loading/loadingComponent2.vue";
 import usenotification from "src/composible/useNotify";
+import { useAdd_Nota_Miniauta_Store } from "src/stores/add_notas";
 
 export default {
   name: "Pauta-Componente",
@@ -183,6 +184,7 @@ export default {
     const optionsPeriodo = ref([]);
     const optionsAnoLectivo = ref([]);
     const { notifyError } = usenotification();
+    const { getPauta } = useAdd_Nota_Miniauta_Store();
 
     const { getAllClasses } = useClasseStore();
     const { getAllTurmas } = useTurmaStore();
@@ -215,7 +217,7 @@ export default {
     const fetchPauta = async () => {
       try {
         show.value = true;
-        const { data, error } = await supabase
+        /*const { data, error } = await supabase
           .from("pauta") // Nome da tabela
           .select(
             `
@@ -235,7 +237,8 @@ export default {
           console.error("Erro ao buscar dados:", error);
           return;
         }
-
+*/
+        const data = await getPauta(form.value);
         const pauta = {};
         const disciplines = new Set();
 
@@ -409,22 +412,6 @@ export default {
           order: index + 1,
           ...row,
         }));
-*/
-        /*  const rows = Object.values(pauta).map((row, index) => {
-          // Verifica se todos os campos que terminam com _MT1 são >= 9.45
-          const all_MF_FieldsGreaterOrEqualThan945 = Object.keys(row)
-            .filter((key) => key.endsWith("_MF"))
-            .every((key) => row[key] >= 9.45);
-
-          return {
-            order: index + 1,
-            ...row,
-            observacao: all_MF_FieldsGreaterOrEqualThan945
-              ? "TRANSITA"
-              : "NÃO TRANSITA",
-          };
-        });
-*/
 
         /**
          * Pronpt do ChatGpt
@@ -489,8 +476,6 @@ export default {
         });
 
         tableData.value = { columns, rows };
-
-        console.log(tableData.value.rows);
         showPauta.value = true;
       } catch (error) {
         console.log(error);
