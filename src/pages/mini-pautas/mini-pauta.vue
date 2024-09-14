@@ -151,84 +151,101 @@
       v-if="showMiniPauta"
     />
     -->
-
-    <q-table
-      :rows="tableData.rows"
-      dense
-      row-key="nome"
-      :filter="filter"
-      bordered
-      :separator="Cell"
-      style="border-radius: 0"
-      v-if="showMiniPauta && show == false"
-    >
-      <template v-slot:top-right>
-        <q-input
-          color="primary"
-          v-model="filter"
-          lable="Pesquisar"
-          placeholder="Pesquisar"
-          dense
-          outlined
-          class="q-mr-sm"
-        >
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
-      </template>
-      <template v-slot:top-left>
-        <span class="text-h5 text-red-10">MINI-PAUTA</span>
-      </template>
-
-      <!-- Custom Header Slot with Multi-line Header -->
-      <template v-slot:header>
-        <q-tr>
-          <!-- First Row for Discipline Names -->
-          <q-th rowspan="2">Nº</q-th>
-          <q-th rowspan="2">NOME DE ALUNOS</q-th>
-          <q-th rowspan="2">GÊN.</q-th>
-          <q-th
-            v-for="col in trimestreHeaderColumns"
-            :key="'discipline_' + col.name"
-            :colspan="col.colspan"
-            align="center"
+    <div v-if="showMiniPautaPrint == false">
+      <q-table
+        :rows="tableData.rows"
+        dense
+        row-key="nome"
+        :filter="filter"
+        bordered
+        :separator="Cell"
+        style="border-radius: 0"
+        v-if="showMiniPauta && show == false"
+      >
+        <template v-slot:top-right>
+          <q-input
+            color="primary"
+            v-model="filter"
+            lable="Pesquisar"
+            placeholder="Pesquisar"
+            dense
+            outlined
+            class="q-mr-sm"
           >
-            {{ col.label }}
-          </q-th>
-          <q-th
-            :colspan="isDisciplinaEstrangeiras ? 3 : 8"
-            v-if="isDisciplinaEstrangeiras"
-            >Exame E/O</q-th
-          >
-          <q-th></q-th>
-        </q-tr>
-        <q-tr style="background-color: #f5f5f5">
-          <!-- Second Row for Field Names -->
-          <q-th
-            v-for="col in fieldHeaderColumns"
-            :key="'fields_' + col.name"
-            align="center"
-          >
-            {{ col.label }}
-          </q-th>
-        </q-tr>
-      </template>
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+        </template>
+        <template v-slot:top-left>
+          <span class="text-h5 text-red-10">MINI-PAUTA</span>
+          <span class="text-h5 text-red-10 q-ml-md">
+            <q-btn
+              dark-percentage
+              unelevated
+              color="orange"
+              text-color="grey-9"
+              @click="modoPrint()"
+              icon="mdi-printer"
+              style="width: 100px"
+            />
+          </span>
+        </template>
 
-      <template v-slot:body-cell="props">
-        <q-td :props="props" :style="[getTextAlignment(props), bgColor(props)]">
-          <span v-if="isMF(props.col.field)" :style="corValor(props)">
-            <q-span v-if="props.row[props.col.field] !== '-'">
+        <!-- Custom Header Slot with Multi-line Header -->
+        <template v-slot:header>
+          <q-tr>
+            <!-- First Row for Discipline Names -->
+            <q-th rowspan="2">Nº</q-th>
+            <q-th rowspan="2">NOME DE ALUNOS</q-th>
+            <q-th rowspan="2">GÊN.</q-th>
+            <q-th
+              v-for="col in trimestreHeaderColumns"
+              :key="'discipline_' + col.name"
+              :colspan="col.colspan"
+              align="center"
+            >
+              {{ col.label }}
+            </q-th>
+            <q-th
+              :colspan="isDisciplinaEstrangeiras ? 3 : 8"
+              v-if="isDisciplinaEstrangeiras"
+              >Exame E/O</q-th
+            >
+            <q-th></q-th>
+          </q-tr>
+          <q-tr style="background-color: #f5f5f5">
+            <!-- Second Row for Field Names -->
+            <q-th
+              v-for="col in fieldHeaderColumns"
+              :key="'fields_' + col.name"
+              align="center"
+            >
+              {{ col.label }}
+            </q-th>
+          </q-tr>
+        </template>
+
+        <template v-slot:body-cell="props">
+          <q-td
+            :props="props"
+            :style="[getTextAlignment(props), bgColor(props)]"
+          >
+            <span v-if="isMF(props.col.field)" :style="corValor(props)">
+              <q-span v-if="props.row[props.col.field] !== '-'">
+                {{ props.row[props.col.field] || "-" }}
+              </q-span>
+              <span v-else>-</span>
+            </span>
+            <span v-else :style="corValor(props)">
               {{ props.row[props.col.field] || "-" }}
-            </q-span>
-            <span v-else>-</span>
-          </span>
-          <span v-else :style="corValor(props)">
-            {{ props.row[props.col.field] || "-" }}
-          </span>
-        </q-td>
-      </template>
-    </q-table>
+            </span>
+          </q-td>
+        </template>
+      </q-table>
+    </div>
+
+    <print-mini-pautas :dataMiniPautas="dataMiniPautas" v-else />
   </q-page>
 </template>
 <script>
@@ -247,6 +264,7 @@ import loadingComponent2 from "src/components/loading/loadingComponent2.vue";
 import { useNotasStore } from "src/stores/notas";
 import usenotification from "src/composible/useNotify";
 //import miniPautaComponent from "src/components/mini-pautas/mini-pautasComponent.vue";
+import printMiniPautas from "src/components/mini-pautas/printMini-Pautas.vue";
 import { useMiniPautaStore } from "src/stores/mini-pautas";
 import { useFuncionarioStore } from "src/stores/funcionarios";
 import { useTurmasProf } from "src/stores/add_turmas_profs";
@@ -254,7 +272,11 @@ import { useAdd_Nota_Miniauta_Store } from "src/stores/add_notas";
 
 export default {
   name: "MiniPauta",
-  components: { loadingComponent, loadingComponent2 /*miniPautaComponent*/ },
+  components: {
+    loadingComponent,
+    loadingComponent2,
+    printMiniPautas /*miniPautaComponent*/,
+  },
   setup() {
     const { user } = userAuthUser();
     const { getEscolaByEmail } = useEscolaStore();
@@ -278,6 +300,7 @@ export default {
     } = useTurmasProf();
 
     const filter = ref("");
+    const showMiniPautaPrint = ref(false);
 
     const { getMiniPauta } = useAdd_Nota_Miniauta_Store();
 
@@ -328,6 +351,7 @@ export default {
 
     const nome_docente = ref("");
     const genero = ref("");
+    const dataMiniPautas = ref([]);
 
     onMounted(() => {
       escola();
@@ -444,10 +468,38 @@ export default {
     const Cell = "cell";
     const TrimestresDBT = ref([]);
 
+    const modoPrint = async () => {
+      try {
+        showMiniPautaPrint.value = true;
+        const {
+          escolaId,
+          cursoID,
+          classeID,
+          turmaID,
+          periodoID,
+          anoLectivo,
+          disciplinaID,
+        } = searchForm.value;
+        dataMiniPautas.value = await getMiniPauta(
+          escolaId,
+          cursoID,
+          classeID,
+          turmaID,
+          periodoID,
+          anoLectivo,
+          disciplinaID
+        );
+      } catch (error) {
+        console.log(error);
+      } finally {
+      }
+    };
+
     const hendleMiniPaulta = async () => {
       try {
         loading.value = true;
         carrearMiniPauta.value = true;
+        showMiniPautaPrint.value = false;
         const {
           escolaId,
           cursoID,
@@ -466,7 +518,6 @@ export default {
           anoLectivo,
           disciplinaID
         );
-        console.log(miniPauta.value);
         const mini_pauta = {};
         const trimestres = new Set();
         const disciplinasDB = new Set();
@@ -795,6 +846,9 @@ export default {
       filter,
       disciplinasTemplate,
       isDisciplinaEstrangeiras,
+      showMiniPautaPrint,
+      modoPrint,
+      dataMiniPautas,
     };
   },
 };

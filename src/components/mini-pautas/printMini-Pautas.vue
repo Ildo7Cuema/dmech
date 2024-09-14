@@ -1,6 +1,6 @@
 <template>
   <div>
-    <loading-component3 :loadShowPrint="carregar" />
+    <loading-component3 :loadShowPrint="carrearMiniPauta" />
     <div>
       <iframe
         v-if="pdfSrc"
@@ -43,202 +43,81 @@
               <b>{{ periodo }}</b> ]
             </div>
           </div>
-          <table class="table green-border q-mt-sm" id="dataTable">
-            <tr class="bg-grey-4">
-              <td
-                class="bg-grey-4"
-                rowspan="2"
-                style="text-align: center; vertical-align: middle"
+          <q-table
+            :rows="tableData.rows"
+            dense
+            row-key="nome"
+            bordered
+            :separator="Cell"
+            style="border-radius: 0; width: 100%; table-layout: fixed"
+            :pagination="pagination"
+          >
+            <!-- Custom Header Slot with Multi-line Header -->
+            <template v-slot:header>
+              <q-tr>
+                <!-- First Row for Discipline Names -->
+                <q-th style="width: 10%; font-size: 10px">Nº</q-th>
+                <q-th style="width: 47%; font-size: 10px">NOME DE ALUNOS</q-th>
+                <q-th style="width: 8%; font-size: 10px">GÊN.</q-th>
+                <q-th
+                  v-for="col in trimestreHeaderColumns"
+                  :key="'discipline_' + col.name"
+                  :colspan="col.colspan"
+                  align="center"
+                  style="font-size: 10px"
+                >
+                  {{ col.label }}
+                </q-th>
+                <q-th
+                  style="width: 15%; font-size: 10px"
+                  :colspan="isDisciplinaEstrangeiras ? 3 : 8"
+                  v-if="isDisciplinaEstrangeiras"
+                  >Exame E/O</q-th
+                >
+                <q-th style="width: 10%; font-size: 10px"></q-th>
+              </q-tr>
+              <q-tr style="background-color: #f5f5f5">
+                <!-- Second Row for Field Names -->
+                <q-th></q-th>
+                <q-th></q-th>
+                <q-th></q-th>
+                <q-th
+                  v-for="col in fieldHeaderColumns"
+                  :key="'fields_' + col.name"
+                  align="center"
+                  style="font-size: 10px"
+                >
+                  {{ col.label }}
+                </q-th>
+              </q-tr>
+            </template>
+
+            <template v-slot:body-cell="props">
+              <q-td
+                :props="props"
+                :style="[
+                  getTextAlignment(props),
+                  bgColor(props),
+                  { fontSize: '10px', padding: '4px' },
+                ]"
               >
-                Nº
-              </td>
-              <td
-                class="bg-grey-4"
-                rowspan="2"
-                style="width: 200px !important; vertical-align: middle"
-              >
-                Nome de alunos
-              </td>
-              <td class="bg-grey-4" colspan="4" style="text-align: center">
-                I Trimestre
-              </td>
-              <td class="bg-grey-4" colspan="4" style="text-align: center">
-                II Trimestre
-              </td>
-              <td class="bg-grey-4" colspan="4" style="text-align: center">
-                III Trimestres
-              </td>
-              <td
-                class="bg-grey-4"
-                rowspan="2"
-                style="text-align: center; vertical-align: middle"
-              >
-                MFD
-              </td>
-              <td
-                class="bg-grey-4"
-                style="text-align: center; vertical-align: middle"
-                rowspan="2"
-                v-if="
-                  !isLinguaPortuguesaOrEstrangeira.includes(nome_disciplina)
-                "
-              >
-                NE
-              </td>
-              <td
-                class="bg-grey-4"
-                style="text-align: center"
-                colspan="3"
-                v-if="isLinguaPortuguesaOrEstrangeira.includes(nome_disciplina)"
-              >
-                EXAME O/E
-              </td>
-              <td
-                class="bg-grey-4"
-                rowspan="2"
-                style="text-align: center; vertical-align: middle"
-              >
-                NF
-              </td>
-            </tr>
-            <tr>
-              <td class="bg-grey-4" style="text-align: center">MAC</td>
-              <td class="bg-grey-4" style="text-align: center">NPP</td>
-              <td class="bg-grey-4" style="text-align: center">NPT</td>
-              <td class="bg-grey-4" style="text-align: center">MT1</td>
-              <td class="bg-grey-4" style="text-align: center">MAC</td>
-              <td class="bg-grey-4" style="text-align: center">NPP</td>
-              <td class="bg-grey-4" style="text-align: center">NPT</td>
-              <td class="bg-grey-4" style="text-align: center">MT2</td>
-              <td class="bg-grey-4" style="text-align: center">MAC</td>
-              <td class="bg-grey-4" style="text-align: center">NPP</td>
-              <td class="bg-grey-4" style="text-align: center">NPT</td>
-              <td class="bg-grey-4" style="text-align: center">MT3</td>
-              <td
-                class="bg-grey-4"
-                style="text-align: center"
-                v-if="isLinguaPortuguesaOrEstrangeira.includes(nome_disciplina)"
-              >
-                NEE
-              </td>
-              <td
-                class="bg-grey-4"
-                style="text-align: center"
-                v-if="isLinguaPortuguesaOrEstrangeira.includes(nome_disciplina)"
-              >
-                NEO
-              </td>
-              <td
-                class="bg-grey-4"
-                style="text-align: center"
-                v-if="isLinguaPortuguesaOrEstrangeira.includes(nome_disciplina)"
-              >
-                MEC
-              </td>
-            </tr>
-            <tr v-for="(a, index) in dataMiniPautas" :key="a">
-              <td style="text-align: center">{{ index + 1 }}</td>
-              <td>{{ a.nome_aluno }}</td>
-              <td :style="{ color: getColorMac1() }" style="text-align: center">
-                {{ a.nota_mac1 }}
-              </td>
-              <td :style="{ color: getColorNpp1() }" style="text-align: center">
-                {{ a.nota_npp1 }}
-              </td>
-              <td :style="{ color: getColorNpt1() }" style="text-align: center">
-                {{ a.nota_npt1 }}
-              </td>
-              <td
-                class="bg-grey-4"
-                :style="{ color: getColorMt1() }"
-                style="text-align: center"
-              >
-                {{ a.nota_mt1 }}
-              </td>
-              <td :style="{ color: getColorMac2() }" style="text-align: center">
-                {{ a.nota_mac2 }}
-              </td>
-              <td :style="{ color: getColorNpp2() }" style="text-align: center">
-                {{ a.nota_npp2 }}
-              </td>
-              <td :style="{ color: getColorMpt2() }" style="text-align: center">
-                {{ a.nota_npt2 }}
-              </td>
-              <td
-                class="bg-grey-4"
-                :style="{ color: getColorMt2() }"
-                style="text-align: center"
-              >
-                {{ a.nota_mt2 }}
-              </td>
-              <td :style="{ color: getColorMac3() }" style="text-align: center">
-                {{ a.nota_mac3 }}
-              </td>
-              <td :style="{ color: getColorNpp3() }" style="text-align: center">
-                {{ a.nota_npp3 }}
-              </td>
-              <td :style="{ color: getColorNpt3() }" style="text-align: center">
-                {{ a.nota_npt3 }}
-              </td>
-              <td
-                class="bg-grey-4"
-                :style="{ color: getColorMt3() }"
-                style="text-align: center"
-              >
-                {{ a.nota_mt3 }}
-              </td>
-              <td
-                class="bg-grey-4"
-                :style="{ color: getColorMfd() }"
-                style="text-align: center"
-              >
-                {{ a.nota_mfd }}
-              </td>
-              <td
-                class="bg-grey-4"
-                :style="{ color: getColorNe() }"
-                style="text-align: center"
-                v-if="
-                  !isLinguaPortuguesaOrEstrangeira.includes(nome_disciplina)
-                "
-              >
-                {{ a.nota_ne }}
-              </td>
-              <td
-                :style="{ color: getColorNee() }"
-                style="text-align: center"
-                v-if="isLinguaPortuguesaOrEstrangeira.includes(nome_disciplina)"
-              >
-                {{ a.nota_nee }}
-              </td>
-              <td
-                :style="{ color: getColorNeo() }"
-                style="text-align: center"
-                v-if="isLinguaPortuguesaOrEstrangeira.includes(nome_disciplina)"
-              >
-                {{ a.nota_neo }}
-              </td>
-              <td
-                class="bg-grey-4"
-                :style="{ color: getColorMec() }"
-                style="text-align: center"
-                v-if="isLinguaPortuguesaOrEstrangeira.includes(nome_disciplina)"
-              >
-                {{ a.nota_mec }}
-              </td>
-              <td
-                class="bg-grey-4"
-                :style="{ color: getColorMf() }"
-                style="text-align: center"
-              >
-                {{ a.nota_mf }}
-              </td>
-            </tr>
-          </table>
+                <span v-if="isMF(props.col.field)" :style="corValor(props)">
+                  <q-span v-if="props.row[props.col.field] !== '-'">
+                    {{ props.row[props.col.field] || "-" }}
+                  </q-span>
+                  <span v-else>-</span>
+                </span>
+                <span v-else :style="corValor(props)">
+                  {{ props.row[props.col.field] || "-" }}
+                </span>
+              </q-td>
+            </template>
+          </q-table>
+
           <br />
           <div class="row">
             <div class="col-12">
-              <table class="table green-border">
+              <table class="table green-border" style="border: none">
                 <tr>
                   <td
                     style="width: 25%"
@@ -292,9 +171,6 @@ export default {
   components: { loadingComponent3 },
   props: {
     dataMiniPautas: { type: Object, required: true },
-    nome_docente: { type: String, required: true },
-    genero: { type: String, required: true },
-    loading: { type: Boolean, required: true },
   },
   setup(props) {
     const { getDisciplinaById } = useDisciplinaStore();
@@ -308,14 +184,17 @@ export default {
     const nivel_ensino = ref("");
     const anoLectivo = ref("");
     const nome_escola = ref("");
+    const nome_docente = ref("");
     const classe = ref("");
     const turma = ref("");
     const curso = ref("");
+    const tableData = ref({ columns: [], rows: [] });
 
     const carregar = ref(false);
     const periodo = ref("");
     const joinedData = ref([]);
     const notasMiniPauta = ref([]);
+    const Cell = "cell";
     const isLinguaPortuguesaOrEstrangeira = [
       "Língua Portuguesa",
       "L. Portuguesa",
@@ -369,23 +248,46 @@ export default {
     const id_turma = ref(null);
     const cargo_curso_id = ref(null);
     const genero_director_turma = ref("");
+    const genero = ref("");
     const genero_coordenador_curso = ref("");
     const nome_director_turma = ref("");
     const nome_coordenador_curso = ref("");
+    const disciplinasTemplate = ref([]);
+    const TrimestresDBT = ref([]);
+    const carrearMiniPauta = ref(false);
+
+    const trimestreHeaderColumns = computed(() => {
+      return tableData.value.columns.filter((col) => col.isTrimestreHeader);
+    });
+
+    const fieldHeaderColumns = computed(() => {
+      return tableData.value.columns.filter((col) => col.isFieldHeader);
+    });
+
+    const isDisciplinaEstrangeiras = computed(() => {
+      const disciplinasEstrangeiras = [
+        "Língua Portuguesa",
+        "Inglês",
+        "Francês",
+      ];
+      return disciplinasTemplate.value.some((disciplina) =>
+        disciplinasEstrangeiras.includes(disciplina)
+      );
+    });
 
     //Codigo para imprimir documneto no formato PDF
     const gerarPDF = async () => {
       try {
-        carregar.value = true;
         const element = window.document.getElementById("elemento-para-pdf");
         //const element = document.getElementById("elemento-para-pdf");
         await html2pdf()
           .from(element)
           .set({
-            margin: 0.3937,
+            //margin: 0.3937,
+            margin: [0.5, 0.2, 0.2, 0.2], // Margens: [superior, direita, inferior, esquerda]
             filename: "Mini-Pauta.pdf",
             html2canvas: { scale: 2 },
-            jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+            jsPDF: { unit: "in", format: "A4", orientation: "portrait" },
           })
           .toPdf()
           .get("pdf")
@@ -402,15 +304,11 @@ export default {
               const imageFooterHeight = 0.51; // Altura da imagem no rodapé
               const imageFooterX = pageWidth - imageFooterWidth - 0.3937; // Posição X da imagem no rodapé (alinhada à direita)
               const imageFooterY = pdf.internal.pageSize.height - 0.3937; // Posição Y da imagem no rodapé (altura da página - altura da imagem - margem inferior)
-
               const baseUrl = process.env.NODE_ENV === "production" ? "/" : "/";
+
               pdf.addImage(
                 `${baseUrl}Simbolo-da-Republica.png`,
                 "PNG",
-                //imageX,
-                // 0.25,
-                //imageWidth,
-                // 0.52
                 imageTopX,
                 imageTopY,
                 imageTopWidth,
@@ -418,12 +316,6 @@ export default {
               );
               pdf.setFontSize(10);
               pdf.setTextColor(150);
-              /*pdf.text(
-              "Sistema Integrado DME",
-              1,
-              pdf.internal.pageSize.height - 0.5
-            );*/
-
               pdf.addImage(
                 `${baseUrl}icons/RodapeIMG.png`,
                 "PNG",
@@ -442,185 +334,14 @@ export default {
       } catch (error) {
         console.log(error.message);
       } finally {
-        carregar.value = false;
       }
     };
-    /*
-    const dados = computed(() => {
-      return JSON.parse(route.params.dados);
-    });
-    const addInfo = computed(() => {
-      return JSON.parse(route.params.addInfo);
-    });
-    const model2 = computed(() => {
-      return route.params.model2;
-    });
-    const model = computed(() => {
-      return route.params.model;
-    });
-*/
-    onMounted(async () => {
-      anoLectivo.value = props.dataMiniPautas[0].ano_lectivo;
-      await getDisciplinaById(props.dataMiniPautas[0].disciplinaid).then(
-        (item) => {
-          nome_disciplina.value = item.nome_disciplina;
-        }
-      );
-      await getEscolaById(props.dataMiniPautas[0].escolaid).then((item) => {
-        nome_escola.value = item[0].name;
-        nivel_ensino.value = item[0].nivel_ensino;
-        provincia.value = item[0].provincia;
-        municipio.value = item[0].municipio;
-      });
-
-      await getClasseById(props.dataMiniPautas[0].classeid).then((item) => {
-        classe.value = item.nome_classe;
-      });
-
-      await getTurmaById(props.dataMiniPautas[0].turmaid).then((item) => {
-        id_turma.value = item.id;
-        turma.value = item.nome_turma;
-      });
-
-      await getPeriodoById(props.dataMiniPautas[0].periodoid).then((item) => {
-        periodo.value = item.nome_periodo;
-      });
-
-      await getCursoById(props.dataMiniPautas[0].cursoid).then(async (item) => {
-        cargo_curso_id.value = item.id;
-        curso.value = item.nome_curso;
-
-        await getCoordenadorCurso(cargo_curso_id.value).then((item) => {
-          if (item.length > 0) {
-            nome_coordenador_curso.value = item[0].funcionarios.name;
-            genero_coordenador_curso.value = item[0].funcionarios.genero;
-            console.log(nome_coordenador_curso.value);
-          }
-        });
-      });
-
-      dataMiniPautas.value = props.dataMiniPautas;
-
-      gerarPDF();
-
-      moment.updateLocale("pt-br", {
-        months: [
-          "Janeiro",
-          "Fevereiro",
-          "Março",
-          "Abril",
-          "Maio",
-          "Junho",
-          "Julho",
-          "Agosto",
-          "Setembro",
-          "Outubro",
-          "Novembro",
-          "Dezembro",
-        ],
-      });
-
-      data.value = moment().format("D [de] MMMM [de] YYYY");
-      /*
-      if (terminaEmAOrao.test(dados.value[0].comuna)) {
-        // Usar o artigo "da"
-        artigoComuna.value = "da";
-        console.log(dados.value[0].comuna);
-      } else if (terminaEmOuOs.test(dados.value[0].comuna)) {
-        // Usar o artigo "do"
-        artigoComuna.value = "do";
-      } else if (terminaEmEouEs.test(dados.value[0].comuna)) {
-        // Usar o artigo "de"
-        artigoComuna.value = "de";
-      } else {
-        // Lógica para outro caso, se necessário
-      }
-*/
-
-      if (
-        provinciaComessaComH.test(provincia.value) &&
-        provinciaTerminacomComA.test(provincia.value)
-      ) {
-        artigoQueAntecedeDonomeDaProvincia.value = "da";
-      } else if (
-        provinciaComessaComBeBCKHNMUZ.test(provincia.value) &&
-        provinciaTerminacomComA.test(provincia.value)
-      ) {
-        artigoQueAntecedeDonomeDaProvincia.value = "de";
-      } else if (
-        provinciaComessaComBeBCKHNMUZ.test(provincia.value) &&
-        provinciaTerminacomComO.test(provincia.value)
-      ) {
-        artigoQueAntecedeDonomeDaProvincia.value = "do";
-      } else if (
-        provinciaComessaComBeBCKHNMUZ.test(provincia.value) &&
-        provinciaTerminacomComEL.test(provincia.value)
-      ) {
-        artigoQueAntecedeDonomeDaProvincia.value = "de";
-      } else {
-        artigoQueAntecedeDonomeDaProvincia.value = "de";
-      }
-      /*
-      if (artigoDaInstituicaoComessaComE.test(addInfo.value.escola_id)) {
-        artigoQantecedEscola.value = "na";
-      } else {
-        artigoQantecedEscola.value = "no";
-      }
-*/
-      if (terminaEmAOrao.test(municipio.value)) {
-        // Usar o artigo "da"
-        artigoMunicipio.value = "da";
-      } else if (terminaEmOuOs.test(municipio.value)) {
-        // Usar o artigo "do"
-        artigoMunicipio.value = "do";
-      } else if (terminaEmEouEs.test(municipio.value)) {
-        // Usar o artigo "de"
-        artigoMunicipio.value = "de";
-      } else {
-        // Lógica para outro caso, se necessário
-      }
-
-      if (terminaEmAOrao.test(provincia.value)) {
-        // Usar o artigo "da"
-        artigoProvincia.value = "da";
-      } else if (terminaEmOuOs.test(provincia.value)) {
-        // Usar o artigo "do"
-        artigoProvincia.value = "do";
-      } else if (terminaEmEouEs.test(provincia.value)) {
-        // Usar o artigo "de"
-        artigoProvincia.value = "de";
-      } else {
-        // Lógica para outro caso, se necessário
-      }
-      /*
-      if (terminaEmSeE.test(dados.value[0].instituto_formacao)) {
-        artigoInstituicao.value = "no";
-      } else {
-        artigoInstituicao.value = "na";
-      }
-
-      if (
-        dados.value[0].habilitacao == "licenciada" ||
-        dados.value[0].habilitacao == "licenciado"
-      ) {
-        artigoComHabiltacao.value = "a licenciatura";
-      } else {
-        const terminaEmO = /(\b\w+o\b)$/;
-        const terminaEmE = /(\b\w+e\b)$/;
-        if (terminaEmO.test(dados.value[0].habilitacao)) {
-          artigoComHabiltacao.value = "o " + dados.value[0].habilitacao;
-        }
-        if (terminaEmE.test(dados.value[0].habilitacao)) {
-          artigoComHabiltacao.value = "a " + dados.value[0].habilitacao;
-        }
-      }
-        */
-    });
 
     watch(
-      () => cargo_curso_id.value,
+      () => props.dataMiniPautas,
       (newValue) => {
-        getCoordenadorCurso(newValue).then((item) => {
+        const data = newValue;
+        getCoordenadorCurso(data[0].cursos.id).then((item) => {
           if (item.length > 0) {
             nome_coordenador_curso.value = item[0].funcionarios.name;
             genero_coordenador_curso.value = item[0].funcionarios.genero;
@@ -631,9 +352,313 @@ export default {
     );
 
     watch(
-      () => id_turma.value,
+      () => props.dataMiniPautas,
+      async (newValue) => {
+        try {
+          carrearMiniPauta.value = true;
+          const data = newValue;
+          //pegar informação de ano lectivo, curso, disciplina, nome do professor na primeira linha
+          console.log(data);
+          anoLectivo.value = data[0].ano_lectivo;
+          nome_disciplina.value = data[0].disciplinas.nome_disciplina;
+          nome_escola.value = data[0].escolas.name;
+          nome_docente.value = data[0].docentes.name;
+          genero.value = data[0].docentes.genero;
+          classe.value = data[0].classes.nome_classe;
+          turma.value = data[0].turmas.nome_turma;
+          curso.value = data[0].cursos.nome_curso;
+          periodo.value = data[0].periodos.nome_periodo;
+
+          const mini_pauta = {};
+          const trimestres = new Set();
+          const disciplinasDB = new Set();
+          await data.forEach(
+            ({
+              alunos,
+              trimestre,
+              disciplinas,
+              mac,
+              npp,
+              npt,
+              mt,
+              nee,
+              neo,
+              mec,
+              mfd,
+              ne,
+              mf,
+            }) => {
+              const key = alunos.nome;
+              if (!mini_pauta[key]) {
+                mini_pauta[key] = {
+                  nome: alunos.nome,
+                  genero: alunos.genero === "masculino" ? "M" : "F",
+                };
+              }
+
+              const trimestreName = trimestre;
+              const disciplinaName = disciplinas.nome_disciplina;
+              disciplinasTemplate.value.push(disciplinaName);
+              TrimestresDBT.value.push(trimestreName);
+              if (
+                ["III Trimestre"].includes(trimestreName) &&
+                ["Língua Portuguesa", "Inglês", "Francês"].includes(
+                  disciplinaName
+                )
+              ) {
+                mini_pauta[key][`${trimestreName}_MAC`] = mac;
+                mini_pauta[key][`${trimestreName}_NPP`] = npp;
+                mini_pauta[key][`${trimestreName}_MT`] = mt;
+                mini_pauta[key][`${trimestreName}_MFD`] = mfd;
+                mini_pauta[key][`${trimestreName}_NEE`] = nee;
+                mini_pauta[key][`${trimestreName}_NEO`] = neo;
+                mini_pauta[key][`${trimestreName}_MEC`] = mec;
+                mini_pauta[key][`${trimestreName}_MF`] = mf;
+              } else if (["III Trimestre"].includes(trimestreName)) {
+                mini_pauta[key][`${trimestreName}_MAC`] = mac;
+                mini_pauta[key][`${trimestreName}_NPP`] = npp;
+                mini_pauta[key][`${trimestreName}_MT`] = mt;
+                mini_pauta[key][`${trimestreName}_MFD`] = mfd;
+                mini_pauta[key][`${trimestreName}_NE`] = ne;
+                mini_pauta[key][`${trimestreName}_MF`] = mf;
+              } else {
+                mini_pauta[key][`${trimestreName}_MAC`] = mac;
+                mini_pauta[key][`${trimestreName}_NPP`] = npp;
+                mini_pauta[key][`${trimestreName}_NPT`] = npt;
+                mini_pauta[key][`${trimestreName}_MT`] = mt;
+              }
+
+              trimestres.add(trimestreName);
+              disciplinasDB.add(disciplinaName);
+            }
+          );
+
+          const columns = [
+            {
+              name: "order",
+              label: "Nº",
+              align: "center",
+              field: "order",
+              sortable: false,
+              colspan: 1,
+            },
+            {
+              name: "genero",
+              label: "Gênero",
+              align: "center",
+              field: "genero",
+              sortable: true,
+              colspan: 1,
+            },
+            {
+              name: "nome",
+              label: "Nome do Aluno",
+              align: "left",
+              field: "nome",
+              sortable: true,
+              colspan: 1,
+            },
+          ];
+
+          // Adiciona cabeçalho da disciplina
+          await trimestres.forEach((trimestre) => {
+            const isTrimestreSubjet = ["III Trimestre"].includes(trimestre);
+            disciplinasDB.forEach((disciplinas) => {
+              const isDisciplinaSubject = [
+                "Língua Portuguesa",
+                "Inglês",
+                "Francês",
+              ].includes(disciplinas);
+              const colspan = 4;
+              columns.push({
+                name: `${trimestre}_header`,
+                label: trimestre,
+                align: "center",
+                field: () => "", // Campo fictício para cabeçalho
+                colspan,
+                isTrimestreHeader: true,
+                isFieldHeader: false,
+                sortable: false,
+              });
+
+              // Adiciona colunas para MT1, MT2, MT3, MFD, MEC (se aplicável) e MF
+              columns.push({
+                name: `${trimestre}_MAC`,
+                label: "MAC",
+                align: "center",
+                field: (row) => row[`${trimestre}_MAC`] || "-",
+                sortable: true,
+                isTrimestreHeader: false,
+                isFieldHeader: true,
+              });
+              columns.push({
+                name: `${trimestre}_NPP`,
+                label: "NPP",
+                align: "center",
+                field: (row) => row[`${trimestre}_NPP`] || "-",
+                sortable: true,
+                isTrimestreHeader: false,
+                isFieldHeader: true,
+              });
+              if (!isTrimestreSubjet) {
+                columns.push({
+                  name: `${trimestre}_NPT`,
+                  label: "NPT",
+                  align: "center",
+                  field: (row) => row[`${trimestre}_NPT`] || "-",
+                  sortable: true,
+                  isTrimestreHeader: false,
+                  isFieldHeader: true,
+                });
+              }
+              columns.push({
+                name: `${trimestre}_MT`,
+                label: "MT",
+                align: "center",
+                field: (row) => row[`${trimestre}_MT`] || "-",
+                sortable: true,
+                isTrimestreHeader: false,
+                isFieldHeader: true,
+              });
+
+              if (isTrimestreSubjet && isDisciplinaSubject) {
+                columns.push({
+                  name: `${trimestre}_MFD`,
+                  label: "MFD",
+                  align: "center",
+                  field: (row) => row[`${trimestre}_MFD`] || "-",
+                  sortable: true,
+                  isTrimestreHeader: false,
+                  isFieldHeader: true,
+                });
+                columns.push({
+                  name: `${trimestre}_NEE`,
+                  label: "NEE",
+                  align: "center",
+                  field: (row) => row[`${trimestre}_NEE`] || "-",
+                  sortable: true,
+                  isTrimestreHeader: false,
+                  isFieldHeader: true,
+                });
+                columns.push({
+                  name: `${trimestre}_NEO`,
+                  label: "NEO",
+                  align: "center",
+                  field: (row) => row[`${trimestre}_NEO`] || "-",
+                  sortable: true,
+                  isTrimestreHeader: false,
+                  isFieldHeader: true,
+                });
+                columns.push({
+                  name: `${trimestre}_MEC`,
+                  label: "MEC",
+                  align: "center",
+                  field: (row) => row[`${trimestre}_MEC`] || "-",
+                  sortable: true,
+                  isTrimestreHeader: false,
+                  isFieldHeader: true,
+                });
+                columns.push({
+                  name: `${trimestre}_MF`,
+                  label: "MF",
+                  align: "center",
+                  field: (row) => row[`${trimestre}_MF`] || "-",
+                  sortable: true,
+                  isTrimestreHeader: false,
+                  isFieldHeader: true,
+                });
+              } else if (isTrimestreSubjet) {
+                console.log(isTrimestreSubjet);
+                columns.push({
+                  name: `${trimestre}_MFD`,
+                  label: "MFD",
+                  align: "center",
+                  field: (row) => row[`${trimestre}_MFD`] || "-",
+                  sortable: true,
+                  isTrimestreHeader: false,
+                  isFieldHeader: true,
+                });
+                columns.push({
+                  name: `${trimestre}_NE`,
+                  label: "NE",
+                  align: "center",
+                  field: (row) => row[`${trimestre}_NE`] || "-",
+                  sortable: true,
+                  isTrimestreHeader: false,
+                  isFieldHeader: true,
+                });
+                columns.push({
+                  name: `${trimestre}_MF`,
+                  label: "MF",
+                  align: "center",
+                  field: (row) => row[`${trimestre}_MF`] || "-",
+                  sortable: true,
+                  isTrimestreHeader: false,
+                  isFieldHeader: true,
+                });
+              }
+            });
+          });
+
+          const rows = Object.values(mini_pauta).map((row, index) => {
+            return {
+              order: index + 1,
+              ...row,
+            };
+          });
+
+          tableData.value = { columns, rows };
+          console.log(tableData.value);
+        } catch (error) {
+          console.log(error.message);
+        } finally {
+          carrearMiniPauta.value = false;
+          gerarPDF();
+        }
+      }
+    );
+
+    const isMF = (field) => {
+      return typeof field === "string" && field.includes("MF");
+    };
+
+    const getTextAlignment = (props) => {
+      const value = props.row[props.col.field];
+      // Alinha ao centro se o valor da célula for número ou "-". Alinha à esquerda para textos.
+      const isNumberOrDash =
+        !isNaN(value) || value === "-" || value === "M" || value === "F";
+      return isNumberOrDash ? "text-align: center" : "text-align: left";
+    };
+
+    //Atribuir cor nas notas de acordo se valor é maior ou não com 9.45
+    const corValor = (props) => {
+      const value = props.row[props.col.field];
+      if (value >= 9.45) {
+        return "color: blue";
+      } else if (value <= 9.44 && props.col.name !== "order") {
+        return "color:red";
+      }
+    };
+
+    const bgColor = (props) => {
+      //console.log(disciplinasDB.value);
+      const fieldName = props.col.name;
+      // Lista de sufixos desejados
+      const suffixes = ["_MT", "_MFD", "_MEC", "_NE", "MF"];
+      // Adiciona cada sufixo a cada disciplina para formar os nomes das colunas
+      const columnNames = TrimestresDBT.value.flatMap((trimestre) =>
+        suffixes.map((suffix) => `${trimestre}${suffix}`)
+      );
+      if (columnNames.includes(fieldName)) {
+        return "background-color: #f5f5f5"; // Define a cor de fundo desejada
+      }
+    };
+
+    watch(
+      () => props.dataMiniPautas,
       (newValue) => {
-        getDirectorDeTurma(newValue).then((item) => {
+        const data = newValue;
+        getDirectorDeTurma(data[0].turmas.id).then((item) => {
           console.log(item);
           if (item.length > 0) {
             nome_director_turma.value = item[0].funcionarios.name;
@@ -1015,8 +1040,25 @@ export default {
       curso,
       genero_director_turma,
       genero_coordenador_curso,
+      genero,
       nome_director_turma,
       nome_coordenador_curso,
+      isMF,
+      getTextAlignment,
+      corValor,
+      bgColor,
+      tableData,
+      disciplinasTemplate,
+      TrimestresDBT,
+      trimestreHeaderColumns,
+      fieldHeaderColumns,
+      isDisciplinaEstrangeiras,
+      Cell,
+      carrearMiniPauta,
+      nome_docente,
+      pagination: {
+        rowsPerPage: 0, // Definir como 0 para mostrar todas as linhas
+      },
     };
   },
 };
@@ -1025,6 +1067,15 @@ export default {
 .table-responsive {
   width: 100%;
   overflow-x: auto;
+}
+
+.q-table {
+  width: 100% !important;
+}
+
+.q-table .q-td,
+.q-table .q-th {
+  white-space: nowrap;
 }
 
 table tr td {
@@ -1068,5 +1119,20 @@ table tr td {
   text-align: center;
   margin: 0;
   padding: 0;
+}
+
+/* Estilos globais para a tabela */
+#elemento-para-pdf .q-table {
+  font-size: 10px; /* Reduz o tamanho da fonte */
+}
+
+#elemento-para-pdf .q-table .q-th,
+#elemento-para-pdf .q-table .q-td {
+  padding: 4px; /* Reduz o padding para economizar espaço */
+  line-height: 1.2; /* Ajusta a altura da linha se necessário */
+}
+
+#elemento-para-pdf .q-table .q-th {
+  font-weight: bold; /* Torna o texto dos cabeçalhos mais visível, se desejado */
 }
 </style>
