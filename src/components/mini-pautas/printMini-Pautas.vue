@@ -57,8 +57,8 @@
               <q-tr>
                 <!-- First Row for Discipline Names -->
                 <q-th style="width: 10%; font-size: 10px">Nº</q-th>
-                <q-th style="width: 47%; font-size: 10px">NOME DE ALUNOS</q-th>
-                <q-th style="width: 8%; font-size: 10px">GÊN.</q-th>
+                <q-th style="width: 47%; font-size: 10px">Nome de alunos</q-th>
+                <q-th style="width: 8%; font-size: 10px">Gên.</q-th>
                 <q-th
                   v-for="col in trimestreHeaderColumns"
                   :key="'discipline_' + col.name"
@@ -117,28 +117,43 @@
           <br />
           <div class="row">
             <div class="col-12">
-              <table class="table green-border" style="border: none">
+              <table class="table sem-bordas" border="none">
                 <tr>
                   <td
                     style="width: 25%"
                     v-if="genero_coordenador_curso === 'Masculino'"
+                    border="none"
                   >
-                    O Coordenador do curso
+                    O Coordenador do curso:
                   </td>
-                  <td style="width: 25%" v-else>A Coordenadora do curso</td>
-                  <td>{{ nome_coordenador_curso }}</td>
+                  <td style="width: 25%" v-else border="none">
+                    A Coordenadora do curso:
+                  </td>
+                  <td border="none" style="font-style: italic">
+                    {{ nome_coordenador_curso }}
+                  </td>
                 </tr>
                 <tr>
-                  <td v-if="genero_director_turma == 'Masculino'">
-                    O Director de Turma
+                  <td v-if="genero_director_turma == 'Masculino'" border="none">
+                    O Director de Turma:
                   </td>
-                  <td v-else>A Directora de Turma</td>
-                  <td>{{ nome_director_turma }}</td>
+                  <td v-else border="none">A Directora de Turma</td>
+                  <td border="none" style="font-style: italic">
+                    {{ nome_director_turma }}
+                  </td>
                 </tr>
                 <tr>
-                  <td v-if="genero == 'Masculino'">O Professor</td>
-                  <td v-else>A Professora</td>
-                  <td class="text-blue-10">{{ nome_docente }}</td>
+                  <td v-if="genero == 'Masculino'" border="none">
+                    O Professor:
+                  </td>
+                  <td v-else border="none">A Professora</td>
+                  <td
+                    class="text-blue-10"
+                    border="none"
+                    style="font-style: italic"
+                  >
+                    {{ nome_docente }}
+                  </td>
                 </tr>
               </table>
             </div>
@@ -224,6 +239,7 @@ export default {
     const municipio = ref("");
     const data = ref(null);
     const dateNowYear = new Date().toJSON().slice(0, 4);
+    const dataShotForm = ref("");
     const artigoQantecedEscola = ref("");
     const artigoQueAntecedeDonomeDaProvincia = ref();
     // Expressão regular para verificar se a última palavra termina em "a", "ão" ou "ões"
@@ -339,20 +355,6 @@ export default {
 
     watch(
       () => props.dataMiniPautas,
-      (newValue) => {
-        const data = newValue;
-        getCoordenadorCurso(data[0].cursos.id).then((item) => {
-          if (item.length > 0) {
-            nome_coordenador_curso.value = item[0].funcionarios.name;
-            genero_coordenador_curso.value = item[0].funcionarios.genero;
-            console.log(nome_coordenador_curso.value);
-          }
-        });
-      }
-    );
-
-    watch(
-      () => props.dataMiniPautas,
       async (newValue) => {
         try {
           carrearMiniPauta.value = true;
@@ -362,12 +364,28 @@ export default {
           anoLectivo.value = data[0].ano_lectivo;
           nome_disciplina.value = data[0].disciplinas.nome_disciplina;
           nome_escola.value = data[0].escolas.name;
+          provincia.value = data[0].escolas.provincia;
+          municipio.value = data[0].escolas.municipio;
           nome_docente.value = data[0].docentes.name;
           genero.value = data[0].docentes.genero;
           classe.value = data[0].classes.nome_classe;
           turma.value = data[0].turmas.nome_turma;
           curso.value = data[0].cursos.nome_curso;
           periodo.value = data[0].periodos.nome_periodo;
+
+          await getCoordenadorCurso(data[0].cursos.id).then((item) => {
+            if (item.length > 0) {
+              nome_coordenador_curso.value = item[0].funcionarios.name;
+              genero_coordenador_curso.value = item[0].funcionarios.genero;
+            }
+          });
+
+          await getDirectorDeTurma(data[0].turmas.id).then((item) => {
+            if (item.length > 0) {
+              nome_director_turma.value = item[0].funcionarios.name;
+              genero_director_turma.value = item[0].funcionarios.genero;
+            }
+          });
 
           const mini_pauta = {};
           const trimestres = new Set();
@@ -600,6 +618,79 @@ export default {
             });
           });
 
+          moment.updateLocale("pt-br", {
+            months: [
+              "Janeiro",
+              "Fevereiro",
+              "Março",
+              "Abril",
+              "Maio",
+              "Junho",
+              "Julho",
+              "Agosto",
+              "Setembro",
+              "Outubro",
+              "Novembro",
+              "Dezembro",
+            ],
+          });
+
+          data.value = moment().format("D [de] MMMM [de] YYYY");
+          dataShotForm.value = moment().format("DD/MM/YYYY");
+
+          //salarioPorExtenso.value = toWords.convert(dados.value[0].salario_base);
+
+          if (
+            // Verifica se a última palavra da comuna termina em "a" ou "ão"
+            provinciaComessaComH.test(data[0].escolas.provincia) &&
+            provinciaTerminacomComA.test(data[0].escolas.provincia)
+          ) {
+            artigoQueAntecedeDonomeDaProvincia.value = "da";
+          } else if (
+            provinciaComessaComBeBCKHNMUZ.test(data[0].escolas.provincia) &&
+            provinciaTerminacomComA.test(data[0].escolas.provincia)
+          ) {
+            artigoQueAntecedeDonomeDaProvincia.value = "de";
+          } else if (
+            provinciaComessaComBeBCKHNMUZ.test(data[0].escolas.provincia) &&
+            provinciaTerminacomComO.test(data[0].escolas.provincia)
+          ) {
+            artigoQueAntecedeDonomeDaProvincia.value = "do";
+          } else if (
+            provinciaComessaComBeBCKHNMUZ.test(data[0].escolas.provincia) &&
+            provinciaTerminacomComEL.test(data[0].escolas.provincia)
+          ) {
+            artigoQueAntecedeDonomeDaProvincia.value = "de";
+          } else {
+            artigoQueAntecedeDonomeDaProvincia.value = "de";
+          }
+
+          if (terminaEmAOrao.test(data[0].escolas.municipio)) {
+            // Usar o artigo "da"
+            artigoMunicipio.value = "da";
+          } else if (terminaEmOuOs.test(data[0].escolas.municipio)) {
+            // Usar o artigo "do"
+            artigoMunicipio.value = "do";
+          } else if (terminaEmEouEs.test(data[0].escolas.municipio)) {
+            // Usar o artigo "de"
+            artigoMunicipio.value = "de";
+          } else {
+            // Lógica para outro caso, se necessário
+          }
+
+          if (terminaEmAOrao.test(data[0].escolas.provincia)) {
+            // Usar o artigo "da"
+            artigoProvincia.value = "da";
+          } else if (terminaEmOuOs.test(data[0].escolas.provincia)) {
+            // Usar o artigo "do"
+            artigoProvincia.value = "do";
+          } else if (terminaEmEouEs.test(data[0].escolas.provincia)) {
+            // Usar o artigo "de"
+            artigoProvincia.value = "de";
+          } else {
+            // Lógica para outro caso, se necessário
+          }
+
           const rows = Object.values(mini_pauta).map((row, index) => {
             return {
               order: index + 1,
@@ -653,20 +744,6 @@ export default {
         return "background-color: #f5f5f5"; // Define a cor de fundo desejada
       }
     };
-
-    watch(
-      () => props.dataMiniPautas,
-      (newValue) => {
-        const data = newValue;
-        getDirectorDeTurma(data[0].turmas.id).then((item) => {
-          console.log(item);
-          if (item.length > 0) {
-            nome_director_turma.value = item[0].funcionarios.name;
-            genero_director_turma.value = item[0].funcionarios.genero;
-          }
-        });
-      }
-    );
 
     const getColorMac1 = () => {
       if (
@@ -1059,14 +1136,30 @@ export default {
       pagination: {
         rowsPerPage: 0, // Definir como 0 para mostrar todas as linhas
       },
+      dataShotForm,
     };
   },
 };
 </script>
 <style scoped>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .table-responsive {
   width: 100%;
   overflow-x: auto;
+}
+
+.sem-bordas {
+  border: none !important; /* Remove todas as bordas da tabela */
+}
+
+.sem-bordas td {
+  border: none !important; /* Remove todas as bordas das células */
+  padding: 8px; /* Espaçamento interno das células, se necessário */
 }
 
 .q-table {

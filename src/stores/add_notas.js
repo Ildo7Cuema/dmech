@@ -84,7 +84,7 @@ export const useAdd_Nota_Miniauta_Store = defineStore("add_notas", {
       const { data, error } = await supabase
         .from(tableDB)
         .select(
-          `*, alunos:aluno_id(*), escolas:escola_id(name), turmas:turma_id(id,nome_turma), disciplinas:disciplina_id(*), docentes:docente_id(*), cursos:curso_id(id, nome_curso), classes:classe_id(id, nome_classe), periodos:periodo_id(nome_periodo)`
+          `*, alunos:aluno_id(*), escolas:escola_id(*), turmas:turma_id(id,nome_turma), disciplinas:disciplina_id(*), docentes:docente_id(*), cursos:curso_id(id, nome_curso), classes:classe_id(id, nome_classe), periodos:periodo_id(nome_periodo)`
         )
         .eq("ano_lectivo", anoLectivo.ano_lectivo)
         .eq("escola_id", escolaId)
