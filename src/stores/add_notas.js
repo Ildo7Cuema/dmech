@@ -21,8 +21,7 @@ export const useAdd_Nota_Miniauta_Store = defineStore("add_notas", {
         .select(
           `
           *,
-          alunos:aluno_id(nome, genero),
-          disciplinas:disciplina_id(nome_disciplina),
+          alunos:aluno_id(nome, genero),escolas:escola_id(name),cursos:curso_id(id, nome_curso), periodos:periodo_id(nome_periodo), classes:classe_id(nome_classe), turmas:turma_id(id, nome_turma), disciplinas:disciplina_id(nome_disciplina)
           mt1, mt2, mt3, mfd, mf, ne, mec
         `
         )
@@ -55,6 +54,7 @@ export const useAdd_Nota_Miniauta_Store = defineStore("add_notas", {
       );
 
       // Ordena os dados de acordo com a posição da disciplina
+      console.log(data);
       const dadosOrdenados = data.sort((a, b) => {
         const disciplinaA = a.disciplinas.nome_disciplina;
         const disciplinaB = b.disciplinas.nome_disciplina;
@@ -112,6 +112,7 @@ export const useAdd_Nota_Miniauta_Store = defineStore("add_notas", {
       }
 
       const dadosOrdenados = ordenarPorTrimestre(data);
+
       console.log(dadosOrdenados);
       return dadosOrdenados;
     },

@@ -79,78 +79,95 @@
       </q-card-section>
     </q-card>
 
-    <q-table
-      :rows="tableData.rows"
-      dense
-      row-key="nome"
-      :filter="filter"
-      bordered
-      :separator="Cell"
-      style="border-radius: 0"
-      v-if="showPauta && show == false"
-    >
-      <template v-slot:top-right>
-        <q-input
-          color="primary"
-          v-model="filter"
-          lable="Pesquisar"
-          placeholder="Pesquisar"
-          dense
-          outlined
-          class="q-mr-sm"
-        >
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
-      </template>
-      <template v-slot:top-left>
-        <span class="text-h5 text-red-10">PAUTA</span>
-      </template>
-
-      <!-- Custom Header Slot with Multi-line Header -->
-      <template v-slot:header>
-        <q-tr>
-          <!-- First Row for Discipline Names -->
-          <q-th rowspan="2">Nº</q-th>
-          <q-th rowspan="2">NOME DE ALUNOS</q-th>
-          <q-th rowspan="2">GÊN.</q-th>
-          <q-th
-            v-for="col in disciplineHeaderColumns"
-            :key="'discipline_' + col.name"
-            :colspan="col.colspan"
-            align="center"
+    <div v-if="showPautaPrint == false">
+      <q-table
+        :rows="tableData.rows"
+        dense
+        row-key="nome"
+        :filter="filter"
+        bordered
+        :separator="Cell"
+        style="border-radius: 0"
+        v-if="showPauta && show == false"
+      >
+        <template v-slot:top-right>
+          <q-input
+            color="primary"
+            v-model="filter"
+            lable="Pesquisar"
+            placeholder="Pesquisar"
+            dense
+            outlined
+            class="q-mr-sm"
           >
-            {{ col.label }}
-          </q-th>
-          <q-th rowspan="2">OBSERVAÇÃO</q-th>
-        </q-tr>
-        <q-tr style="background-color: #f5f5f5">
-          <!-- Second Row for Field Names -->
-          <q-th
-            v-for="col in fieldHeaderColumns"
-            :key="'fields_' + col.name"
-            align="center"
-          >
-            {{ col.label }}
-          </q-th>
-        </q-tr>
-      </template>
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+        </template>
+        <template v-slot:top-left>
+          <span class="text-h5 text-red-10">PAUTA</span>
+          <span class="text-h5 text-red-10 q-ml-md">
+            <q-btn
+              dark-percentage
+              unelevated
+              color="orange"
+              text-color="grey-9"
+              @click="modoPrint()"
+              icon="mdi-printer"
+              style="width: 100px"
+            />
+          </span>
+        </template>
 
-      <template v-slot:body-cell="props">
-        <q-td :props="props" :style="[getTextAlignment(props), bgColor(props)]">
-          <span v-if="isMF(props.col.field)" :style="corValor(props)">
-            <q-span v-if="props.row[props.col.field] !== '-'">
+        <!-- Custom Header Slot with Multi-line Header -->
+        <template v-slot:header>
+          <q-tr>
+            <!-- First Row for Discipline Names -->
+            <q-th rowspan="2">Nº</q-th>
+            <q-th rowspan="2">NOME DE ALUNOS</q-th>
+            <q-th rowspan="2">GÊN.</q-th>
+            <q-th
+              v-for="col in disciplineHeaderColumns"
+              :key="'discipline_' + col.name"
+              :colspan="col.colspan"
+              align="center"
+            >
+              {{ col.label }}
+            </q-th>
+            <q-th rowspan="2">OBSERVAÇÃO</q-th>
+          </q-tr>
+          <q-tr style="background-color: #f5f5f5">
+            <!-- Second Row for Field Names -->
+            <q-th
+              v-for="col in fieldHeaderColumns"
+              :key="'fields_' + col.name"
+              align="center"
+            >
+              {{ col.label }}
+            </q-th>
+          </q-tr>
+        </template>
+
+        <template v-slot:body-cell="props">
+          <q-td
+            :props="props"
+            :style="[getTextAlignment(props), bgColor(props), corValorObservacao(props)]"
+          >
+            <span v-if="isMF(props.col.field)" :style="corValor(props)">
+              <q-span v-if="props.row[props.col.field] !== '-'">
+                {{ props.row[props.col.field] || "-" }}
+              </q-span>
+              <span v-else>-</span>
+            </span>
+            <span v-else :style="corValor(props)">
               {{ props.row[props.col.field] || "-" }}
-            </q-span>
-            <span v-else>-</span>
-          </span>
-          <span v-else :style="corValor(props)">
-            {{ props.row[props.col.field] || "-" }}
-          </span>
-        </q-td>
-      </template>
-    </q-table>
+            </span>
+          </q-td>
+        </template>
+      </q-table>
+    </div>
+    <print-pauta :dataPautas="dataPautas" v-else />
   </q-page>
 </template>
 
@@ -166,12 +183,13 @@ import { usePeriodoStore } from "src/stores/periodos";
 import { useCursoStore } from "src/stores/cursos";
 import { useAnoLectivoStore } from "src/stores/ano_lectivo";
 import loadingComponent2 from "src/components/loading/loadingComponent2.vue";
+import printPauta from "./printPauta.vue";
 import usenotification from "src/composible/useNotify";
 import { useAdd_Nota_Miniauta_Store } from "src/stores/add_notas";
 
 export default {
   name: "Pauta-Componente",
-  components: { loadingComponent2 },
+  components: { loadingComponent2, printPauta },
   setup() {
     const filter = ref("");
     const { supabase } = useSupabase();
@@ -194,6 +212,8 @@ export default {
 
     const show = ref(false);
     const showPauta = ref(false);
+    const showPautaPrint = ref(false);
+    const dataPautas = ref([]);
 
     const form = ref({
       classe_id: null,
@@ -214,31 +234,23 @@ export default {
 
     const Cell = "cell";
     const disciplinasDB = ref([]);
+
+    const modoPrint = async () => {
+      try {
+        showPautaPrint.value = true;
+        dataPautas.value = await getPauta(form.value);
+      } catch (error) {
+        console.log(error);
+      } finally {
+      }
+    };
+
     const fetchPauta = async () => {
       try {
         show.value = true;
-        /*const { data, error } = await supabase
-          .from("pauta") // Nome da tabela
-          .select(
-            `
-          *,
-          alunos:aluno_id(nome, genero),
-          disciplinas:disciplina_id(nome_disciplina),
-          mt1, mt2, mt3, mfd, mf, ne, mec
-        `
-          )
-          .eq("classe_id", form.value.classe_id)
-          .eq("turma_id", form.value.turma_id)
-          .eq("curso_id", form.value.curso_id)
-          .eq("periodo_id", form.value.periodo_id)
-          .eq("ano_lectivo", form.value.ano_lectivo.ano_lectivo);
-
-        if (error) {
-          console.error("Erro ao buscar dados:", error);
-          return;
-        }
-*/
+        showPautaPrint.value = false;
         const data = await getPauta(form.value);
+        console.log(data);
         const pauta = {};
         const disciplines = new Set();
 
@@ -525,6 +537,18 @@ export default {
       }
     };
 
+    const corValorObservacao = (props) => {
+      const value = props.row[props.col.field];
+      
+      if (value == "TRANSITA") {
+        return "color: blue";
+      } else if (value == "NÃO TRANSITA") {
+        return "color:red";
+      }else{
+        return "color: black";
+      }
+    };
+
     const bgColor = (props) => {
       //console.log(disciplinasDB.value);
       const fieldName = props.col.name;
@@ -559,7 +583,11 @@ export default {
       showPauta,
       corValor,
       bgColor,
+      corValorObservacao,
       disciplinasDB,
+      dataPautas,
+      modoPrint,
+      showPautaPrint,
     };
   },
 };
