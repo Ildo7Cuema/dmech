@@ -152,7 +152,11 @@
         <template v-slot:body-cell="props">
           <q-td
             :props="props"
-            :style="[getTextAlignment(props), bgColor(props), corValorObservacao(props)]"
+            :style="[
+              getTextAlignment(props),
+              bgColor(props),
+              corValorObservacao(props),
+            ]"
           >
             <span v-if="isMF(props.col.field)" :style="corValor(props)">
               <q-span v-if="props.row[props.col.field] !== '-'">
@@ -250,7 +254,7 @@ export default {
         show.value = true;
         showPautaPrint.value = false;
         const data = await getPauta(form.value);
-        console.log(data);
+
         const pauta = {};
         const disciplines = new Set();
 
@@ -539,12 +543,12 @@ export default {
 
     const corValorObservacao = (props) => {
       const value = props.row[props.col.field];
-      
+
       if (value == "TRANSITA") {
         return "color: blue";
       } else if (value == "NÃO TRANSITA") {
         return "color:red";
-      }else{
+      } else {
         return "color: black";
       }
     };

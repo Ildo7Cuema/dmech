@@ -21,7 +21,7 @@ export const useAdd_Nota_Miniauta_Store = defineStore("add_notas", {
         .select(
           `
           *,
-          alunos:aluno_id(nome, genero),escolas:escola_id(name),cursos:curso_id(id, nome_curso), periodos:periodo_id(nome_periodo), classes:classe_id(nome_classe), turmas:turma_id(id, nome_turma), disciplinas:disciplina_id(nome_disciplina)
+          alunos:aluno_id(nome, genero),escolas:escola_id(id, name, provincia, municipio),cursos:curso_id(id, nome_curso), periodos:periodo_id(nome_periodo), classes:classe_id(nome_classe), turmas:turma_id(id, nome_turma), disciplinas:disciplina_id(nome_disciplina)
           mt1, mt2, mt3, mfd, mf, ne, mec
         `
         )
@@ -76,45 +76,108 @@ export const useAdd_Nota_Miniauta_Store = defineStore("add_notas", {
       escolaId,
       cursoID,
       classeID,
+      nomeCurso,
       turmaID,
       periodoID,
       anoLectivo,
-      disciplinaID
+      disciplinaID,
+      trimestre
     ) {
-      const { data, error } = await supabase
-        .from(tableDB)
-        .select(
-          `*, alunos:aluno_id(*), escolas:escola_id(*), turmas:turma_id(id,nome_turma), disciplinas:disciplina_id(*), docentes:docente_id(*), cursos:curso_id(id, nome_curso), classes:classe_id(id, nome_classe), periodos:periodo_id(nome_periodo)`
-        )
-        .eq("ano_lectivo", anoLectivo.ano_lectivo)
-        .eq("escola_id", escolaId)
-        .eq("curso_id", cursoID)
-        .eq("classe_id", classeID)
-        .eq("turma_id", turmaID)
-        .eq("periodo_id", periodoID)
-        .eq("disciplina_id", disciplinaID);
-      if (error) {
-        console.error("Error fetching data from database:", error);
-        return;
-      }
-      // Função para ordenar os dados por trimestre
-      function ordenarPorTrimestre(dados) {
-        const ordemTrimestres = [
-          "I Trimestre",
-          "II Trimestre",
-          "III Trimestre",
+      console.log(nomeCurso);
+      if (nomeCurso !== "Ensino primário") {
+        const { data, error } = await supabase
+          .from(tableDB)
+          .select(
+            `*, alunos:aluno_id(*), escolas:escola_id(*), turmas:turma_id(id,nome_turma), disciplinas:disciplina_id(*), docentes:docente_id(*), cursos:curso_id(id, nome_curso), classes:classe_id(id, nome_classe), periodos:periodo_id(nome_periodo)`
+          )
+          .eq("ano_lectivo", anoLectivo.ano_lectivo)
+          .eq("escola_id", escolaId)
+          .eq("curso_id", cursoID)
+          .eq("classe_id", classeID)
+          .eq("turma_id", turmaID)
+          .eq("periodo_id", periodoID)
+          .eq("disciplina_id", disciplinaID);
+        if (error) {
+          console.error("Error fetching data from database:", error);
+          return;
+        }
+        // Função para ordenar os dados por trimestre
+        function ordenarPorTrimestre(dados) {
+          const ordemTrimestres = [
+            "I Trimestre",
+            "II Trimestre",
+            "III Trimestre",
+          ];
+          return dados.sort((a, b) => {
+            const trimestreA = ordemTrimestres.indexOf(a.trimestre);
+            const trimestreB = ordemTrimestres.indexOf(b.trimestre);
+            return trimestreA - trimestreB;
+          });
+        }
+
+        const dadosOrdenados = ordenarPorTrimestre(data);
+
+        console.log(dadosOrdenados);
+        return dadosOrdenados;
+      } else {
+        //Buscar Mini-pauta para o ensino primario
+        console.log(trimestre);
+        const { data, error } = await supabase
+          .from(tableDB) // Nome da tabela
+          .select(
+            `
+        *,
+        alunos:aluno_id(nome, genero),escolas:escola_id(id, name, provincia, municipio),cursos:curso_id(id, nome_curso), periodos:periodo_id(nome_periodo), classes:classe_id(nome_classe), turmas:turma_id(id, nome_turma), disciplinas:disciplina_id(nome_disciplina)
+        mt1, mt2, mt3, mfd, mf, ne, mec
+      `
+          )
+          .eq("classe_id", classeID)
+          .eq("turma_id", turmaID)
+          .eq("curso_id", cursoID)
+          .eq("periodo_id", periodoID)
+          .eq("ano_lectivo", anoLectivo.ano_lectivo)
+          .eq("trimestre", trimestre);
+
+        if (error) {
+          console.error("Erro ao buscar dados:", error);
+          return;
+        }
+
+        // Função para ordenar os dados por trimestre
+        const ordemDisciplinas = [
+          "Língua Portuguesa",
+          "Inglês",
+          "Francês",
+          "Matemática",
         ];
-        return dados.sort((a, b) => {
-          const trimestreA = ordemTrimestres.indexOf(a.trimestre);
-          const trimestreB = ordemTrimestres.indexOf(b.trimestre);
-          return trimestreA - trimestreB;
+
+        // Mapeia a disciplina para sua posição na lista de prioridade
+        const disciplinaPrioridade = ordemDisciplinas.reduce(
+          (acc, disciplina, index) => {
+            acc[disciplina] = index;
+            return acc;
+          },
+          {}
+        );
+
+        // Ordena os dados de acordo com a posição da disciplina
+        console.log(data);
+        const dadosOrdenados = data.sort((a, b) => {
+          const disciplinaA = a.disciplinas.nome_disciplina;
+          const disciplinaB = b.disciplinas.nome_disciplina;
+          const posA =
+            disciplinaPrioridade[disciplinaA] !== undefined
+              ? disciplinaPrioridade[disciplinaA]
+              : Infinity;
+          const posB =
+            disciplinaPrioridade[disciplinaB] !== undefined
+              ? disciplinaPrioridade[disciplinaB]
+              : Infinity;
+          return posA - posB;
         });
+        console.log(dadosOrdenados);
+        return dadosOrdenados;
       }
-
-      const dadosOrdenados = ordenarPorTrimestre(data);
-
-      console.log(dadosOrdenados);
-      return dadosOrdenados;
     },
 
     async add_mini_pauta(form) {

@@ -45,6 +45,7 @@
             bordered
             :separator="Cell"
             style="border-radius: 0"
+            :pagination="pagination"
           >
             <template v-slot:top-left>
               <span class="text-h5 text-red-10">PAUTA Nº _______ </span>
@@ -107,7 +108,50 @@
 
           <br />
           <div class="row">
-            <div class="col-12"></div>
+            <div class="col-12">
+              <table class="table sem-bordas" border="1" style="width: 100%">
+                <tr>
+                  <td style="text-align: center; padding: 10px">
+                    <b>O Conselho:</b>
+                  </td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td border="1" style="padding: 10px; text-align: center">
+                    1._________________________________________________
+                  </td>
+                  <td style="padding: 10px; text-align: center">
+                    <b>O(A) Director(a) Pedagógico</b>
+                  </td>
+                  <td style="padding: 10px; text-align: center">
+                    <b>O(A) Director(a) Geral</b>
+                  </td>
+                </tr>
+                <tr>
+                  <td border="1" style="padding: 10px; text-align: center">
+                    2._________________________________________________
+                  </td>
+                  <td style="padding: 10px; text-align: center">
+                    ____________________________________________
+                  </td>
+                  <td style="padding: 10px; text-align: center">
+                    ____________________________________________
+                  </td>
+                </tr>
+                <tr>
+                  <td border="1" style="padding: 10px; text-align: center">
+                    3._________________________________________________
+                  </td>
+                  <td style="padding: 10px; text-align: center">
+                    Data:/______/________________/20_____
+                  </td>
+                  <td style="padding: 10px; text-align: center">
+                    Data:/______/________________/20_____
+                  </td>
+                </tr>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -463,8 +507,58 @@ export default {
             });
           });
 
-          // Adiciona o número de ordem
+          if (
+            // Verifica se a última palavra da comuna termina em "a" ou "ão"
+            provinciaComessaComH.test(data[0].escolas.provincia) &&
+            provinciaTerminacomComA.test(data[0].escolas.provincia)
+          ) {
+            artigoQueAntecedeDonomeDaProvincia.value = "da";
+          } else if (
+            provinciaComessaComBeBCKHNMUZ.test(data[0].escolas.provincia) &&
+            provinciaTerminacomComA.test(data[0].escolas.provincia)
+          ) {
+            artigoQueAntecedeDonomeDaProvincia.value = "de";
+          } else if (
+            provinciaComessaComBeBCKHNMUZ.test(data[0].escolas.provincia) &&
+            provinciaTerminacomComO.test(data[0].escolas.provincia)
+          ) {
+            artigoQueAntecedeDonomeDaProvincia.value = "do";
+          } else if (
+            provinciaComessaComBeBCKHNMUZ.test(data[0].escolas.provincia) &&
+            provinciaTerminacomComEL.test(data[0].escolas.provincia)
+          ) {
+            artigoQueAntecedeDonomeDaProvincia.value = "de";
+          } else {
+            artigoQueAntecedeDonomeDaProvincia.value = "de";
+          }
 
+          if (terminaEmAOrao.test(data[0].escolas.municipio)) {
+            // Usar o artigo "da"
+            artigoMunicipio.value = "da";
+          } else if (terminaEmOuOs.test(data[0].escolas.municipio)) {
+            // Usar o artigo "do"
+            artigoMunicipio.value = "do";
+          } else if (terminaEmEouEs.test(data[0].escolas.municipio)) {
+            // Usar o artigo "de"
+            artigoMunicipio.value = "de";
+          } else {
+            // Lógica para outro caso, se necessário
+          }
+
+          if (terminaEmAOrao.test(data[0].escolas.provincia)) {
+            // Usar o artigo "da"
+            artigoProvincia.value = "da";
+          } else if (terminaEmOuOs.test(data[0].escolas.provincia)) {
+            // Usar o artigo "do"
+            artigoProvincia.value = "do";
+          } else if (terminaEmEouEs.test(data[0].escolas.provincia)) {
+            // Usar o artigo "de"
+            artigoProvincia.value = "de";
+          } else {
+            // Lógica para outro caso, se necessário
+          }
+
+          // Adiciona o número de ordem
           const rows = Object.values(pauta).map((row, index) => {
             // Obtém todas as chaves que terminam com _MF
             const mfKeys = Object.keys(row).filter((key) =>
@@ -554,7 +648,6 @@ export default {
 
     const corValorObservacao = (props) => {
       const value = props.row[props.col.field];
-
       if (value == "TRANSITA") {
         return "color: blue";
       } else if (value == "NÃO TRANSITA") {
