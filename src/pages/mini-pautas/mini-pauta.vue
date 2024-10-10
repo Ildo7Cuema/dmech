@@ -188,11 +188,6 @@
               <q-icon name="search" />
             </template>
           </q-input>
-        </template>
-        <template v-slot:top-left>
-          <span class="text-h5 text-red-10"
-            >MINI-PAUTA - {{ searchForm.trimestre }}</span
-          >
           <span class="text-h5 text-red-10 q-ml-md">
             <q-btn
               dark-percentage
@@ -205,10 +200,12 @@
             />
           </span>
         </template>
-        <template v-slot:top-center>
-          <span class="text-red-10">{{ searchForm.trimestre }}</span>
+        <template v-slot:top-left>
+          <span class="text-h5 text-red-10">MINI-PAUTA -</span>
+          <span class="text-green-10 text-h6 q-ml-sm">{{
+            searchForm.trimestre
+          }}</span>
         </template>
-
         <!-- Custom Header Slot with Multi-line Header -->
         <template v-slot:header>
           <q-tr>
@@ -229,7 +226,6 @@
               v-if="isDisciplinaEstrangeiras"
               >Exame E/O</q-th
             >
-            <q-th></q-th>
           </q-tr>
           <q-tr style="background-color: #f5f5f5">
             <!-- Second Row for Field Names -->
@@ -246,7 +242,11 @@
         <template v-slot:body-cell="props">
           <q-td
             :props="props"
-            :style="[getTextAlignment(props), bgColor(props)]"
+            :style="[
+              getTextAlignment(props),
+              bgColor(props),
+              bgColorEnsinoPrim(props),
+            ]"
           >
             <span v-if="isMF(props.col.field)" :style="corValor(props)">
               <q-span v-if="props.row[props.col.field] !== '-'">
@@ -530,19 +530,23 @@ export default {
           escolaId,
           cursoID,
           classeID,
+          nomeCurso,
           turmaID,
           periodoID,
           anoLectivo,
           disciplinaID,
+          trimestre,
         } = searchForm.value;
         dataMiniPautas.value = await getMiniPauta(
           escolaId,
           cursoID,
           classeID,
+          nomeCurso,
           turmaID,
           periodoID,
           anoLectivo,
-          disciplinaID
+          disciplinaID,
+          trimestre
         );
       } catch (error) {
         console.log(error);
@@ -1203,10 +1207,25 @@ export default {
       }
     };
 
+    const bgColorEnsinoPrim = (props) => {
+      //console.log(disciplinasDBMiniPauta.value);
+      const fieldName = props.col.name;
+      // Lista de sufixos desejados
+      const suffixes = ["_MT", "_MFD", "_MEC", "_NE", "MF"];
+      // Adiciona cada sufixo a cada disciplina para formar os nomes das colunas
+      const columnNames = disciplinasDBMiniPauta.value.flatMap((disciplina) =>
+        suffixes.map((suffix) => `${disciplina}${suffix}`)
+      );
+      if (columnNames.includes(fieldName)) {
+        return "background-color: #f5f5f5"; // Define a cor de fundo desejada
+      }
+    };
+
     return {
       getTextAlignment,
       corValor,
       bgColor,
+      bgColorEnsinoPrim,
       tableData,
       searchForm,
       cursos,

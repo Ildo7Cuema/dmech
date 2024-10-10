@@ -127,7 +127,7 @@ export const useAdd_Nota_Miniauta_Store = defineStore("add_notas", {
           .select(
             `
         *,
-        alunos:aluno_id(nome, genero),escolas:escola_id(id, name, provincia, municipio),cursos:curso_id(id, nome_curso), periodos:periodo_id(nome_periodo), classes:classe_id(nome_classe), turmas:turma_id(id, nome_turma), disciplinas:disciplina_id(nome_disciplina)
+        alunos:aluno_id(nome, genero),escolas:escola_id(id, name, provincia, municipio),cursos:curso_id(id, nome_curso), periodos:periodo_id(nome_periodo), classes:classe_id(nome_classe), turmas:turma_id(id, nome_turma), disciplinas:disciplina_id(nome_disciplina), funcionarios:docente_id(id, name, genero)
         mt1, mt2, mt3, mfd, mf, ne, mec
       `
           )
