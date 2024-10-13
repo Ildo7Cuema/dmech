@@ -347,6 +347,29 @@ export default {
 
     //atribuir cor ao valor da coluna MAC1
 
+    const corValor = (props) => {
+      const value = props.row[props.col.field];
+      const isNomeOrOrdemOrGenero = ["nome", "order", "genero"].includes(
+        props.col.name
+      );
+      const isMTColumn = props.col.name.endsWith("_MT"); // Verifica se a coluna termina com '_MT'
+
+      if (curso.value === "Ensino primário") {
+        // Se for Ensino Primário
+        if (isMTColumn) {
+          return "color: red"; // Vermelho para colunas que terminam com '_MT'
+        }
+        return isNomeOrOrdemOrGenero ? "color: black" : "color: blue"; // Preto para nome, ordem e gênero; azul para outras
+      } else {
+        // Se não for Ensino Primário
+        if (isNomeOrOrdemOrGenero) {
+          return "color: black"; // Preto para nome, ordem e gênero
+        }
+        // Define cor com base no valor
+        return value >= 10 ? "color: blue" : "color: red"; // Azul para >= 10, vermelho para < 10
+      }
+    };
+
     const getColorMac1 = () => {
       if (
         nivel_ensino.value == "Ensino primário" &&

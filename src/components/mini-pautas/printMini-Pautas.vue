@@ -37,10 +37,12 @@
           <!-- Mini-Pauta-->
           <div class="row q-mb-sm">
             <div class="col-12 text-caption text-center">
-              [ <b class="text-red-6">{{ nome_disciplina }}</b> ] - [ Curso:
-              <b>{{ curso }}</b> ] - [ Ano lectivo: <b>{{ anoLectivo }}</b> ] [
-              <b>{{ classe }}</b> ] [ Turma: <b>{{ turma }}</b> ] [ Período:
-              <b>{{ periodo }}</b> ]
+              <b class="text-red-6" v-if="curso !== 'Ensino primário'"
+                >[ {{ nome_disciplina }} ] -
+              </b>
+              [ Curso: <b>{{ curso }}</b> ] - [ Ano lectivo:
+              <b>{{ anoLectivo }}</b> ] [ <b>{{ classe }}</b> ] [ Turma:
+              <b>{{ turma }}</b> ] [ Período: <b>{{ periodo }}</b> ]
             </div>
           </div>
           <q-table
@@ -120,19 +122,19 @@
           <br />
           <div class="row">
             <div class="col-12">
-              <table class="table sem-bordas" border="none">
+              <table class="table sem-bordas" border="none" style="width: 100%">
                 <tr>
                   <td
-                    style="width: 25%"
+                    style="width: 15%"
                     v-if="genero_coordenador_curso === 'Masculino'"
                     border="none"
                   >
                     O Coordenador do curso:
                   </td>
-                  <td style="width: 25%" v-else border="none">
+                  <td style="width: 15%" v-else border="none">
                     A Coordenadora do curso:
                   </td>
-                  <td border="none" style="font-style: italic">
+                  <td border="none" style="font-style: italic; padding: 6px">
                     {{ nome_coordenador_curso }}
                   </td>
                 </tr>
@@ -141,7 +143,7 @@
                     O Director de Turma:
                   </td>
                   <td v-else border="none">A Directora de Turma</td>
-                  <td border="none" style="font-style: italic">
+                  <td border="none" style="font-style: italic; padding: 6px">
                     {{ nome_director_turma }}
                   </td>
                 </tr>
@@ -153,7 +155,7 @@
                   <td
                     class="text-blue-10"
                     border="none"
-                    style="font-style: italic"
+                    style="font-style: italic; padding: 6px"
                   >
                     {{ nome_docente }}
                   </td>
@@ -1191,14 +1193,14 @@ export default {
     };
 
     //Atribuir cor nas notas de acordo se valor é maior ou não com 9.45
-    const corValor = (props) => {
+    /*const corValor = (props) => {
       const value = props.row[props.col.field];
       if (value >= 9.45) {
         return "color: blue";
       } else if (value <= 9.44 && props.col.name !== "order") {
         return "color:red";
       }
-    };
+    };*/
 
     const bgColor = (props) => {
       //console.log(disciplinasDB.value);
@@ -1214,324 +1216,26 @@ export default {
       }
     };
 
-    const getColorMac1 = () => {
-      if (
-        nivel_ensino.value == "Ensino primário" &&
-        joinedData.value.mac1 != ""
-      ) {
-        return "blue";
-      }
-      if (
-        nivel_ensino.value == "Ensino secundario" &&
-        joinedData.value.mac1 <= 9.44
-      ) {
-        return "red";
-      } else {
-        return "blue";
-      }
-    };
+    const corValor = (props) => {
+      const value = props.row[props.col.field];
+      const isNomeOrOrdemOrGenero = ["nome", "order", "genero"].includes(
+        props.col.name
+      );
+      const isMTColumn = props.col.name.endsWith("_MT"); // Verifica se a coluna termina com '_MT'
 
-    //atribuir cor ao valor da coluna NPP1
-    const getColorNpp1 = () => {
-      if (
-        nivel_ensino.value == "Ensino primário" &&
-        joinedData.value.npp1 != ""
-      ) {
-        return "blue";
-      }
-      if (
-        nivel_ensino.value == "Ensino secundario" &&
-        joinedData.value.npp1 <= 9.44
-      ) {
-        return "red";
+      if (curso.value === "Ensino primário") {
+        // Se for Ensino Primário
+        if (isMTColumn) {
+          return "color: red"; // Vermelho para colunas que terminam com '_MT'
+        }
+        return isNomeOrOrdemOrGenero ? "color: black" : "color: blue"; // Preto para nome, ordem e gênero; azul para outras
       } else {
-        return "blue";
-      }
-    };
-
-    //atribuir cor ao valor da coluna NPT1
-    const getColorNpt1 = () => {
-      if (
-        nivel_ensino.value == "Ensino primário" &&
-        joinedData.value.npt1 != ""
-      ) {
-        return "blue";
-      }
-      if (
-        nivel_ensino.value == "Ensino secundario" &&
-        joinedData.value.npt1 <= 9.44
-      ) {
-        return "red";
-      } else {
-        return "blue";
-      }
-    };
-
-    //atribuir cor ao valor da coluna MT1
-    const getColorMt1 = () => {
-      if (
-        nivel_ensino.value == "Ensino primário" &&
-        joinedData.value.mt1 != ""
-      ) {
-        return "red";
-      }
-      if (
-        nivel_ensino.value == "Ensino secundario" &&
-        joinedData.value.mt1 <= 9.44
-      ) {
-        return "red";
-      } else {
-        return "blue";
-      }
-    };
-
-    //atribuir cor ao valor da coluna MAC2
-    const getColorMac2 = () => {
-      if (
-        nivel_ensino.value == "Ensino primário" &&
-        joinedData.value.mac2 != ""
-      ) {
-        return "blue";
-      }
-      if (
-        nivel_ensino.value == "Ensino secundario" &&
-        joinedData.value.mac2 <= 9.44
-      ) {
-        return "red";
-      } else {
-        return "blue";
-      }
-    };
-
-    //atribuir cor ao valor da coluna NPP2
-    const getColorNpp2 = () => {
-      if (
-        nivel_ensino.value == "Ensino primário" &&
-        joinedData.value.npp2 != ""
-      ) {
-        return "blue";
-      }
-      if (
-        nivel_ensino.value == "Ensino secundario" &&
-        joinedData.value.npp2 <= 9.44
-      ) {
-        return "red";
-      } else {
-        return "blue";
-      }
-    };
-
-    //atribuir cor ao valor da coluna NPT2
-    const getColorMpt2 = () => {
-      if (
-        nivel_ensino.value == "Ensino primário" &&
-        joinedData.value.npt2 != ""
-      ) {
-        return "blue";
-      }
-      if (
-        nivel_ensino.value == "Ensino secundario" &&
-        joinedData.value.npt2 <= 9.44
-      ) {
-        return "red";
-      } else {
-        return "blue";
-      }
-    };
-
-    //atribuir cor ao valor da coluna MT2
-    const getColorMt2 = () => {
-      if (
-        nivel_ensino.value == "Ensino primário" &&
-        joinedData.value.mt2 != ""
-      ) {
-        return "red";
-      }
-      if (
-        nivel_ensino.value == "Ensino secundario" &&
-        joinedData.value.mt2 <= 9.44
-      ) {
-        return "red";
-      } else {
-        return "blue";
-      }
-    };
-
-    //atribuir cor ao valor da coluna MAC3
-    const getColorMac3 = () => {
-      if (
-        nivel_ensino.value == "Ensino primário" &&
-        joinedData.value.mac3 != ""
-      ) {
-        return "blue";
-      }
-      if (
-        nivel_ensino.value == "Ensino secundario" &&
-        joinedData.value.mac3 <= 9.44
-      ) {
-        return "red";
-      } else {
-        return "blue";
-      }
-    };
-
-    //atribuir cor ao valor da coluna NPP3
-    const getColorNpp3 = () => {
-      if (
-        nivel_ensino.value == "Ensino primário" &&
-        joinedData.value.npp3 != ""
-      ) {
-        return "blue";
-      }
-      if (
-        nivel_ensino.value == "Ensino secundario" &&
-        joinedData.value.npp3 <= 9.44
-      ) {
-        return "red";
-      } else {
-        return "blue";
-      }
-    };
-
-    //atribuir cor ao valor da coluna NPT3
-    const getColorNpt3 = () => {
-      if (
-        nivel_ensino.value == "Ensino primário" &&
-        joinedData.value.npt3 != ""
-      ) {
-        return "blue";
-      }
-      if (
-        nivel_ensino.value == "Ensino secundario" &&
-        joinedData.value.npt3 <= 9.44
-      ) {
-        return "red";
-      } else {
-        return "blue";
-      }
-    };
-
-    //atribuir cor ao valor da coluna MT3
-    const getColorMt3 = () => {
-      if (
-        nivel_ensino.value == "Ensino primário" &&
-        joinedData.value.mt3 != ""
-      ) {
-        return "red";
-      }
-      if (
-        nivel_ensino.value == "Ensino secundario" &&
-        joinedData.value.mt3 <= 9.44
-      ) {
-        return "red";
-      } else {
-        return "blue";
-      }
-    };
-
-    //atribuir cor ao valor da coluna MFD
-    const getColorMfd = () => {
-      if (
-        nivel_ensino.value == "Ensino primário" &&
-        joinedData.value.mfd != ""
-      ) {
-        return "red";
-      }
-      if (
-        nivel_ensino.value == "Ensino secundario" &&
-        joinedData.value.mfd <= 9.44
-      ) {
-        return "red";
-      } else {
-        return "blue";
-      }
-    };
-    const getColorNe = () => {
-      if (
-        nivel_ensino.value == "Ensino primário" &&
-        joinedData.value.ne != ""
-      ) {
-        return "red";
-      }
-      if (
-        nivel_ensino.value == "Ensino secundario" &&
-        joinedData.value.ne <= 9.44
-      ) {
-        return "red";
-      } else {
-        return "blue";
-      }
-    };
-
-    //atribuir cor ao valor da coluna NEE
-    const getColorNee = () => {
-      if (
-        nivel_ensino.value == "Ensino primário" &&
-        joinedData.value.nee != ""
-      ) {
-        return "blue";
-      }
-      if (
-        nivel_ensino.value == "Ensino secundario" &&
-        joinedData.value.nee <= 9.44
-      ) {
-        return "red";
-      } else {
-        return "blue";
-      }
-    };
-
-    //atribuir cor ao valor da coluna NEO
-    const getColorNeo = () => {
-      if (
-        nivel_ensino.value == "Ensino primário" &&
-        joinedData.value.neo != ""
-      ) {
-        return "blue";
-      }
-      if (
-        nivel_ensino.value == "Ensino secundario" &&
-        joinedData.value.neo <= 9.44
-      ) {
-        return "red";
-      } else {
-        return "blue";
-      }
-    };
-
-    //atribuir cor ao valor da coluna MEC
-    const getColorMec = () => {
-      if (
-        nivel_ensino.value == "Ensino primário" &&
-        joinedData.value.mec != ""
-      ) {
-        return "blue";
-      }
-      if (
-        nivel_ensino.value == "Ensino secundario" &&
-        joinedData.value.mec <= 9.44
-      ) {
-        return "red";
-      } else {
-        return "blue";
-      }
-    };
-
-    //atribuir cor ao valor da coluna NF
-    const getColorMf = () => {
-      if (
-        nivel_ensino.value == "Ensino primário" &&
-        joinedData.value.mf != ""
-      ) {
-        return "red";
-      }
-      if (
-        nivel_ensino.value == "Ensino secundario" &&
-        joinedData.value.mf <= 9.44
-      ) {
-        return "red";
-      } else {
-        return "blue";
+        // Se não for Ensino Primário
+        if (isNomeOrOrdemOrGenero) {
+          return "color: black"; // Preto para nome, ordem e gênero
+        }
+        // Define cor com base no valor
+        return value >= 10 ? "color: blue" : "color: red"; // Azul para >= 10, vermelho para < 10
       }
     };
 
@@ -1540,6 +1244,7 @@ export default {
       gerarPDF,
       dataNascimento,
       dataEmissao,
+      joinedData,
       dataInicioFuncao,
       artigoComuna,
       artigoMunicipio,
@@ -1556,24 +1261,6 @@ export default {
       artigoQantecedEscola,
       artigoQueAntecedeDonomeDaProvincia,
       isLinguaPortuguesaOrEstrangeira,
-      getColorMac1,
-      getColorNpp1,
-      getColorNpt1,
-      getColorMt1,
-      getColorMac2,
-      getColorNpp2,
-      getColorMpt2,
-      getColorMt2,
-      getColorMac3,
-      getColorNpp3,
-      getColorNpt3,
-      getColorMt3,
-      getColorMfd,
-      getColorNe,
-      getColorNee,
-      getColorNeo,
-      getColorMec,
-      getColorMf,
       carregar,
       provincia,
       municipio,

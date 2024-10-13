@@ -1186,10 +1186,24 @@ export default {
     //Atribuir cor nas notas de acordo se valor é maior ou não com 9.45
     const corValor = (props) => {
       const value = props.row[props.col.field];
-      if (value >= 9.45) {
-        return "color: blue";
-      } else if (value <= 9.44 && props.col.name !== "order") {
-        return "color:red";
+      const isNomeOrOrdemOrGenero = ["nome", "order", "genero"].includes(
+        props.col.name
+      );
+      const isMTColumn = props.col.name.endsWith("_MT"); // Verifica se a coluna termina com '_MT'
+
+      if (searchForm.value.nomeCurso === "Ensino primário") {
+        // Se for Ensino Primário
+        if (isMTColumn) {
+          return "color: red"; // Vermelho para colunas que terminam com '_MT'
+        }
+        return isNomeOrOrdemOrGenero ? "color: black" : "color: blue"; // Preto para nome, ordem e gênero; azul para outras
+      } else {
+        // Se não for Ensino Primário
+        if (isNomeOrOrdemOrGenero) {
+          return "color: black"; // Preto para nome, ordem e gênero
+        }
+        // Define cor com base no valor
+        return value >= 10 ? "color: blue" : "color: red"; // Azul para >= 10, vermelho para < 10
       }
     };
 
