@@ -183,6 +183,18 @@ export default {
       periodos_id: [],
     });
 
+    //funcao para limpar o formmulario
+    const cleanForm = () => {
+      (form.value.dme_id = 0),
+        (form.value.escola_id = 0),
+        (form.value.docente_id = 0),
+        (form.value.disciplina_id = []),
+        (form.value.cursos_id = []),
+        (form.value.classes_id = []),
+        (form.value.turmas_id = []),
+        (form.value.periodos_id = []);
+    };
+
     watch(
       () => props.itens,
       async (newVal) => {
@@ -266,6 +278,7 @@ export default {
         });
       } finally {
         $q.loading.hide();
+        cleanForm();
       }
     };
     return {

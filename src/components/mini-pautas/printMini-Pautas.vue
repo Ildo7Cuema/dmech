@@ -78,6 +78,7 @@
                 >
                 <q-th
                   style="width: 10%; font-size: 10px"
+                  colspan="2"
                   v-if="curso !== 'Ensino primário'"
                 ></q-th>
               </q-tr>
@@ -1206,7 +1207,7 @@ export default {
       //console.log(disciplinasDB.value);
       const fieldName = props.col.name;
       // Lista de sufixos desejados
-      const suffixes = ["_MT", "_MFD", "_MEC", "_NE", "MF"];
+      const suffixes = ["_MT", "_MFD", "_MEC", "_MF"];
       // Adiciona cada sufixo a cada disciplina para formar os nomes das colunas
       const columnNames = TrimestresDBT.value.flatMap((trimestre) =>
         suffixes.map((suffix) => `${trimestre}${suffix}`)

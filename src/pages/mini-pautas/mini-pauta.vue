@@ -201,16 +201,22 @@
           </span>
         </template>
         <template v-slot:top-left>
-          <span class="text-h5 text-red-10">MINI-PAUTA -</span>
-          <span class="text-green-10 text-h6 q-ml-sm">{{
-            searchForm.trimestre
-          }}</span>
+          <span class="text-h5 text-red-10">MINI-PAUTA </span>
+          <span
+            class="text-green-10 text-h6 q-ml-sm"
+            v-if="searchForm.nomeCurso == 'Ensino primário'"
+          >
+            - {{ searchForm.trimestre }}</span
+          >
+          <span class="text-green-10 text-h6 q-ml-sm" v-else>
+            - {{ nomeDeDisciplina }}</span
+          >
         </template>
         <!-- Custom Header Slot with Multi-line Header -->
         <template v-slot:header>
           <q-tr>
             <!-- First Row for Discipline Names -->
-            <q-th rowspan="2">Nº</q-th>
+            <q-th quasar="2">Nº</q-th>
             <q-th rowspan="2">NOME DE ALUNOS</q-th>
             <q-th rowspan="2">GÊN.</q-th>
             <q-th
@@ -226,6 +232,11 @@
               v-if="isDisciplinaEstrangeiras"
               >Exame E/O</q-th
             >
+            <q-th
+              style="width: 10%; font-size: 10px"
+              colspan="2"
+              v-if="curso !== 'Ensino primário'"
+            ></q-th>
           </q-tr>
           <q-tr style="background-color: #f5f5f5">
             <!-- Second Row for Field Names -->
@@ -301,7 +312,7 @@ export default {
     const { getAllClasses, getClasseById } = useClasseStore();
     const { getAllTurmas } = useTurmaStore();
     const { getAllPeriodos } = usePeriodoStore();
-    const { getAllDisciplinas } = useDisciplinaStore();
+    const { getAllDisciplinas, getDisciplinaById } = useDisciplinaStore();
     const { getAllAnoLectivo } = useAnoLectivoStore();
     const { getMiniPautas } = useNotasStore();
     const { notifyError, notifySuccess } = usenotification();
@@ -330,6 +341,7 @@ export default {
 
     const cursos = ref([]);
     const cursoTipo = ref(false);
+    const nomeDeDisciplina = ref("");
 
     const selectTrimestre = ref([
       "I Trimestre",
@@ -425,6 +437,14 @@ export default {
     );
 
     watch(
+      () => searchForm.value.disciplinaID,
+      async (newValue) => {
+        const nd = await getDisciplinaById(newValue);
+        nomeDeDisciplina.value = nd.nome_disciplina;
+      }
+    );
+
+    watch(
       () => searchForm.value.classeID,
       async (newValue) => {
         const c = await getClasseById(newValue);
@@ -446,10 +466,13 @@ export default {
               escolaId,
               newValue
             );
-            cursos.value = n_cursos.map((c) => ({
+
+            console.log(n_cursos);
+            cursos.value = n_cursos;
+            /*cursos.value = n_cursos.map((c) => ({
               id: c.cursos.id,
               nome_curso: c.cursos.nome_curso,
-            }));
+            }));*/
 
             //carregar classes onde o docente leciona
             const n_classes = await getDocente_classes(
@@ -457,10 +480,7 @@ export default {
               escolaId,
               newValue
             );
-            classes.value = n_classes.map((c) => ({
-              id: c.classes.id,
-              nome_classe: c.classes.nome_classe,
-            }));
+            classes.value = n_classes;
 
             //carregar turmas onde o docente leciona
             const n_turmas = await getDocente_turmas(
@@ -468,10 +488,7 @@ export default {
               escolaId,
               newValue
             );
-            turmas.value = n_turmas.map((c) => ({
-              id: c.turmas.id,
-              nome_turma: c.turmas.nome_turma,
-            }));
+            turmas.value = n_turmas;
 
             //carregar periodos onde o docente leciona
             const n_periodos = await getDocente_periodos(
@@ -479,10 +496,7 @@ export default {
               escolaId,
               newValue
             );
-            periodos.value = n_periodos.map((c) => ({
-              id: c.periodos.id,
-              nome_periodo: c.periodos.nome_periodo,
-            }));
+            periodos.value = n_periodos;
 
             //carregar disciplinas onde o docente leciona
             const n_disciplinas = await getDocente_disciplinas(
@@ -490,10 +504,7 @@ export default {
               escolaId,
               newValue
             );
-            disciplinas.value = n_disciplinas.map((c) => ({
-              id: c.disciplinas.id,
-              nome_disciplina: c.disciplinas.nome_disciplina,
-            }));
+            disciplinas.value = n_disciplinas;
 
             await getAllAnoLectivo(escolaId).then((res) => {
               console.log(res);
@@ -561,25 +572,40 @@ export default {
           carrearMiniPauta.value = true;
           showMiniPautaPrint.value = false;
           const {
+            docente_id,
             escolaId,
             cursoID,
             classeID,
+            nomeCurso,
             turmaID,
             periodoID,
             anoLectivo,
             disciplinaID,
+            trimestre,
           } = searchForm.value;
 
           console.log(anoLectivo);
           const data = await getMiniPauta(
+            docente_id,
             escolaId,
             cursoID,
             classeID,
+            nomeCurso,
             turmaID,
             periodoID,
             anoLectivo,
-            disciplinaID
+            disciplinaID,
+            trimestre
           );
+
+          if (data.length == 0) {
+            notifyError(
+              "Não há dados para exibir na Mini-pauta com o filtro selecionado"
+            );
+            show.value = false;
+            return;
+          }
+
           const mini_pauta = {};
           const trimestres = new Set();
           const disciplinasDBMiniPauta = new Set();
@@ -848,6 +874,7 @@ export default {
           show.value = true;
           showMiniPautaPrint.value = false;
           const {
+            docente_id,
             escolaId,
             cursoID,
             classeID,
@@ -860,6 +887,7 @@ export default {
           } = searchForm.value;
 
           const data = await getMiniPauta(
+            docente_id,
             escolaId,
             cursoID,
             classeID,
@@ -1211,7 +1239,7 @@ export default {
       //console.log(disciplinasDBMiniPauta.value);
       const fieldName = props.col.name;
       // Lista de sufixos desejados
-      const suffixes = ["_MT", "_MFD", "_MEC", "_NE", "MF"];
+      const suffixes = ["_MT", "_MFD", "_MEC", "_MF"];
       // Adiciona cada sufixo a cada disciplina para formar os nomes das colunas
       const columnNames = TrimestresDBT.value.flatMap((trimestre) =>
         suffixes.map((suffix) => `${trimestre}${suffix}`)
@@ -1270,6 +1298,7 @@ export default {
       dataMiniPautas,
       cursoTipo,
       selectTrimestre,
+      nomeDeDisciplina,
     };
   },
 };

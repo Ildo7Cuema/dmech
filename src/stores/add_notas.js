@@ -73,6 +73,7 @@ export const useAdd_Nota_Miniauta_Store = defineStore("add_notas", {
     },
 
     async getMiniPauta(
+      docenteId,
       escolaId,
       cursoID,
       classeID,
@@ -83,7 +84,7 @@ export const useAdd_Nota_Miniauta_Store = defineStore("add_notas", {
       disciplinaID,
       trimestre
     ) {
-      console.log(nomeCurso);
+      console.log(docenteId);
       if (nomeCurso !== "Ensino primário") {
         const { data, error } = await supabase
           .from(tableDB)
@@ -96,9 +97,10 @@ export const useAdd_Nota_Miniauta_Store = defineStore("add_notas", {
           .eq("classe_id", classeID)
           .eq("turma_id", turmaID)
           .eq("periodo_id", periodoID)
-          .eq("disciplina_id", disciplinaID);
+          .eq("disciplina_id", disciplinaID)
+          .eq("docente_id", docenteId);
         if (error) {
-          console.error("Error fetching data from database:", error);
+          console.error("Erro ao buscar informações no Banco de dados:", error);
           return;
         }
         // Função para ordenar os dados por trimestre
@@ -136,14 +138,15 @@ export const useAdd_Nota_Miniauta_Store = defineStore("add_notas", {
           .eq("curso_id", cursoID)
           .eq("periodo_id", periodoID)
           .eq("ano_lectivo", anoLectivo.ano_lectivo)
-          .eq("trimestre", trimestre);
+          .eq("trimestre", trimestre)
+          .eq("docente_id", docenteId);
 
         if (error) {
           console.error("Erro ao buscar dados:", error);
           return;
         }
 
-        // Função para ordenar os dados por trimestre
+        // Função para ordenar os dados por disciplina
         const ordemDisciplinas = [
           "Língua Portuguesa",
           "Inglês",

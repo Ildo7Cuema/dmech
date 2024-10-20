@@ -81,7 +81,7 @@ export const useTurmasProf = defineStore("add_turmas_profs", {
       } catch (error) {}
       // add turmas
       try {
-        // Verifica se curso_id é um array e cria um array de objetos a serem inseridos
+        // Verifica se turmas_id é um array e cria um array de objetos a serem inseridos
         if (Array.isArray(form.turmas_id)) {
           const turmaProf = form.turmas_id.map((turmaID) => ({
             dme_id: form.dme_id,
@@ -99,12 +99,13 @@ export const useTurmasProf = defineStore("add_turmas_profs", {
         } else {
           const { data, error } = await supabase
             .from(turmas_profs_table)
-            .insert({
+            .upsert({
               dme_id: form.dme_id,
               escola_id: form.escola_id,
               docente_id: form.docente_id,
               turmas_id: turmaID,
-            });
+            })
+            .select();
 
           if (error) throw error.message;
         }
@@ -183,7 +184,18 @@ export const useTurmasProf = defineStore("add_turmas_profs", {
           .eq("docente_id", docente_id);
 
         if (error) throw error.message;
-        return data;
+        // Remover duplicatas com base no id do curso
+        const uniqueDisciplina = [];
+        const seenIds = new Set();
+
+        data.forEach((item) => {
+          const disciplina = item.disciplinas;
+          if (disciplina && !seenIds.has(disciplina.id)) {
+            seenIds.add(disciplina.id);
+            uniqueDisciplina.push(disciplina);
+          }
+        });
+        return uniqueDisciplina;
       } catch (error) {
         console.log(error);
       }
@@ -199,7 +211,19 @@ export const useTurmasProf = defineStore("add_turmas_profs", {
           .eq("docente_id", docente_id);
 
         if (error) throw error.message;
-        return data;
+
+        // Remover duplicatas com base no id do curso
+        const uniqueCursos = [];
+        const seenIds = new Set();
+
+        data.forEach((item) => {
+          const curso = item.cursos;
+          if (curso && !seenIds.has(curso.id)) {
+            seenIds.add(curso.id);
+            uniqueCursos.push(curso);
+          }
+        });
+        return uniqueCursos;
       } catch (error) {
         console.log(error);
       }
@@ -215,7 +239,19 @@ export const useTurmasProf = defineStore("add_turmas_profs", {
           .eq("docente_id", docente_id);
 
         if (error) throw error.message;
-        return data;
+
+        // Remover duplicatas com base no id do curso
+        const uniqueTurma = [];
+        const seenIds = new Set();
+
+        data.forEach((item) => {
+          const turma = item.turmas;
+          if (turma && !seenIds.has(turma.id)) {
+            seenIds.add(turma.id);
+            uniqueTurma.push(turma);
+          }
+        });
+        return uniqueTurma;
       } catch (error) {
         console.log(error);
       }
@@ -231,7 +267,18 @@ export const useTurmasProf = defineStore("add_turmas_profs", {
           .eq("docente_id", docente_id);
 
         if (error) throw error.message;
-        return data;
+        // Remover duplicatas com base no id do curso
+        const uniquePeriodo = [];
+        const seenIds = new Set();
+
+        data.forEach((item) => {
+          const periodo = item.periodos;
+          if (periodo && !seenIds.has(periodo.id)) {
+            seenIds.add(periodo.id);
+            uniquePeriodo.push(periodo);
+          }
+        });
+        return uniquePeriodo;
       } catch (error) {
         console.log(error);
       }
@@ -247,7 +294,18 @@ export const useTurmasProf = defineStore("add_turmas_profs", {
           .eq("docente_id", docente_id);
 
         if (error) throw error.message;
-        return data;
+        // Remover duplicatas com base no id do curso
+        const uniqueClasse = [];
+        const seenIds = new Set();
+
+        data.forEach((item) => {
+          const classe = item.classes;
+          if (classe && !seenIds.has(classe.id)) {
+            seenIds.add(classe.id);
+            uniqueClasse.push(classe);
+          }
+        });
+        return uniqueClasse;
       } catch (error) {
         console.log(error);
       }
