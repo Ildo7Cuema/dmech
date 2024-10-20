@@ -82,7 +82,7 @@
           v-model="form.disciplina_id"
           :options="selectDisciplinas"
           option-value="id"
-          option-label="nome"
+          option-label="nome_disciplina"
           emit-value
           map-options
           dark
@@ -219,10 +219,7 @@ export default {
             newValue
           );
           console.log(disciplinas);
-          selectDisciplinas.value = disciplinas.map((d) => ({
-            id: d.disciplinas.id,
-            nome: d.disciplinas.nome_disciplina,
-          }));
+          selectDisciplinas.value = disciplinas;
         }
       }
     );
