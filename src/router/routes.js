@@ -266,6 +266,11 @@ const routes = [
         name: "pauta-geral",
         component: () => import("pages/pauta/pautaComponente.vue"),
       },
+      {
+        path: "termosFrequencia",
+        name: "pageTermoDeFrequencia",
+        component: () => import("pages/termos/pageTermos.vue"),
+      },
     ],
     meta: { requiresAuth: true },
   },

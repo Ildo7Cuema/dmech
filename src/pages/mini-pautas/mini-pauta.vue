@@ -216,7 +216,7 @@
         <template v-slot:header>
           <q-tr>
             <!-- First Row for Discipline Names -->
-            <q-th quasar="2">Nº</q-th>
+            <q-th rowspan="2">Nº</q-th>
             <q-th rowspan="2">NOME DE ALUNOS</q-th>
             <q-th rowspan="2">GÊN.</q-th>
             <q-th

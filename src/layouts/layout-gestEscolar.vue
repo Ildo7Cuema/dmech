@@ -243,7 +243,11 @@
           </q-item-section>
         </q-item>
 
-        <q-item clickable class="GPLAY__drawer-link GPLAY__drawer-link--books">
+        <q-item
+          clickable
+          class="GPLAY__drawer-link GPLAY__drawer-link--books"
+          @click="handleTermosDeFrequencia()"
+        >
           <q-item-section
             avatar
             class="books-icon bg-blue-7 text-grey-1 text-center"
@@ -391,6 +395,10 @@ export default {
       router.push({ name: "pageFuncionarios" });
     };
 
+    const handleTermosDeFrequencia = () => {
+      router.push({ name: "pageTermoDeFrequencia" });
+    };
+
     const logoutUser = async () => {
       await Dialog.create({
         title: "Sair",
@@ -422,6 +430,7 @@ export default {
       handlePeriodo,
       hendleDisciplina,
       hendleFuncionarios,
+      handleTermosDeFrequencia,
       handleClasses,
       handleNotas,
       hendleMiniPauta,
