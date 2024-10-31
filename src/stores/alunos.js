@@ -93,6 +93,20 @@ export const useAlunosStore = defineStore("alunos", {
         console.log(error);
       }
     },
+    //Buscar informações no banco pelo nome
+    async getAlunoByName(name) {
+      try {
+        const { data, error } = await supabase
+          .from(tabela)
+          .select("id")
+          .eq("nome", name)
+          .single();
+        if (error) throw error.message;
+        return data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
 
     // Atualizar informações no banco pelo id
     async updateAlunoById(id, formData) {

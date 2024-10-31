@@ -183,6 +183,154 @@ export const useAdd_Nota_Miniauta_Store = defineStore("add_notas", {
       }
     },
 
+    /* async getTermo(form) {
+      //Buscar Mini-pauta para o ensino primario
+      console.log(form);
+      const { data, error } = await supabase
+        .from(tableDB) // Nome da tabela
+        .select(
+          `
+        *,
+        alunos:aluno_id(*),escolas:escola_id(id, name, provincia, municipio),cursos:curso_id(id, nome_curso), periodos:periodo_id(nome_periodo), classes:classe_id(nome_classe), turmas:turma_id(id, nome_turma), disciplinas:disciplina_id(nome_disciplina), funcionarios:docente_id(id, name, genero)
+        mt1, mt2, mt3, mfd, mf, ne, mec
+      `
+        )
+        .eq("escola_id", form.escola_id)
+        .eq("classe_id", form.classe_id)
+        .eq("curso_id", form.curso_id)
+        .eq("ano_lectivo", form.ano_lectivo.ano_lectivo)
+        .eq("aluno_id", form.aluno_id);
+
+      if (error) {
+        console.error("Erro ao buscar dados:", error);
+        return;
+      }
+
+      // Função para ordenar os dados por disciplina
+      const ordemDisciplinas = [
+        "Língua Portuguesa",
+        "Inglês",
+        "Francês",
+        "Matemática",
+      ];
+
+      // Mapeia a disciplina para sua posição na lista de prioridade
+      const disciplinaPrioridade = ordemDisciplinas.reduce(
+        (acc, disciplina, index) => {
+          acc[disciplina] = index;
+          return acc;
+        },
+        {}
+      );
+
+      // Ordena os dados de acordo com a posição da disciplina
+      console.log(data);
+      const dadosOrdenados = data.sort((a, b) => {
+        const disciplinaA = a.disciplinas.nome_disciplina;
+        const disciplinaB = b.disciplinas.nome_disciplina;
+        const posA =
+          disciplinaPrioridade[disciplinaA] !== undefined
+            ? disciplinaPrioridade[disciplinaA]
+            : Infinity;
+        const posB =
+          disciplinaPrioridade[disciplinaB] !== undefined
+            ? disciplinaPrioridade[disciplinaB]
+            : Infinity;
+        return posA - posB;
+      });
+      console.log(dadosOrdenados);
+      return dadosOrdenados;
+    },*/
+
+    async getTermo(form) {
+      // Buscar Mini-pauta para o ensino primário
+      console.log(form);
+      const { data, error } = await supabase
+        .from(tableDB) // Nome da tabela
+        .select(
+          `
+          *,
+          alunos:aluno_id(*),escolas:escola_id(id, name, provincia, municipio),cursos:curso_id(id, nome_curso), periodos:periodo_id(nome_periodo), classes:classe_id(nome_classe), turmas:turma_id(id, nome_turma), disciplinas:disciplina_id(nome_disciplina), funcionarios:docente_id(id, name, genero)
+          mt1, mt2, mt3, mfd, mf, ne, mec
+          `
+        )
+        .eq("escola_id", form.escola_id)
+        .eq("classe_id", form.classe_id)
+        .eq("curso_id", form.curso_id)
+        .eq("ano_lectivo", form.ano_lectivo.ano_lectivo)
+        .eq("aluno_id", form.aluno_id);
+
+      if (error) {
+        console.error("Erro ao buscar dados:", error);
+        return;
+      }
+
+      // Função para ordenar os dados por disciplina e trimestre
+      const ordemDisciplinas = [
+        "Língua Portuguesa",
+        "Inglês",
+        "Francês",
+        "Matemática",
+      ];
+
+      const ordemTrimestres = ["I Trimestre", "II Trimestre", "III Trimestre"];
+
+      const disciplinaPrioridade = ordemDisciplinas.reduce(
+        (acc, disciplina, index) => {
+          acc[disciplina] = index;
+          return acc;
+        },
+        {}
+      );
+
+      const trimestrePrioridade = ordemTrimestres.reduce(
+        (acc, trimestre, index) => {
+          acc[trimestre] = index;
+          return acc;
+        },
+        {}
+      );
+
+      // Ordena os dados de acordo com a posição da disciplina e trimestre
+      console.log(data);
+      const dadosOrdenados = data.sort((a, b) => {
+        const disciplinaA = a.disciplinas.nome_disciplina;
+        const disciplinaB = b.disciplinas.nome_disciplina;
+        const trimestreA = a.periodos.nome_periodo;
+        const trimestreB = b.periodos.nome_periodo;
+
+        // Obter a posição do trimestre
+        const ordemTrimestreA =
+          ordemTrimestres[trimestreA] !== undefined
+            ? ordemTrimestres[trimestreA]
+            : Infinity;
+        const ordemTrimestreB =
+          ordemTrimestres[trimestreB] !== undefined
+            ? ordemTrimestres[trimestreB]
+            : Infinity;
+
+        // Ordena primeiro por trimestre
+        if (ordemTrimestreA !== ordemTrimestreB) {
+          return ordemTrimestreA - ordemTrimestreB;
+        }
+
+        // Se os trimestres forem iguais, ordena por disciplina
+        const posA =
+          disciplinaPrioridade[disciplinaA] !== undefined
+            ? disciplinaPrioridade[disciplinaA]
+            : Infinity;
+        const posB =
+          disciplinaPrioridade[disciplinaB] !== undefined
+            ? disciplinaPrioridade[disciplinaB]
+            : Infinity;
+
+        return posA - posB;
+      });
+
+      console.log(dadosOrdenados);
+      return dadosOrdenados;
+    },
+
     async add_mini_pauta(form) {
       //verifique se ja existe dados com os campos do form
       console.log(form);
